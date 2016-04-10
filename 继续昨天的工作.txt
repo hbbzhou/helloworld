@@ -16,6 +16,7 @@ git clone https://github.com/hbbzhou/luabind_project
 git add *
 git commit -m "代码提交信息"
 git push origin master
+git pull
 
 
 :收获 记录
@@ -23,4 +24,3 @@ git push origin master
 操作:属性->配置属性->常规->平台工具集
 
 
-OK
