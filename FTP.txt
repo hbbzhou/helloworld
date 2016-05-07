@@ -1,0 +1,38 @@
+
+#<<FTP 命令>>
+
+
+####增加ftp 账号
+useradd -d /usr/local/apache2/htdocs/TrapGame_ftp -s /sbin/nologin ftptrap
+--------------------------------
+
+####设置密码
+passwd ftptrap
+--------------------------------
+
+####删除用户
+userdel ftptrap
+--------------------------------
+
+
+----FTP 上传文件-频繁超时
+vim /etc/vsftpd/vsftpd.conf
+修改内容:
+max_clients=5000
+max_per_ip=5000
+
+保存后,重启服务
+service vsftpd restart
+--------------------------------
+
+
+
+
+
+
+
+
+
+
+
+

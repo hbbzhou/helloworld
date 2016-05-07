@@ -1,0 +1,55 @@
+
+
+#<<QT的问题>>
+
+
+####找到qt的官网, 下载qt 5.4
+好像是qt-opensource-windows-x86-msvc2010_opengl-5.4.1.exe
+=======================
+
+
+####图片不能显示
+方案:
+需要imageformats 文件夹和其中的文件
+=======================
+
+
+####程序不能运行
+方案:
+需要 platforms 文件夹和其中的文件
+=======================
+
+####不能debug,提示:调试器未配置
+方案:
+安装 windows sdk 7.1
+好像是winsdk_web.exe
+=======================
+
+####qt 增加第三方库
+修改xx.proc 文件
+INCLUDEPATH += E:/include/
+LIBS += -LE:/lib -llibboost_regex-vc100-mt-1_55 -llibboost_system-vc100-mt-1_55 -llibboost_thread-vc100-mt-1_55
+接着 执行qmake
+最后rebuild 就可以了
+=======================
+
+####提示:找不到lib.obj文件
+原因:库文件的路径有问题
+=======================
+
+####debug版本在其他人的机器上没有办法运行.
+解决方案:弄了release版本即可
+=======================
+
+####不知道如果在 xx.proc文件 进行debug和release的区分
+解决方案:
+CONFIG(debug, debug|release) {
+LIBS += -LE:/lib -llibboost_regex-vc100-mt-gd-1_55 -llibboost_system-vc100-mt-gd-1_55 -llibboost_thread-vc100-mt-gd-1_55
+LIBS += -LE:/lib/zlib -lzdll
+LIBS += -LE:/lib/curl -llibcurld_imp
+} else {
+LIBS += -LE:/lib -llibboost_regex-vc100-mt-1_55 -llibboost_system-vc100-mt-1_55 -llibboost_thread-vc100-mt-1_55
+LIBS += -LE:/lib/zlib -lzdll
+LIBS += -LE:/lib/curl -llibcurld_imp
+}
+=======================

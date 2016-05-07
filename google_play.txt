@@ -1,0 +1,321 @@
+
+
+#<<google play 的问题>>
+
+####google支付回调验证
+
+链接地址:http://m.oschina.net/blog/398736
+或者搜 google支付回调验证
+
+1.登陆 Google Developer Console ，地址：https://code.google.com/apis/console/
+
+2.在APIs & auth 项中找到 Credentials ，点击创建一个auth2.0 的web 应用 ,其中4的地址一定是 可用域名 + /oauth2callback
+创建完后，可以获得，client_id, client_secret, redirect_url
+
+
+####网页看到的内容
+
+用戶端 ID	
+200356306102-fmc7fr831see7jt37dk4ne22ialgkhl6.apps.googleusercontent.com
+電子郵件地址	
+200356306102-fmc7fr831see7jt37dk4ne22ialgkhl6@developer.gserviceaccount.com
+用戶端密碼	
+KHncmLMfxIJV-K5hPLJt7bWK
+重新導向 URI	
+https://www.example.com/oauth2callback
+JavaScript 起點	
+https://www.example.com
+
+=======================
+
+
+####提交到IE
+https://accounts.google.com/o/oauth2/auth?scope=https://www.googleapis.com/auth/androidpublisher
+&response_type=code
+&access_type=offline
+&redirect_uri=https://www.example.com/oauth2callback
+&client_id=200356306102-fmc7fr831see7jt37dk4ne22ialgkhl6.apps.googleusercontent.com
+=======================
+
+
+####IE 的地址栏 显示如下
+https://www.example.com/oauth2callback?code=4/kPsBzHHtNwHFXn8dKFwoLTKpZvu1phEk-4ktuNzkfOU.opXu4I7OiAkUEnp6UAPFm0HoeYT9mQI#
+=======================
+
+
+####通过curl 程序获取1
+//请求的ip
+https://accounts.google.com/o/oauth2/token
+//设置php的头格式
+"Content-Type: application/x-www-form-urlencoded"
+
+//post 以下内容
+code=4/kPsBzHHtNwHFXn8dKFwoLTKpZvu1phEk-4ktuNzkfOU.opXu4I7OiAkUEnp6UAPFm0HoeYT9mQI#
+&client_id=200356306102-fmc7fr831see7jt37dk4ne22ialgkhl6.apps.googleusercontent.com
+&client_secret=KHncmLMfxIJV-K5hPLJt7bWK
+&redirect_uri=https://www.example.com/oauth2callback
+&grant_type=authorization_code
+=======================
+
+
+####返回的内容
+{
+  "access_token" : "ya29.YwHZjfkITEMmDoqOiToK4GFfFvgby0ts9HMzXuN1VU1bsQPfJY-fSbO2HVRJiSCCCr4HjScHT2IgEg",
+  "token_type" : "Bearer",
+  "expires_in" : 3600,
+  "refresh_token" : "1/FWpInPom_5RqBMuVqtBj4r6aS9EfS-d48LLeXAEU6YN90RDknAdJa_sgfheVM0XT"
+}
+=======================
+
+
+####通过curl 程序获取 2
+//请求的ip
+https://accounts.google.com/o/oauth2/token
+//设置php的头格式
+"Content-Type: application/x-www-form-urlencoded"
+
+//post 以下内容
+client_id=200356306102-fmc7fr831see7jt37dk4ne22ialgkhl6.apps.googleusercontent.com&
+client_secret=KHncmLMfxIJV-K5hPLJt7bWK&
+refresh_token=1/FWpInPom_5RqBMuVqtBj4r6aS9EfS-d48LLeXAEU6YN90RDknAdJa_sgfheVM0XT&
+grant_type=refresh_token
+
+####返回的内容
+{
+  "access_token" : "ya29.YwGKagMHebxvlfXFqo6DBpSa5A1gk964-7Sk2rO-JKgUZAtufP6Ulho-p1KcUSmP68Wrms74Fhcs0Q",
+  "token_type" : "Bearer",
+  "expires_in" : 3600
+}
+=======================
+
+
+####客户端给服务器的数据
+{"checkcode":"{
+\"orderId\":\"12999763169054705758.1384615525780308\",
+\"packageName\":\"com.fedeen.jungleforce\",
+\"productId\":\"com.fedeen.jungleforce.1\",
+\"purchaseTime\":1429862873765,
+\"purchaseState\":0,
+\"purchaseToken\":\"lmpcefahdmepgoljknkonjbk.AO-J1OwxREOnfHmBsB_G_Tl1VQJEAlywkHiFMH-L0GQ5ZlZnZghmZKxPZllM3gntngscWFKFYJ-mwNtGlefItuww-_QY6ELmECzhLcmoijz0j79XF2mtPWQQmCPN8Zmt9FdoNQohNlWnxyK0kuQLEOKDD0N-RoZHZA\"
+}"}
+=======================
+
+####字符串 拼接的参考
+String url = "https://www.googleapis.com/androidpublisher/v2/applications";  
+getURL.append("/" + packageName);  
+getURL.append("/purchases/products");  
+getURL.append("/" + productId   );  
+getURL.append("/tokens/" + purchaseToken);  
+getURL.append("?access_token=" + access_token);  
+URL urlObtainOrder = new URL(getURL.toString());  
+=======================
+
+####用IE 请求
+https://www.googleapis.com/androidpublisher/v2/applications/
+com.fedeen.jungleforce
+/purchases/products/
+com.fedeen.jungleforce.1
+/tokens/
+lmpcefahdmepgoljknkonjbk.AO-J1OwxREOnfHmBsB_G_Tl1VQJEAlywkHiFMH-L0GQ5ZlZnZghmZKxPZllM3gntngscWFKFYJ-mwNtGlefItuww-_QY6ELmECzhLcmoijz0j79XF2mtPWQQmCPN8Zmt9FdoNQohNlWnxyK0kuQLEOKDD0N-RoZHZA
+?access_token=ya29.YwGKagMHebxvlfXFqo6DBpSa5A1gk964-7Sk2rO-JKgUZAtufP6Ulho-p1KcUSmP68Wrms74Fhcs0Q
+=======================
+
+
+####返回的内容
+{
+ "error": {
+  "errors": [
+   {
+    "domain": "usageLimits",
+    "reason": "accessNotConfigured",
+    "message": "Access Not Configured. The API (Google Play Developer API) is not enabled for your project. Please use the Google Developers Console to update your configuration.",
+    "extendedHelp": "https://console.developers.google.com"
+   }
+  ],
+  "code": 403,
+  "message": "Access Not Configured. The API (Google Play Developer API) is not enabled for your project. Please use the Google Developers Console to update your configuration."
+ }
+}
+=======================
+
+
+//设置完(Google Play Developer API) 后
+
+####返回内容
+{
+ "error": {
+  "errors": [
+   {
+    "domain": "androidpublisher",
+    "reason": "projectNotLinked",
+    "message": "The project id used to call the Google Play Developer API has not been linked in the Google Play Developer Console."
+   }
+  ],
+  "code": 403,
+  "message": "The project id used to call the Google Play Developer API has not been linked in the Google Play Developer Console."
+ }
+}
+=======================
+
+//需求继续操作
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#<<安卓 付费>>
+
+//gooleplay app 官网
+https://play.google.com/apps/publish/?hl=zh&dev_acc=14146690857769136556#MarketListingPlace:p=com.newbility.jungleforce
+newbilitygames@gmail.com
+Newbilitygmail#
+
+//设置google 服务器的官网
+https://code.google.com/apis/console/
+
+
+//google play SDK 的官网
+https://translate.googleusercontent.com/translate_c?depth=1&hl=zh-CN&prev=search&rurl=translate.google.com&sl=en&u=https://developers.google.com/identity/protocols/OAuth2WebServer&usg=ALkJrhjNUMPF6gvoDwr5dH9B62PFdPrbLA#refresh
+
+//靠谱
+http://blog.csdn.net/lemonzone2010/article/details/44983659
+http://blog.csdn.net/hjun01/article/details/42032841
+
+//最靠谱
+http://m.oschina.net/blog/398736
+http://my.oschina.net/lemonzone2010/blog/398736
+
+
+
+//飞鼎 重新来 第7次
+
+8389525957
+
+{"web":{"auth_uri":"https://accounts.google.com/o/oauth2/auth",
+"client_secret":"eItfLC0iv5YQj1ybGDTaucuq",
+"token_uri":"https://accounts.google.com/o/oauth2/token",
+"client_email":"8389525957-fkqeu9tjkt7em3564o1lt1f0v588kn22@developer.gserviceaccount.com",
+"client_x509_cert_url":"https://www.googleapis.com/robot/v1/metadata/x509/8389525957-fkqeu9tjkt7em3564o1lt1f0v588kn22@developer.gserviceaccount.com",
+"client_id":"8389525957-fkqeu9tjkt7em3564o1lt1f0v588kn22.apps.googleusercontent.com",
+"auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs"}}
+
+
+https://accounts.google.com/o/oauth2/auth?scope=https://www.googleapis.com/auth/androidpublisher
+&response_type=code
+&access_type=offline
+&redirect_uri=https://www.example.com/oauth2callback
+&client_id=8389525957-fkqeu9tjkt7em3564o1lt1f0v588kn22.apps.googleusercontent.com
+ 
+
+https://www.example.com/oauth2callback?code=4/80ino04Pbfxf-eISThWMBrP17DoO6XPmb12r3KLIpM0.Ut1oteiPZV8WEnp6UAPFm0EgjmuZmgI#
+
+{
+  "access_token" : "ya29.bQE_-bou1J9mSmWJTdQDvNZ3R0lsZ3fmMIwuZeyT3nUYi1yp_tI_9SCEmGaxwcFxSdIkXZ3Ux968hA",
+  "token_type" : "Bearer",
+  "expires_in" : 3600,
+  "refresh_token" : "1/FPWjwJ2D-KU60mP16IcQTQIoG4QPiJFqWa1_LhweKns"
+}
+
+
+
+{
+  "access_token" : "ya29.cgFAuhnlUAqHyeH_FKjDKClycJxwPH1234xTGcAeSPjw28ESe_aWDBIdKAOGvasbaKNWg2yLldAtQA",
+  "token_type" : "Bearer",
+  "expires_in" : 3449
+}
+
+
+
+
+{
+ "error": {
+  "errors": [
+   {
+    "domain": "androidpublisher",
+    "reason": "permissionDenied",
+    "message": "The current user has insufficient permissions to perform the req
+uested operation."
+   }
+  ],
+  "code": 401,
+  "message": "The current user has insufficient permissions to perform the requested operation."
+ }
+}
+
+
+
+
+
+
+
+==================================
+
+
+//无敌的数据
+{"orderId":"12999763169054705758.1374768754042527",
+"packageName":"com.newbility.rumblejungle.test1",
+"productId":"test.com.newbility.jungleforce.11",
+"purchaseTime":1431508115496,
+"purchaseState":0,
+"purchaseToken":"bgljglnlaidghgjfmognfmda.AO-J1Oz6CvWQQBgBIgY6_2oSPLNKnSWuCnNu-up3kreSTchQkr0P9qoyeIwOV_G7Jt_nXJ2qdTbztL4E1AjLQ3M4jk4MisTJdAI8n2tlCWKudocQ59H_upJmooOz1ukroFIyz3tZbGLot23ac3E84AFXqu8KvBg0O2z_6bB2xHk85ZgwjPCOA6s"}
+
+
+
+//重新来8
+com.newbility.rumblejungle.test1
+
+
+用戶端 ID	
+24495525562-0r2tafv1us5ifd1ukmk8ql3m0f5seuaq.apps.googleusercontent.com
+電子郵件地址	
+24495525562-0r2tafv1us5ifd1ukmk8ql3m0f5seuaq@developer.gserviceaccount.com
+用戶端密碼	
+hCcmlGkeUf0p7AnYbx3nx-3e
+重新導向 URI	
+https://www.example.com/oauth2callback
+JavaScript 起點	
+https://www.example.com
+
+
+
+
+https://accounts.google.com/o/oauth2/auth?scope=https://www.googleapis.com/auth/androidpublisher
+&response_type=code
+&access_type=offline
+&redirect_uri=https://www.example.com/oauth2callback
+&client_id=24495525562-0r2tafv1us5ifd1ukmk8ql3m0f5seuaq.apps.googleusercontent.com
+
+
+https://www.example.com/oauth2callback?code=4/Q2ZgROtJ7AzS22Oq8FR3HFTsoAgcAQoMwGtY3rPbS4w.kjZ6F2cCTPkegrKXntQAax3etcWYmgI#
+
+
+{
+  "access_token" : "ya29.cgHi7uk984OzQR5fvFwKC0BgirpBuVPbTIE-o4Fjdy65UiSKdy9h7YApBhgr9pT_IAP8fFWWdM0PAg",
+  "token_type" : "Bearer",
+  "expires_in" : 3599,
+  "refresh_token" : "1/8am12SReOBPMx4HtpPRo1zg1LnFi0X11wJ7hNXKDOoE"
+}
+ 
+{
+ "access_token" : "ya29.cgG9tgdfQhSghUSkCFX7Pz434AjdEQYt4mzNJK-OBGt-jAz-YeyOD4PAa9pi2AdY2vTyA127WK1Vxw",
+  "token_type" : "Bearer",
+  "expires_in" : 3600
+}
+
+{
+ "kind": "androidpublisher#productPurchase",
+ "purchaseTimeMillis": "1431508115496",
+ "purchaseState": 0,
+ "consumptionState": 1,
+ "developerPayload": ""
+}
+

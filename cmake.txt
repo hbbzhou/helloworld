@@ -1,0 +1,142 @@
+
+
+#<<cmake的问题>>
+
+
+1.安装cmake
+2.新建一个CMakeLists.txt //内容详见下文
+3.执行cmake . //不要忘了 点 
+4.这样就会生成一个Makefile
+5.make 
+
+步骤2 详细描述：
+#这个可以略去
+cmake_minimum_required(VERSION 2.6)
+
+#定义工程的名字=MYPVP
+PROJECT (MYPVP)
+
+# INCLUDE_DIRECTORIES=包含头文件的路径；路径用 相对路径
+INCLUDE_DIRECTORIES("include/")
+
+# LINK_DIRECTORIES=包含库文件的路径；路径用 相对路径
+LINK_DIRECTORIES("lib/")
+
+#链接库文件，对象是所有的工程
+#LINK_LIBRARIES(libboost_system.so)
+
+# 定义一个变量
+SET(SRC_LIST test/testclient.cpp)
+
+#输出一个提示性的语句
+MESSAGE(STATUS "This is BINARY dir "${MYPVP_BINARY_DIR}) 
+MESSAGE(STATUS "This is SOURCE dir "${MYPVP_SOURCE_DIR})
+
+#生成可执行文件 名字=pvp ；${SRC_LIST}代表源代码完整路径
+ADD_EXECUTABLE(pvp ${SRC_LIST})
+
+#将某个库文件 链接到 pvp这个可执行文件
+TARGET_LINK_LIBRARIES(pvp libboost_system.so)
+
+
+
+---00----
+备注： 
+add_library(json_test.so json/json_reader.cpp json/json_value.cpp json/json_writer.cpp) 
+结果生成了 一个 libjson_test.so.a   
+将 libjson_test.so.a 重命名为libjson_test.so 后 居然可以被link 以及可运行
+--
+add_library(json_test SHARED json/json_reader.cpp json/json_value.cpp json/json_writer.cpp)
+这样就可以生成了 libjson_test.so文件了
+--
+ add_subdirectory(json)
+这个命令可以调用 json下的 CMakeLists.txt文件 生成makefile ；从而实现多个makefile一起编译（不是同时编译）
+
+aux_source_directory("test" SRC_LIST)
+搜索test目录下所有的.cpp文件名，并且存储到变量中 
+---11----
+ 
+
+#####################################################
+#####################################################
+#####################################################
+//实例
+cmake_minimum_required(VERSION 2.6)
+PROJECT (MYSERVER CXX)
+INCLUDE_DIRECTORIES("/home/hbb2/trunk/src/include")
+INCLUDE_DIRECTORIES("/home/hbb2/trunk/src/include/mysql_cpp")
+INCLUDE_DIRECTORIES("/home/hbb2/trunk/src/include/openssl/include")
+LINK_DIRECTORIES("/home/hbb2/trunk/src/lib")
+
+#编译宏---
+add_definitions(-DDEBUG -DMYSQLPP_MYSQL_HEADERS_BURIED)
+
+#指定编译器---
+SET(CMAKE_CXX_COMPILER "g++")
+
+#设置编译选项---
+SET(CMAKE_CXX_FLAGS "-std=c++11 -g")
+ 
+aux_source_directory("yi_dong" SRC_LIST)
+aux_source_directory("yi_dong/base" SRC_LIST)
+aux_source_directory("yi_dong/data" SRC_LIST)
+aux_source_directory("yi_dong/operate" SRC_LIST)
+aux_source_directory("yi_dong/tool" SRC_LIST)
+MESSAGE(STATUS "------------------------------- "${SRC_LIST}) 
+ADD_EXECUTABLE(server ${SRC_LIST})
+TARGET_LINK_LIBRARIES(server libboost_system.so libboost_thread.so libcurl.so libeluna.so libglog.so libgtest.so
+libgtest_main.so libjsoncpp.so liblua-5.1.so libmysqlclient.so libmysqlcppconn.so libmysqlpp.so libstdc++.so) 
+TARGET_LINK_LIBRARIES(server libssl.a libcrypto.a)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+####实例1
+
+cmake_minimum_required(VERSION 2.6)
+PROJECT (MYTEST CXX)
+INCLUDE_DIRECTORIES("/home/hbb/sailing/src/include")
+LINK_DIRECTORIES("/home/hbb/sailing/src/lib")
+
+#编译宏---
+#add_definitions(-DHBBDEF )
+
+#指定编译器---
+SET(CMAKE_CXX_COMPILER "g++")
+
+#设置编译选项---
+SET(CMAKE_CXX_FLAGS "-std=c++11 -g")
+
+ 
+
+aux_source_directory("." SRC_LIST)
+aux_source_directory("header" SRC_LIST)
+aux_source_directory("json" SRC_LIST)
+MESSAGE(STATUS "------------------------------- "${SRC_LIST}) 
+ADD_EXECUTABLE(test_client ${SRC_LIST})
+TARGET_LINK_LIBRARIES(test_client libSSL.so libcurl_1.so libboost_thread.so
+libboost_system.so libmysqlcppconn.so) 
+#TARGET_LINK_LIBRARIES(test libssl.a libcrypto.a)
+
+
+
+
+
+
+
+
+
+
+
+
+

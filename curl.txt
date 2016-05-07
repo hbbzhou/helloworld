@@ -1,0 +1,511 @@
+
+#<<curl 的问题>>
+
+
+####安装-curl-window环境
+首先安装openssl。具体步骤空间里有
+
+下载地址 
+http://www.zlib.net/
+http://curl.haxx.se/download ;
+ 
+接着 编译zlib 
+1.查看一下F:\newzlib\zlib-1.2.6\win32目录下makefile.msc文件
+2.打开vs命令行工具，进入zlib的目录，我这里就是F:\newzlib\zlib-1.2.6
+3.执行nmake -f  win32/makefile.msc
+4.执行完后目录下就有了zlib.lib和zlib.dll
+
+接着 编译curl
+1.##curl必须要使用zlib和openssl ，libeay32.dll libeay32.lib ssleay32.dll ssleay32.lib放到F:\openssl-0.9.8r\out32dll中。在2.##F:\selfcurl\curl-7.25.0\lib中建一个builddebug.bat，内容如下：
+call "D:\Program Files\Microsoft Visual Studio 8\VC\bin\vcvars32.bat"
+set CFG=debug-dll-ssl-dll-zlib-dll
+set OPENSSL_PATH=F:\openssl-0.9.8r
+set ZLIB_PATH=F:\newzlib\zlib-1.2.6
+nmake -f Makefile.vc10
+
+上面分别设置OPENSSL的路径，ZLIB的路径，和编译器号，我的是vs2005
+
+然后运行这个bat就可以编出libcurld.dll和libcurld_imp.lib
+
+同理改成set CFG=release-dll-ssl-dll-zlib-dll就可以编出release版
+
+
+备注：为什么需要 set CFG  set OPENSSL_PATH 呢！！！ 为什么 我们每次都需要百度才能将一些 开源代码给顺利安装了呢~
+在Makefile.vc10 文件中有相关内容
+内容如下
+----------------第一部分--------------------
+
+!IFNDEF OPENSSL_PATH
+OPENSSL_PATH   = ../../openssl-0.9.8y
+!ENDIF
+
+----------------第?部分--------------------  
+
+!IFNDEF LIBSSH2_PATH
+LIBSSH2_PATH   = ../../libssh2-1.4.3
+!ENDIF
+
+----------------第2部分-------------------- 
+
+!IFNDEF ZLIB_PATH
+ZLIB_PATH  = ../../zlib-1.2.8
+!ENDIF
+
+----------------第3部分--------------------  
+
+# debug-dll-ssl-dll-zlib-dll
+
+!IF "$(CFG)" == "debug-dll-ssl-dll-zlib-dll"
+TARGET   = $(LIBCURL_DYN_LIB_DBG)
+DIROBJ   = $(CFG)
+LFLAGSZLIB = "/LIBPATH:$(ZLIB_PATH)"
+LFLAGSSSL = "/LIBPATH:$(OPENSSL_PATH)\out32dll"
+LNK      = $(LNKDLL) $(WINLIBS) $(SSLLIBS) $(ZLIBLIBSDLL) $(LFLAGSSSL) $(LFLAGSZLIB) /DEBUG /out:$(DIROBJ)\$(TARGET) /IMPLIB:$(DIROBJ)\$(LIBCURL_IMP_LIB_DBG) /PDB:$(DIROBJ)\$(LIBCURL_DYN_LIB_PDB)
+CC       = $(CCDEBUG) $(RTLIBD) $(CFLAGSSSL) $(CFLAGSZLIB)
+CFGSET   = TRUE
+RESOURCE = $(DIROBJ)\libcurl.res
+!ENDIF
+------------------------------------------
+========================
+
+
+####linux curl安装
+
+问题：本地的curl库，版本太低了。导致不支持stmp协议。
+安装步骤：
+1.先获取 当前版本的curl库的信息
+curl --version
+
+2.下载 新版本的curl库
+wget http://curl.haxx.se/download/curl-xx.tar.gz 
+
+3.找出 旧版本的库文件 
+一般在/usr/lib 或/usr/lib64 的文件夹下。名字是libcurl
+
+4.常规的安装命令
+tar -zxf curl-xx.tar.gz 
+./configure --prefix=/usr/local/curl 
+make & make install 
+
+5.找出 刚编译出来库文件
+find ./ -name "*.so"
+ 
+
+6.替换库文件 
+仅仅就是替换文件
+
+7.检查是否成功安装了
+curl --version 
+========================
+
+
+####curl-7.37版本，发送邮件的代码
+#include "header/hbb.h"
+
+#pragma comment( lib, "libcurld_imp.lib" )
+
+
+
+using namespace std;
+
+
+#define FROM    "<huang_binbin1@163.com>"
+#define TO      "<149933841@qq.com>"
+#define CC      "<1900417004@qq.com>"
+
+static const char *payload_text[] = {
+  "Date: \r\n",
+  "To: " TO "\r\n",
+  "From: " FROM "(huang_binbin)\r\n",
+  "Cc: " CC "(Another example User)\r\n",
+  "Subject: hbb mail\r\n",
+  "\r\n",
+  "zhou---------####-----------^_^.\r\n",
+  NULL
+};
+
+struct upload_status {
+	int lines_read;
+};
+
+static size_t payload_source(void *ptr, size_t size, size_t nmemb, void *userp)
+{
+	struct upload_status *upload_ctx = (struct upload_status *)userp;
+	const char *data;
+
+	if((size == 0) || (nmemb == 0) || ((size*nmemb) < 1)) {
+		return 0;
+	}
+
+	data = payload_text[upload_ctx->lines_read];
+
+	if(data) {
+		size_t len = strlen(data);
+		memcpy(ptr, data, len);
+		upload_ctx->lines_read++;
+
+		return len;
+	}
+
+	return 0;
+}
+
+int main(void)
+{
+	CURL *curl;
+	CURLcode res = CURLE_OK;
+	struct curl_slist *recipients = NULL;
+	struct upload_status upload_ctx;
+
+	upload_ctx.lines_read = 0;
+
+	curl = curl_easy_init();
+	if(curl) {
+		curl_easy_setopt(curl, CURLOPT_USERNAME, "huang_binbin1");
+		curl_easy_setopt(curl, CURLOPT_PASSWORD, "123456jk");
+
+		curl_easy_setopt(curl, CURLOPT_URL, "smtp://smtp.163.com");
+
+		curl_easy_setopt(curl, CURLOPT_USE_SSL, (long)CURLUSESSL_ALL);
+		curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
+		curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
+		curl_easy_setopt(curl, CURLOPT_MAIL_FROM, FROM);
+		recipients = curl_slist_append(recipients, TO);
+		recipients = curl_slist_append(recipients, CC);
+		curl_easy_setopt(curl, CURLOPT_MAIL_RCPT, recipients);
+		curl_easy_setopt(curl, CURLOPT_READFUNCTION, payload_source);
+		curl_easy_setopt(curl, CURLOPT_READDATA, &upload_ctx);
+		curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L);
+		curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
+		res = curl_easy_perform(curl);
+		if(res != CURLE_OK)
+			fprintf(stderr, "curl_easy_perform() failed: \n%s\n",
+			curl_easy_strerror(res));
+
+		curl_slist_free_all(recipients);
+		curl_easy_cleanup(curl);
+	}
+
+	system("pause");
+	return (int)res;
+}
+========================
+
+
+####发送邮件的小程序
+
+ 实现发送邮件功能：
+备注：如果发多了，邮箱账号会被封号。故开发过程中，要把握发送频率
+
+代码如下：
+-----------hbb.h---------
+#pragma once
+
+#include <algorithm>
+#include <cstdlib>
+#include <deque>
+#include <iostream>
+#include <list>
+#include <set>
+#include <vector>
+#include <memory>
+#include <fstream>
+#include <map>
+#include <utility>
+#include <curl/curl.h>
+
+#define foreach(x ,y) for(auto x = y.begin() ; x!=y.end();++x)
+
+#define log(x) std::cout<<x<<std::endl;
+----------------------- 
+---------mian.cpp-------------
+#include "header/hbb.h"
+
+#pragma comment( lib, "ws2_32.lib" )
+#pragma comment( lib, "wldap32.lib" )
+#pragma comment( lib, "libcurld_imp.lib" )
+
+using namespace std;
+
+size_t read_data(void *ptr, size_t size, size_t nmemb, void *data)
+{
+	FILE *fp = (FILE *)data;
+	size_t return_size = fread(ptr, size, nmemb, fp);
+	return return_size;
+} 
+
+int main(int num , char* arv[])
+{
+	log("zhou...");
+
+	FILE *fp = fopen("data.txt", "rb");	//读取发件内容
+	if (fp == NULL) return -1;
+
+	CURL *curl;
+
+	CURLcode return_code,res;
+	return_code = curl_global_init(CURL_GLOBAL_ALL);
+	if (CURLE_OK != return_code) return -1;
+
+	struct curl_slist *slist=NULL;
+
+	curl = curl_easy_init();
+	if(curl) {
+		curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
+		curl_easy_setopt(curl, CURLOPT_HEADER, 1L);
+		curl_easy_setopt(curl, CURLOPT_FTPSSLAUTH, CURLFTPAUTH_SSL);
+		curl_easy_setopt(curl, CURLOPT_MAIL_FROM, "<huang_binbin1@163.com>");    //发送者
+		curl_easy_setopt(curl, CURLOPT_URL, "smtp://smtp.163.com");
+		slist = curl_slist_append(slist, "<1900417004@qq.com>");  //接收者
+		curl_easy_setopt(curl, CURLOPT_MAIL_RCPT, slist);
+		curl_easy_setopt(curl, CURLOPT_USERNAME, "huang_binbin1");
+		curl_easy_setopt(curl, CURLOPT_PASSWORD, "xxxx");
+
+		curl_easy_setopt(curl, CURLOPT_READDATA, fp);
+		curl_easy_setopt(curl, CURLOPT_READFUNCTION, read_data);      
+	}
+	res = curl_easy_perform(curl);
+	if(res != CURLE_OK)//Check for errors
+		fprintf(stderr, "curl_easy_perform() failed: %s\n",curl_easy_strerror(res));
+
+	fclose(fp);
+	curl_slist_free_all(slist);
+	curl_easy_cleanup(curl);
+	curl_global_cleanup();
+
+	system("pause");
+	return 0;
+}
+-----------------------------
+-----------配置文件--------------
+From: <huang_binbin1@163.com>
+To: <1900417004@qq.com>
+Content-Type: text/html
+Subject: hello zhou ^_^
+DATA
+
+
+zhou----ok
+---------------------------------- 
+
+
+========================
+
+
+
+
+####ios 付费校验的代码
+c++ 代码如下：
+ 
+my_push.c 
+--------------
+//#include "stdafx.h"
+#include <stdio.h>
+#include <curl/curl.h>
+#include <stdlib.h>
+#include <string>
+#include <vector>
+#include <iostream>
+#include <sstream>
+
+#include <windows.h>
+#include <direct.h>
+#include "json/json.h"
+#include "tt_md5.hpp"
+#pragma comment( lib, "ws2_32.lib" )
+#pragma comment( lib, "wldap32.lib" )
+#pragma comment( lib, "libcurld_imp.lib" )
+
+#define MAX_BODY 2048
+#define APP_KEY "c327189954f95db9eeca5659"//AppKey
+#define API_MASTER_SECRECT "1613e4bd1af76fc0e4cce763"//API MasterSecert
+
+#define for_begin(x1 , x2 , x3) for(x1::iterator x3 = x2.begin() ; x3 != x2.end() ; ++x3)
+
+#pragma pack(push)
+#pragma pack(1)
+typedef struct __MEMORY_STRUCT {
+ char *memory;
+ size_t size;
+}MEMORY_STRUCT;
+#pragma pack(pop)
+
+//注:返回值需要释放
+char* utf8_to_gbk(const char *utf8,int &b)
+{
+ char* gb = NULL;
+ int nLen = strlen(utf8) + 1;
+ int num = MultiByteToWideChar(CP_UTF8,0,utf8,nLen,NULL,0);
+ if (num == 0) return NULL;
+ LPWSTR unicode = new wchar_t[num+1];
+ memset((char *)unicode , 0 , (num+1)*2);
+ MultiByteToWideChar(CP_UTF8,0,utf8,nLen,unicode,num);
+ b = WideCharToMultiByte(CP_ACP,0,unicode,num+1,NULL,0,NULL,NULL);
+ if (b == 0) return NULL;
+ gb = new char[b+1]; //多分配一个
+ memset(gb,0,sizeof(gb));
+ WideCharToMultiByte(CP_ACP,0,unicode,num+1,gb,b,NULL,NULL);
+ gb[b]=0; 
+ delete[] unicode;
+ return gb;
+}
+static size_t php_callback(void *contents, size_t size, size_t nmemb, void *src_ptr)
+{
+ size_t realsize = size * nmemb;
+ MEMORY_STRUCT *mem = (MEMORY_STRUCT *)src_ptr;
+ mem->memory = (char*)realloc(mem->memory, mem->size + realsize + 1);
+ if(mem->memory == NULL){
+  printf("not enough memory (realloc returned NULL)\n");
+  free(mem);
+  return 0;
+ }
+ memcpy(&(mem->memory[mem->size]), contents, realsize);
+ mem->size += realsize;
+ mem->memory[mem->size] = 0;
+ std::cout<<"##"<<mem->memory<<std::endl;
+ int b;
+ char* gb = utf8_to_gbk(mem->memory , b);
+ std::cout<<"####################"<<std::endl;
+ std::cout<<"####################"<<std::endl;
+ std::cout<<"####################"<<std::endl;
+ std::cout<<"#gbk#"<<gb<<"##"<<std::endl;
+ Json::Value json_1;
+ std::string temp_str(gb);
+ Json::Reader reader_1;
+ if(reader_1.parse( temp_str,json_1) ){
+  if(json_1.empty()){
+   std::cout<<"###empty"<<std::endl;
+  }
+ }
+ delete gb;
+ return realsize;
+}
+void php_test(const char * host_ip ,const char * e_str , std::string mode)
+{
+ CURL *curl;
+ CURLcode res;
+ char *pForm = (char *)malloc(MAX_BODY);
+ char *pTemp = (char *)malloc(MAX_BODY);
+ MEMORY_STRUCT *chunk = (MEMORY_STRUCT *)malloc( sizeof(MEMORY_STRUCT));
+ if(chunk == NULL && pForm == NULL && pTemp == NULL){
+  return;
+ }
+ chunk->memory = (char *)malloc(10);
+ if(chunk->memory ==NULL){
+  return;
+ }
+ chunk->size = 0;
+ memset(pForm, 0, MAX_BODY);
+ memset(pTemp, 0, MAX_BODY);
+ curl_global_init(CURL_GLOBAL_ALL);
+ curl = curl_easy_init();//get a curl handle
+ if(curl)
+ {
+  curl_easy_setopt(curl, CURLOPT_URL, host_ip);
+  if(mode == "post"){
+   curl_easy_setopt(curl, CURLOPT_POSTFIELDS, e_str);
+  }
+  else{
+   curl_easy_setopt(curl, CURLOPT_HTTPGET, e_str);
+  }
+  curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION,php_callback);
+  curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)chunk );
+  curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
+  res = curl_easy_perform(curl);
+  if(res != CURLE_OK)//Check for errors
+   fprintf(stderr, "curl_easy_perform() failed: %s\n",curl_easy_strerror(res));
+   
+  curl_easy_cleanup(curl);//always cleanup
+ }
+ free(chunk->memory);
+ free(chunk);
+ curl_global_cleanup();
+ free(pForm);
+ free(pTemp);
+ system("pause");
+}
+//加载 名字
+void load_file_name(std::vector<std::string> &name)
+{
+ name.clear();
+ FILE *handle = NULL;
+ char buff_[1024*100] = {0};
+ handle = fopen( "zhou.txt" , "r");
+ if(handle)
+ {
+  while(fgets(buff_ , 1024 , handle) != NULL)
+  {
+   int i = 0;
+   for(; i < strlen(buff_) ; ++i)
+   {
+    if(buff_[i] == '\r' || buff_[i] == '\n'|| buff_[i] == ' ')
+    {
+     buff_[i] = 0;
+    }
+   }
+   name.push_back( buff_);
+   memset(buff_ , 0 , 1024*10);
+  }
+  fclose(handle);
+ }
+ else
+ {
+  std::cout<<"##### open error "<<std::endl;
+ }
+}
+void load_file_1(std::string &str)
+{
+ str.clear();
+ FILE *handle = NULL;
+ char buff_[1024*100] = {0};
+ handle = fopen( "pay.txt" , "rb");
+ if(handle)
+ {
+  while(fgets(buff_ , 1024 , handle) != NULL)
+  {
+   int i = 0;
+   str += buff_;
+  }
+  fclose(handle);
+ }
+ else
+ {
+  std::cout<<"##### open error "<<std::endl;
+ }
+}
+int main(int argc, char * argv[])
+{
+ std::vector<std::string> name;
+ load_file_name(name);
+ if(name.size() >= 3){
+  std::string dest;
+  load_file_1(dest);
+  Json::Value output_json;
+  Json::FastWriter writer;
+  output_json["receipt-data"] = dest;
+  std::string output = writer.write(output_json);
+  php_test(name[0].c_str() ,output.c_str(), name[2] );
+ }
+ else{
+  std::cout<<"##--##"<<std::endl;
+ }
+ return 0;
+}
+
+----------------
+对应的配置文件--zhou.txt
+https://sandbox.itunes.apple.com/verifyReceipt
+ 
+post
+
+--------//历史记录
+http://42.62.26.171/tot_ky/ky_pay.php
+------------------------------------------------------
+对应的配置文件--pay.txt
+内容 略。
+========================
+
+
+
+
+

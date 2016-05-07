@@ -1,0 +1,148 @@
+
+
+#<<linux php的问题>>
+
+####安装Apache
+ --
+安装Apache：
+yum install httpd
+设置Apache开机自启动：
+chkconfig httpd on
+启动httpd
+service httpd start
+获取某个服务的状态
+service httpd status
+
+手动启动Apache:(跳过了)
+/etc/init.d/httpd start
+Apache配置文件路径：
+/etc/httpd/conf/httpd.conf
+备注：其中 DocumentRoot "/var/www/html" 这个语句 是说明 php的 有效路径
+要卸载Apache：
+rpm -e httpd
+--
+安装php
+yum install php*
+
+测试php
+<?php
+echo phpinfo();
+?>
+
+=================================
+
+
+####linux php安装
+
+1.我安装了一个 php扩展 
+yum install php-mysql
+
+2.我需要 知道安装包的名字
+
+
+3.通过命令 就可以 显示出 安装的路径 
+rpm -ql php-mysql-5.3.3-27.el6_5.x86_64
+显示如下
+ /etc/php.d/mysql.ini
+/etc/php.d/mysqli.ini
+/etc/php.d/pdo_mysql.ini
+/usr/lib64/php/modules/mysql.so
+/usr/lib64/php/modules/mysqli.so
+/usr/lib64/php/modules/pdo_mysql.so
+
+--------------------------------- 
+
+
+####php 安装后简单调试
+php test.php        运行php
+php -m             列出所有的扩展
+php -r 'print("hbb");'    运行单个 php 语句
+========================
+
+####访问mysql的问题
+
+ 代码:
+//获取某玩家ID是否能在系统维护时登录游戏
+//传入参数(int)：玩家ID
+//输出参数(int)：若为0，表示不允许登录，若为1，表示允许登录。
+function get_is_login_on_maintenance($id)
+{
+        $conn = mysql_connect("127.0.0.1:3306","root","FeiDing2014") or die("can't connect mysql: ".mysql_error());
+        mysql_select_db("server_3014");
+        $sql = "select * from p_user where id = ".$id." and loginmaintenance = 1";
+        mysql_query("SET NAMES 'UTF8'");
+        $result = mysql_query($sql,$conn);
+        $b = 0;
+        if($row=mysql_fetch_array($result))
+        {
+                $b = 1;
+        }
+        mysql_close($conn);
+        return $b;
+}
+
+####php 报错 Can't connect to MySQL server on '127.0.0.1' (13)
+现象:
+Can't connect to MySQL server on '127.0.0.1' (13)
+
+
+解决方案:
+ getsebool -a |grep httpd
+
+接着发现有关 联网的东西被关闭了
+
+ setsebool httpd_can_network_connect 1
+
+这样就好了 
+========================
+
+
+
+
+
+####php无法重启
+
+cd /usr/local/apache/bin下
+这是你的安装目录 然后ls看见那里有个apachect1 ./apachect1 start就OK了
+========================
+
+
+
+####访问php页面， 网页显示的都是代码
+
+找到  httpd.conf 文件
+ 
+
+在 <IfModule mime_module> 下面
+
+增加
+AddType application/x-httpd-php .php
+AddType application/x-httpd-php .html
+
+或者搜索AddType 字段，并添加以上语句也可以
+
+保存，然后重新启动apache就可以了。
+=========================
+
+
+####php 报错 403
+在下载 bz2 包的时候,失败了
+
+方案:
+在php 下载路径, 重新压缩一次 xx.tar.bz2 文件, 这样就可以下载了
+=======================================
+
+
+####php 页面空白
+
+方案:
+find / -name php.ini
+
+修改 其中的内容
+display_errors = On 
+
+重启服务
+service httpd restart
+=======================================
+
+

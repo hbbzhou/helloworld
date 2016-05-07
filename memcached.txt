@@ -1,0 +1,81 @@
+1.安装之前，需要先确认系统中是否有libevent，因为memcached依赖这个包。
+
+查看:
+命令： rpm -qa|grep libevent
+
+显示的包：libevent-1.4.13-4.el6.x86_64
+
+此时，系统已经安装过了，需要卸载重新下载安装。
+
+卸载：rpm -e libevent-1.4.13-4.el6.x86_64
+
+2.下载libevent，并安装
+
+下载地址1(这个链接是在readme文件中 找到的)：http://www.monkey.org/~provos/libevent/
+下载地址2：https://github.com/downloads/libevent/libevent/libevent-2.0.21-stable.tar.gz
+
+解压：
+
+tar -zxvf libevent-2.0.21-stable.tar.gz
+
+安装：
+
+./configure --prefix=/usr/local/libevent  (指定安装到/usr/local/libevent目录下)
+
+编译：make
+
+make install
+
+安装完成！
+
+3.下载memcached,并解压
+
+命令： tar -zxvf memcached-1.4.24.tar.gz
+
+安装：
+
+./configure --prefix=/usr/local/memcached-1.4.24
+
+若安装过程中提示找不到libevent路径时，使用--with-libevent=libevent安装的目录
+
+./configure --prefix=/usr/local/memcached-1.4.24 --with-libevent=/usr/local/libevent/
+
+  编译：make
+
+make install
+
+安装完成！
+
+4.启动
+
+/usr/local/memcached-1.4.24/bin/memcached -d -m 128 -u root -p 11211 -c 1024 -P /tmp/memcached.pid
+
+启动参数说明：
+
+-d 选项是启动一个守护进程。
+
+-u root 表示启动memcached的用户为root。
+
+-m 是分配给Memcache使用的内存数量，单位是MB，默认64MB。
+
+-M return error on memory exhausted (rather than removing items)。
+
+-u 是运行Memcache的用户，如果当前为root 的话，需要使用此参数指定用户。
+
+-p 是设置Memcache的TCP监听的端口，最好是1024以上的端口。
+
+-c 选项是最大运行的并发连接数，默认是1024。
+
+-P 是设置保存Memcache的pid文件。
+
+5.停止
+
+先查看进程的id
+
+ps -ef|grep memcached
+
+root    15144    1  0 08:43 ?        00:00:00 /usr/local/memcached-1.4.24/bin/memcached -d -m 128 -u root -p 11211 -c 1024 -P /tmp/memcached.pid
+
+15144为pid
+
+停止命令为：kill -9 15144

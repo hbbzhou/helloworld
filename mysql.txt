@@ -1,0 +1,197 @@
+
+
+#<<linux mysql的问题>>
+
+####创建账号并授权
+grant all on trap_2016.* TO 'qa_test'@'%' Identified by '123456';
+
+
+####mysql 报错 Can't connect to local MySQL server through socket '/tmp/mysql.  
+显示:
+Can't connect to local MySQL server through socket '/tmp/mysql.  
+
+方案:
+ln -s /var/lib/mysql/mysql.sock /tmp/mysql.sock
+=======================
+
+
+
+
+
+####mysql 安装
+linux下使用yum安装mysql，以及启动、登录和远程访问。
+
+1、安装
+查看有没有安装过：
+          yum list installed mysql*
+          rpm -qa | grep mysql*
+
+查看有没有安装包：
+          yum list mysql*
+
+安装mysql客户端：
+          yum install mysql
+
+安装mysql 服务器端：
+          yum install mysql-server
+          yum install mysql-devel
+
+2、启动&&停止
+数据库字符集设置
+          mysql配置文件/etc/my.cnf中加入default-character-set=utf8
+
+启动mysql服务：
+          service mysqld start或者/etc/init.d/mysqld start
+
+开机启动：
+          chkconfig
+
+          mysqld             0:关闭    1:关闭    2:启用    3:启用    4:启用    5:启用    6:关闭
+
+		  chkconfig mysqld on
+
+停止：
+          service mysqld stop
+
+
+3、登录
+创建root管理员：
+
+          mysqladmin -u root password 123456
+
+登录：
+          mysql -u root -p输入密码即可。
+
+忘记密码：
+          service mysqld stop
+          mysqld_safe --user=root --skip-grant-tables
+          mysql -u root
+          use mysql
+          update user set password=password("new_pass") where user="root";
+          flush privileges;  
+
+4、远程访问
+开放防火墙的端口号
+mysql增加权限：mysql库中的user表新增一条记录host为“%”，user为“root”。
+
+		1.进入 mysql：
+		/usr/local/mysql/bin/mysql -u root -p
+
+		2.使用 mysql库 ：
+		use mysql;
+
+		3.查看用户表 ：
+		SELECT `Host`,`User` FROM user;
+
+		4.更新用户表 ：
+		UPDATE user SET `Host` = '%' WHERE `User` = 'root' LIMIT 1;
+
+		5.强制刷新权限 ：
+		flush privileges;
+
+
+5、Linux MySQL的几个重要目录
+
+数据库目录
+         /var/lib/mysql/
+
+配置文件
+         /usr/share /mysql（mysql.server命令及配置文件）
+
+相关命令
+         /usr/bin（mysqladmin mysqldump等命令）
+
+启动脚本
+         /etc/rc.d/init.d/（启动脚本文件mysql的目录） 
+
+
+
+ 
+ ####升级mysql 版本
+ 1.  首先更新rpm
+
+从MySQL Yum仓库下载最新的rpm文件：http://dev.mysql.com/downloads/repo/yum/
+
+（需要Oracle帐号以及填写一些使用信息，才能进入下载页面）
+
+我需要下载的是：mysql-community-release-el6-5.noarch.rpm
+
+2. 安装这个发布包
+
+> yum localinstall mysql-community-release-el6-5.noarch.rpm
+
+可以通过下面的命令来确认这个仓库被成功添加：
+
+yum repolist enabled | grep "mysql.*-community.*
+
+3. 安装MySQL服务器
+
+> yum install mysql-community-server
+
+新版本的目标文件是/usr/bin/mysql，如果原预装路径在/bin下面，则需要进行替换，最好是使用软链接，比如ln -s /usr/bin/mysql /bin/
+
+这样在需要的时候，可以方便的在不同版本之间进行切换。（有时候需要版本回退来定位问题）
+
+4. 重启服务器就可以了
+
+> service mysqld restart
+
+确认版本信息：
+
+[root@west195246 bin]# mysql -V
+
+mysql  Ver 14.14 Distrib 5.6.20, for Linux (x86_64) using  EditLine wrapper
+
+
+
+
+####mysql 报错 :MySQL Daemon failed to start 
+vim /var/log/mysqld.log
+
+查看日志/var/log/mysql.log，发现其中提示：
+
+/usr/bin/mysqld: unknown variable 'default-character-set=utf8'
+
+看来是 default-character-set=utf8这个设置项惹得祸....
+
+在网上搜索一番，发现有人提出，用character_set_server=utf8来取代 default-character-set=utf8   能解决这个问题，
+
+
+####mysql 报错 :Access denied for user 'root'@'localhost' (using password: YES)
+输入 mysql -u root -p输入密码即可。 就报错了.
+但是 输入mysql -u root@localhost  就没有 报错了.
+===================
+
+
+####mysql 报错 :Cannot load from mysql.proc. The table is probably corrupted
+也就是从mysql5.5的版本开始，proc这张表中的comment字段的列属性已经由char(64)改为text类型，我们需要更改一下数据类型：
+解决方法:
+ALTER TABLE `proc`
+MODIFY COLUMN `comment`  text CHARACTER SET utf8 COLLATE utf8_bin NOT NULL AFTER `sql_mode`;
+===================
+
+
+####mysql 报错:Row size too large (> 8126). Changing some columns to TEXT or BLOB or using
+http://www.tuicool.com/articles/QfIrMrr
+
+对于mysql5.5， 虽然支持Barracuda。但是默认使用的还是老的格式：Antelope
+除非在mysql的配置里面my.cnf修改：
+innodb_file_per_table = 1
+innodb_file_format = Barracuda
+或者set global 命令动态的修改：
+SET GLOBAL innodb_file_format=barracuda;
+SET GLOBAL innodb_file_per_table=1;
+===================
+
+
+####mysql 报错:The MySQL server is running with the --event-scheduler=DISABLED or --skip-grant-tables option so it cannot execute this statement
+
+find / -name my.cnf
+vim /etc/my.cnf
+在mysql安装的文件夹下找到配置文件my.ini，在[mysqld]的下面加上一句：event_scheduler=ON。这样mysql在启
+动的时候event sheduler就会自动启动了
+
+//如果重启了不行, 就直接 kill了 之前的进程. 
+/etc/init.d/mysqld restart
+
+===================
