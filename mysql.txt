@@ -195,3 +195,36 @@ vim /etc/my.cnf
 /etc/init.d/mysqld restart
 
 ===================
+
+
+
+####mysql 报错:1130 ....
+通过MySQL-Front或mysql administrator连接mysql的时候发生的这个错误
+ERROR 1130: Host ***.***.***.*** is not allowed to connect to this MySQL server
+说明所连接的用户帐号没有远程连接的权限，只能在本机(localhost)登录。
+需更改 mysql 数据库里的 user表里的 host项
+把localhost改称%
+具体步骤：登陆到mysql
+首先 use mysql;
+按照别人提供的方式update的时候，出现错误。
+mysql> update user set host='%' where user = 'root';
+ERROR 1062 (23000): Duplicate entry '%-root' for key 'PRIMARY'
+然后查看了下数据库的host信息如下：
+mysql> select host from user where user = 'root';
++-----------------------+
+| host |
++-----------------------+
+| % |
+| 127.0.0.1 |
+| localhost.localdomain |
++-----------------------+
+3 rows in set (0.00 sec)
+host已经有了%这个值，所以直接运行命令：
+mysql>flush privileges;
+再用mysql administrator连接...成功！！！
+
+===================
+
+
+
+

@@ -80,7 +80,6 @@ set fileencodings=utf-8
 ####linux 查询端口和进程号
 
 netstat -tnpl
-
 --------------------------------- 
 
 
@@ -108,6 +107,22 @@ cat id_rsa_temp.pub >> authorized_keys
 chmod 600 authorized_keys
 
 --------------------------------- 
+
+
+####linux 维护的命令
+@类似任务管理器
+top -b -n 1200 > plog
+
+@清空缓存
+echo 1 > /proc/sys/vm/drop_caches
+
+@打开的文件数
+lsof -p 32074 |wc -l
+
+@查询端口和进程号
+netstat -tnpl 
+--------------------------------- 
+
 
 
 

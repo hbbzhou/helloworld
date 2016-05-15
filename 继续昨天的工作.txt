@@ -2,7 +2,7 @@
 :lua bind 的
 http://www.rasterbar.com/products/luabind/docs.html
 
-:gitbug 教程
+:githug 教程
 http://www.runoob.com/w3cnote/git-guide.html
 
 
@@ -14,13 +14,38 @@ $ git config --global user.email "huang_binbin1@163"
 
 git clone https://github.com/hbbzhou/luabind_project
 git add *
-git commit -m "代码提交信息"
+git commit -m "modify"
 git push origin master
 git pull
 
 
 :收获 记录
-目标:vs2012 用vs2010的 编译器
+@目标:vs2012 用vs2010的 编译器
 操作:属性->配置属性->常规->平台工具集
+
+@解决拷贝代码导致的bug
+代码的作用域要恰到好处.(类成员函数, 尽量用局部变量 或 引用)
+
+@伪代码的总结
+[变量类型]==数据结构
+[变量的初始化]==协议或加载代码
+[变量的赋值]==一般是协议
+[变量的传递]==一般是协议
+[变量的保存]==保存数据库
+
+@linux 多线程编译
+vi /etc/profile
+1、最后面加入：export OMP_NUM_THREADS=8
+2、执行命令使其马上生效: # source /etc/profile
+
+@windows 多线程编译
+修改 属性->c/c++ ->常规-> 多处理器编译 = 是(/MP) ; 
+修改 属性->c/c++ ->代码生成->启用最小重新生成 = 否(/Gm-)
+
+@linux ulimit 设置
+vi /etc/profile
+ulimit -c unlimited
+/etc/security/limits.conf
+
 
 
