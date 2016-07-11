@@ -19,6 +19,10 @@ ln -s /var/lib/mysql/mysql.sock /tmp/mysql.sock
 
 
 ####mysql 安装
+####mysql 帐号创建
+####mysql 开启
+####mysql 开机 启动
+####mysql 远程访问
 linux下使用yum安装mysql，以及启动、登录和远程访问。
 
 1、安装
