@@ -3,6 +3,9 @@
 
 ####linux yum安装 Apache：--------
 yum install httpd
+
+##启动服务
+/etc/init.d/httpd start
 --------------------------------
 
 ####linux 设置Apache开机自启动：--
