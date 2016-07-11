@@ -6,6 +6,14 @@ yum install httpd
 
 ##启动服务
 /etc/init.d/httpd start
+
+##验证是否安装成功
+现在打开http://ip地址，看看有没有Apache的默认页面出来了?如果有就对了。
+
+##安装目录介绍
+Apache默认将网站的根目录指向/var/www/html 目录 
+默认的主配置文件是/etc/httpd/conf/httpd.conf
+配置存储在的/etc/httpd/conf.d/目录
 --------------------------------
 
 ####linux 设置Apache开机自启动：--
