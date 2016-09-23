@@ -16,9 +16,10 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `hbb`()
 	SELECT COUNT(*) INTO v_max_low FROM player;
 
 	WHILE v_low<v_max_low DO
-	
+		#取出id 和 total_ability
 		SELECT `id`,`total_ability` INTO v_id ,v_total_ability FROM player WHERE `isrobot` = 0  LIMIT v_low ,1;
 		
+		#将total_ability 的数据更新到 xx表中
 		UPDATE  role SET `total_ability` = v_total_ability WHERE id = v_id;
 		SET v_low = v_low +1;
 		
