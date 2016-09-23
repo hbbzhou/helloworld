@@ -1,0 +1,32 @@
+
+DELIMITER $$
+
+USE `test`$$
+
+DROP PROCEDURE IF EXISTS `hbb`$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `hbb`()
+
+    BEGIN
+	DECLARE v_total_ability INT DEFAULT 0;
+	DECLARE v_id LONG DEFAULT 128849018880;
+	DECLARE v_low INT DEFAULT 0;
+	DECLARE v_max_low INT DEFAULT 0;
+	
+	SELECT COUNT(*) INTO v_max_low FROM player;
+
+	WHILE v_low<v_max_low DO
+	
+		SELECT `id`,`total_ability` INTO v_id ,v_total_ability FROM player WHERE `isrobot` = 0  LIMIT v_low ,1;
+		
+		UPDATE  role SET `total_ability` = v_total_ability WHERE id = v_id;
+		SET v_low = v_low +1;
+		
+	END WHILE;
+	
+	
+    END$$
+
+DELIMITER ;
+
+
