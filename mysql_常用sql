@@ -1,0 +1,10 @@
+
+mysql -uroot -p
+SHOW DATABASES;
+create database hbb_db;
+
+@sql 的 复合语句
+INSERT INTO account(username, `password`) VALUES( 'IAF1' , '123456');
+SELECT accountid FROM account WHERE username='IAF120' AND `password` = '123456';
+SELECT LAST_INSERT_ID();
+on duplicate 的使用
