@@ -54,8 +54,15 @@ BEGIN
 	PREPARE stmt FROM @SqlCmd;
 	WHILE @v_low<@v_max_low DO
 	
-		EXECUTE stmt USING @v_low; 
-		UPDATE  role SET `total_ability` = @v_total_ability WHERE id = @v_id;
+		SET @v_id = 0;
+		EXECUTE stmt USING @v_low;
+		
+		IF @v_id = 0 THEN
+			SET @v_id = 0;#无意义的语句,仅仅为了编译通过
+		ELSE
+			UPDATE  role SET `total_ability` = @v_total_ability WHERE id = @v_id;
+		END IF;		
+		
 		SET @v_low = @v_low +1;
 		
 	END WHILE;
