@@ -59,6 +59,8 @@ BEGIN
 		SET @v_low = @v_low +1;
 		
 	END WHILE;
+	
+	DEALLOCATE PREPARE stmt;
 
 END$$
 
