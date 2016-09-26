@@ -1,0 +1,104 @@
+
+#shell的 设置
+set -e
+
+
+#变量的定义
+dst_file_name="bin_bak"
+now_path=`pwd`
+new_folder=$(date +%Y_%m_%d_%H)
+
+begin_date=`date -d "1 day ago" +"{%Y-%m-%d}"`
+end_date=`date -d next-day +{%Y-%m-%d}`
+
+
+
+#字符串拼接
+ver_dsc=`svn info | grep "Last Changed Rev:" `
+ver_dsc+="[debug]"
+
+#判断
+md5_value=`md5sum ${dst_file_name_tar}`
+md5_value=${md5_value:0:32}
+dst_value="67c43891d324f499e57e4592d2faf7a1"
+
+if [ "${md5_value}" != "${dst_value}" ] ;then
+    echo "${dst_file_name_tar} 文件不匹配"
+    exit 0
+fi
+
+
+#循环
+for file_name in "gameserver" "gateserver" "globalserver" "loginserver"
+do
+  find_server ${file_name}
+done
+
+
+#函数的使用
+
+##文件查找
+function find_server()
+{
+  new_file=bin/${1}/debug/${1}
+  if [ ! -f ${new_file} ]; then
+    echo "not find ${new_file}"
+    exit 0
+  else
+	echo "${new_file} --- ok"
+  fi
+  return 0;
+}
+
+##输入y/n
+function if_fun()
+{
+while true
+do
+    echo "输入y 执行 ; 输入n 不执行 "
+    read input
+    if [ ${input} = "y" ] ;then
+        return 1
+    elif [ ${input} = "Y" ] ; then
+        return 1
+    elif [ ${input} = "N" ] ; then
+        return 0
+    elif [ ${input} = "n" ] ; then
+        return 0
+    fi
+echo "请重新输入"
+done
+
+}
+
+if_fun
+if [ $? -eq 1 ] ; then
+echo "执行脚本"
+fi
+
+
+
+
+##输出带颜色的字符
+function echo_ext()
+{
+    echo -e "\033[31m ${1} \033[0m"
+}
+
+
+
+#echo的 使用
+echo `date`>>${log_file}
+echo "${new_file} --- ok"
+
+
+#删除指定的隐藏文件
+find ./${dst_path} -name "*.svn" -exec rm -fr {} \;
+
+
+#获取svn 指定日志的log
+end_date=`date -d next-day +{%Y-%m-%d}`
+begin_date=`date -d "1 day ago" +"{%Y-%m-%d}"`
+svn up ../bin/svn_log_info.txt
+svn log -r ${end_date}:${begin_date} > ../bin/svn_log_info.txt
+svn commit ../bin/svn_log_info.txt  -m "提交代码更新的信息"
