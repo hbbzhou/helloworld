@@ -6,6 +6,10 @@
 1.安装cmake
 2.新建一个CMakeLists.txt //内容详见下文
 3.执行cmake . //不要忘了 点 
+3.或者执行cmake -DCMAKE_BUILD_TYPE=Debug .
+3.或者执行cmake -DCMAKE_BUILD_TYPE=Release .
+
+
 4.这样就会生成一个Makefile
 5.make 
 
