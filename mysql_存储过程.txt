@@ -1,3 +1,12 @@
+知识点:
+.变量声明,定义 	--(参考 例题1 , 例题2)
+.判断 	--(参考 例题1 , 例题2)
+.循环, 在循环中 修改 sql语句	--(参考 例题1 , 例题2)
+.查表并 修改 变量 	--(参考 例题1 , 例题2)
+.字符串拼接 		--(参考 例题3 )
+
+
+例题1:
 
 DELIMITER $$
 
@@ -33,7 +42,7 @@ DELIMITER ;
 
 
 
-方法二:
+例题2:
 
 DELIMITER $$
 
@@ -74,7 +83,37 @@ END$$
 DELIMITER ;
 
 
+例题3:
+DELIMITER $$
 
+USE `test`$$
 
+DROP PROCEDURE IF EXISTS `fix_pwd`$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `fix_pwd`()
+BEGIN
+
+	DECLARE v_i INT DEFAULT 0;
+	DECLARE v_max INT DEFAULT 0;
+	DECLARE account_str VARCHAR(100);
+	SET @v_i = 61;
+	SET @v_max = 63;
+	
+	SET @SqlCmd = 'UPDATE `account` SET `password`="123456" WHERE `username`= ?;'; 
+	PREPARE stmt FROM @SqlCmd;
+		
+	WHILE @v_i<@v_max DO
+	
+		SET @account_str= CONCAT( 'IAF' , @v_i );
+		EXECUTE stmt USING @account_str;
+		SET @v_i = @v_i +1;
+		
+	END WHILE;
+	
+	DEALLOCATE PREPARE stmt;
+
+END$$
+
+DELIMITER ;
 
 
