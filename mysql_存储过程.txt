@@ -2,7 +2,7 @@
 .变量声明,定义 	--(参考 例题1 , 例题2)
 .判断 	--(参考 例题1 , 例题2)
 .循环, 在循环中 修改 sql语句	--(参考 例题1 , 例题2)
-.查表并 修改 变量 	--(参考 例题1 , 例题2)
+.查表并 修改 变量 	--(参考 例题1 , 例题2)(例题4 应该是正确的)
 .字符串拼接 		--(参考 例题3 )
 
 
@@ -117,3 +117,19 @@ END$$
 DELIMITER ;
 
 
+
+例题4:
+DELIMITER $$
+USE `yzp_db`$$
+
+DROP PROCEDURE IF EXISTS `find_play_by_name`$$
+
+CREATE DEFINER=`root`@`%` PROCEDURE `find_play_by_name`(IN p_name VARCHAR(100) )
+BEGIN
+
+	DECLARE v_account_id INT DEFAULT 128849018880;
+	SELECT `account_id` INTO v_account_id  FROM role WHERE `name` = p_name  LIMIT 1;
+	SELECT * ,p_name FROM account WHERE accountid = v_account_id;
+
+END$$
+DELIMITER ;
