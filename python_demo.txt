@@ -1,0 +1,321 @@
+#!/usr/bin/env python 
+#encoding: utf-8
+
+import os
+
+#全局变量
+g_game_id = '103'
+g_db_name = 'test'
+g_my_ip = '192.168.3.89'
+g_out_file_path = 'C:/Users/binbin.huang/Downloads/server_branch1/bin/'
+
+
+class CrossServer:
+	#定义基本属性
+	dict_ = {}
+	path_ = ''
+	#定义构造方法
+	def __init__(self):
+		self.path_ = g_out_file_path + 'crossserver/'
+		self.dict_['cross_pipe_cfg.xml'] = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n\
+<config>\n\
+	<connections>\n\
+		<server id=\"1-" +g_game_id+ "-10-1\"/>\n\
+		<connection mode=\"listen\" localip=\"127.0.0.1\" localport=\"10108\" recvbuf=\"131072\" sendbuf=\"65536\" />\n\
+	</connections>\n\
+</config>"
+
+		self.dict_['db_config.xml'] = "<global>\n\
+	<connect ip=\"127.0.0.1\" port=\"3306\" user=\"root\" password=\"123456\" db=\"" +g_db_name+ "\" charset=\"utf8\"/>\n\
+	<createfile name=\"mysql.sql\"/>\n\
+</global>"
+
+
+
+
+class DBServer:
+	#定义基本属性
+	dict_ = {}
+	path_ = ''
+	#定义构造方法
+	def __init__(self):
+		self.path_ = g_out_file_path + 'dbserver/'
+		self.dict_['db_mysql_cfg.xml'] = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n\
+<configs>\n\
+	<!--game mysql connect information -->\n\
+	<group_game_mysql>\n\
+		<!-- connect mysql info -->\n\
+		<mysql group=\"0\" ip=\"127.0.0.1\" port=\"3306\" user=\"root\" password=\"123456\" db=\"" +g_db_name+ "\" charset=\"utf8\"/>\n\
+	</group_game_mysql>\n\
+	<createfile name=\"mysql.sql\"/>\n\
+</configs>"
+
+		self.dict_['db_pipe_cfg.xml'] = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n\
+<config>\n\
+	<connections>\n\
+		<server id=\"1-" +g_game_id+ "-2-1\"/>\n\
+		<connection mode=\"listen\" localip=\"127.0.0.1\" localport=\"8001\" recvbuf=\"131072\" sendbuf=\"65536\" />\n\
+    </connections>\n\
+</config>"
+	
+
+
+
+
+class FriendServer:
+	#定义基本属性
+	dict_ = {}
+	path_ = ''
+	#定义构造方法
+	def __init__(self):
+		self.path_ = g_out_file_path + 'friendserver/'
+		self.dict_['db_config.xml'] = "<global>\n\
+	<connect ip=\"127.0.0.1\" port=\"3306\" user=\"root\" password=\"123456\" db=\"" +g_db_name+ "\" charset=\"utf8\"/>\n\
+	<createfile name=\"mysql.sql\"/>\n\
+</global>"
+
+		self.dict_['friend_pipe_cfg.xml'] = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n\
+<config>\n\
+	<connections>\n\
+	<server id=\"1-" +g_game_id+ "-9-1\"/>\n\
+	<connection mode=\"listen\" localip=\"127.0.0.1\" localport=\"5010\" recvbuf=\"131072\" sendbuf=\"65536\" />\n\
+	</connections>\n\
+</config>"
+
+
+
+
+class GameServer:
+	#定义基本属性
+	dict_ = {}
+	path_ = ''
+	#定义构造方法  
+	def __init__(self):
+		self.path_ = g_out_file_path + 'gameserver/'
+		self.dict_['gs_pipe_cfg.xml'] = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n\
+<config>\n\
+	<connections>\n\
+	<server id=\"1-" +g_game_id+ "-1-1\"/>\n\
+	<connection mode=\"connect\">\n\
+		<!--global server-->\n\
+		<item id=\"1-" +g_game_id+ "-6-1\" remoteip=\"127.0.0.1\" remoteport=\"8666\" recvbuf=\"1310720\" sendbuf=\"131072\" />\n\
+		<!-- connect to dbserver -->\n\
+		<item id=\"1-" +g_game_id+ "-2-1\" remoteip=\"127.0.0.1\" remoteport=\"8001\" recvbuf=\"1310720\" sendbuf=\"131072\" />\n\
+		<!-- connect to gate server -->\n\
+		<item id=\"1-" +g_game_id+ "-3-1\" remoteip=\"127.0.0.1\" remoteport=\"8345\" recvbuf=\"1310720\" sendbuf=\"131072\" />\n\
+		<item id=\"1-" +g_game_id+ "-9-1\" remoteip=\"127.0.0.1\" remoteport=\"5010\" recvbuf=\"1310720\" sendbuf=\"131072\" />\n\
+		<!-- connect to cross server -->\n\
+		<item id=\"1-" +g_game_id+ "-10-1\" remoteip=\"127.0.0.1\" remoteport=\"10108\" recvbuf=\"1310720\" sendbuf=\"131072\" />\n\
+	</connection>\n\
+</connections>\n\
+</config>"
+	
+
+
+
+class GateServer:
+	#定义基本属性
+	dict_ = {}
+	path_ = ''
+	#定义构造方法
+	def __init__(self):
+		self.path_ = g_out_file_path + 'gateserver/'
+		self.dict_['gt_pipe_cfg.xml'] = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n\
+<config>\n\
+	<connections>\n\
+		<server id=\"1-" +g_game_id+ "-3-1\"/>\n\
+		<!-- listen to game to connect -->\n\
+		<connection mode=\"listen\" localip=\"0\" localport=\"8345\" recvbuf=\"1310720\" sendbuf=\"131072\" />\n\
+		<connection mode=\"connect\">\n\
+			<!-- connect to db -->\n\
+			<item id=\"1-" +g_game_id+ "-2-1\" remoteip=\"127.0.0.1\" remoteport=\"8001\" recvbuf=\"131072\" sendbuf=\"131072\" />\n\
+			<!-- connect to center -->\n\
+			<item id=\"1-0-5-1\" remoteip=\"192.168.0.50\" remoteport=\"8567\" recvbuf=\"131072\" sendbuf=\"131072\" />\n\
+			<!--item id=\"1-" +g_game_id+ "-5-1\" remoteip=\"" +g_my_ip+ "\" remoteport=\"8567\" recvbuf=\"131072\" sendbuf=\"131072\" /-->\n\
+			<!-- connect to name -->\n\
+			<item id=\"1-" +g_game_id+ "-7-1\" remoteip=\"127.0.0.1\" remoteport=\"9000\" recvbuf=\"131072\" sendbuf=\"131072\" />\n\
+			<!-- connect to log server -->\n\
+			<!--item id=\"1-" +g_game_id+ "-8-1\" remoteip=\"127.0.0.1\" remoteport=\"5001\" recvbuf=\"1310720\" sendbuf=\"131072\" /-->\n\
+		</connection>\n\
+	</connections>\n\
+</config>"
+
+
+		self.dict_['gt_server_cfg.xml'] ="<Gate>\n\
+	<Listen>\n\
+		<!-- server listen info -->\n\
+		<seritem serlistenip=\"" +g_my_ip+ "\" serlistenport=\"8111\" serlistenrecvbuf=\"81920\" serlistensendbuf=\"81920\"/>\n\
+		<!-- client connect info -->\n\
+		<cliitem clilistenip=\"" +g_my_ip+ "\" clilistenport=\"8111\" group_name=\"hbb_win\"/>\n\
+	</Listen>\n\
+	<ServerLoad>\n\
+		<loaditem firstload = \"3\" secondload = \"2\" />\n\
+	</ServerLoad>\n\
+</Gate>"
+
+	
+
+
+
+
+class GlobalServer:
+	#定义基本属性
+	dict_ = {}
+	path_ = ''
+	#定义构造方法
+	def __init__(self):
+		self.path_ = g_out_file_path + 'globalserver/'
+		self.dict_['global_pipe_cfg.xml'] = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n\
+<config>\n\
+	<connections>\n\
+		<server id=\"1-" +g_game_id+ "-6-1\"/>\n\
+		<!-- listen to gate to connect -->	\n\
+		<connection mode=\"listen\" localip=\"127.0.0.1\" localport=\"8666\" recvbuf=\"1310720\" sendbuf=\"131072\" />\n\
+		<connection mode=\"connect\">\n\
+			<!-- connect to log server -->\n\
+			<!--item id=\"1-" +g_game_id+ "-8-1\" remoteip=\"127.0.0.1\" remoteport=\"5001\" recvbuf=\"1310720\" sendbuf=\"131072\" /-->\n\
+		</connection>\n\
+	</connections>\n\
+</config>"
+
+
+		self.dict_['global_server.xml'] ="<global>\n\
+	<listen>\n\
+	<item ip=\"127.0.0.1\" port=\"8999\" sendbuf=\"81920\" recvbuf=\"81920\"/>\n\
+	</listen>\n\
+</global>"
+
+
+
+
+class LoginServer:
+	#定义基本属性
+	dict_ = {}
+	path_ = ''
+	#定义构造方法
+	def __init__(self):
+		self.path_ = g_out_file_path + 'loginserver/'
+		self.dict_['login_server.xml'] = "<login>\n\
+	<listen>\n\
+	<item ip=\"" +g_my_ip+ "\" port=\"8555\" recvbuf=\"81920\" sendbuf=\"81920\"/>\n\
+	</listen>\n\
+</login>"
+
+
+		self.dict_['login_pipe_cfg.xml'] ="<?xml version=\"1.0\" encoding=\"utf-8\"?>\n\
+<config>\n\
+	<connections>\n\
+		<server id=\"1-" +g_game_id+ "-4-1\"/>\n\
+		<connection mode=\"connect\">\n\
+			<!-- connect to center -->\n\
+			<item id=\"1-" +g_game_id+ "-5-1\" remoteip=\"127.0.0.1\" remoteport=\"8567\" recvbuf=\"131072\" sendbuf=\"131072\" />\n\
+			<!-- connect to log server -->\n\
+			<!--item id=\"1-" +g_game_id+ "-8-1\" remoteip=\"127.0.0.1\" remoteport=\"5001\" recvbuf=\"1310720\" sendbuf=\"131072\" /-->\n\
+		</connection>\n\
+	</connections>\n\
+</config>"
+
+
+		self.dict_['db_config.xml'] ="<?xml version=\"1.0\" encoding=\"utf-8\"?>\n\
+<db_verify>\n\
+	<connect ip=\"127.0.0.1\" port=\"3306\" user=\"root\" password=\"123456\" db=\"" +g_db_name+ "\" charset=\"utf8\"/>\n\
+</db_verify>"
+
+
+
+
+class NameServer:
+	#定义基本属性
+	dict_ = {}
+	path_ = ''
+	#定义构造方法
+	def __init__(self):
+		self.path_ = g_out_file_path + 'nameserver/'
+		self.dict_['name_config.xml'] = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n\
+<config>\n\
+	<connections>\n\
+		<server id=\"1-" +g_game_id+ "-7-1\"/> \n\
+		<connection mode=\"listen\" localip=\"127.0.0.1\" localport=\"9000\" recvbuf=\"131072\" sendbuf=\"65536\" />\n\
+		<connection mode=\"connect\">\n\
+			<!-- connect to log server -->\n\
+			<!--item id=\"1-" +g_game_id+ "-8-1\" remoteip=\"127.0.0.1\" remoteport=\"5001\" recvbuf=\"1310720\" sendbuf=\"131072\" /-->	\n\
+		</connection>\n\
+	</connections>\n\
+</config>"
+
+
+		self.dict_['name_pipe_cfg.xml'] ="<?xml version=\"1.0\" encoding=\"utf-8\"?>\n\
+<db_connect>\n\
+	<connect ip=\"127.0.0.1\" port=\"3306\" user=\"root\" password=\"123456\" db=\"" +g_db_name+ "\" charset=\"utf8\"/>\n\
+	<createfile name=\"mysql.sql\"/>\n\
+</db_connect>"
+
+
+
+class CenterServer:
+	#定义基本属性
+	dict_ = {}
+	path_ = ''
+	#定义构造方法
+	def __init__(self):
+		self.path_ = g_out_file_path + 'centerserver/'
+
+		self.dict_['center_pipe_cfg.xml'] ="<?xml version=\"1.0\" encoding=\"utf-8\"?>\n\
+<config>\n\
+	<connections>\n\
+		<server id=\"1-" +g_game_id+ "-5-1\"/> \n\
+		<connection mode=\"listen\" localip=\"0\" localport=\"8567\" recvbuf=\"131072\" sendbuf=\"65536\" />\n\
+		<connection mode=\"connect\">\n\
+			<!-- connect to log server -->\n\
+			<!--item id=\"1-" +g_game_id+ "-8-1\" remoteip=\"127.0.0.1\" remoteport=\"5001\" recvbuf=\"1310720\" sendbuf=\"131072\" /-->\n\
+		</connection>\n\
+	</connections>\n\
+</config>"
+
+			
+			
+def g_write2file(o_server):
+	if os.path.exists(o_server.path_) == False:
+		os.mkdir(o_server.path_)
+	for k_,v_ in o_server.dict_.items():
+		fo = open(o_server.path_ + k_, "wb")
+		fo.write(v_);
+		fo.close()
+		print("##create file:%s\n "%(o_server.path_ + k_ ) )
+
+	for k_,v_ in o_server.dict_.items():
+		fo = open(o_server.path_ + "debug/" + k_, "wb")
+		fo.write(v_);
+		fo.close()
+		print("##create file:%s\n "%(o_server.path_ + k_ ) )	
+
+		
+g_write2file(CenterServer() )
+
+g_write2file( CrossServer() )
+
+g_write2file(DBServer() )
+
+g_write2file(FriendServer() )
+
+g_write2file(GateServer() )
+
+g_write2file(GameServer() )
+
+g_write2file(GlobalServer() )
+
+g_write2file(LoginServer() )
+
+g_write2file(NameServer() )
+
+print("##work path:")
+os.system("echo %cd%")
+
+
+
+
+
+
+
+
+
