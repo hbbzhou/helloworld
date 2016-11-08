@@ -105,9 +105,6 @@ ldd
 --------------------------------- 
 
 
-
-
-
 ####linux 设置 公钥
 
 ssh-keygen -t rsa
@@ -151,7 +148,12 @@ netstat -tnpl
 --------------------------------- 
 
 
+####linux ulimit 设置
 
+vi /etc/profile
+ulimit -c unlimited
+/etc/security/limits.conf
+--------------------------------- 
 
 
 
