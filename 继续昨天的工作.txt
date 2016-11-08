@@ -42,10 +42,7 @@ vi /etc/profile
 修改 属性->c/c++ ->常规-> 多处理器编译 = 是(/MP) ; 
 修改 属性->c/c++ ->代码生成->启用最小重新生成 = 否(/Gm-)
 
-@linux ulimit 设置
-vi /etc/profile
-ulimit -c unlimited
-/etc/security/limits.conf
+
 
 
 
