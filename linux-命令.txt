@@ -1,6 +1,16 @@
 
 #<<linux 命令>>
 
+####删除 svn 的帐号信息
+rm -rf ~/.subversion/auth
+------------------------------------ 
+
+
+####查看linux 系统版本
+cat /etc/redhat-release
+------------------------------------ 
+
+
 ####linux yum安装 Apache：--------
 yum install httpd
 
