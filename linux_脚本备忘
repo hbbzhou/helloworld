@@ -102,3 +102,37 @@ begin_date=`date -d "1 day ago" +"{%Y-%m-%d}"`
 svn up ../bin/svn_log_info.txt
 svn log -r ${end_date}:${begin_date} > ../bin/svn_log_info.txt
 svn commit ../bin/svn_log_info.txt  -m "提交代码更新的信息"
+
+#定时检测xx进程,并发邮件
+cd /home/hbb_dir
+is_ok="ok"
+error_server=""
+status_file="server_status.txt"
+game_des="hbb_服务器  "
+
+function send_mail()
+{
+        reciver_list="binbin.huang@mokun.net"
+        if [ -f ${status_file} ]; then
+                echo `date`>${status_file}
+                echo " ${game_des} ${1} 异常" >> ${status_file}
+                mail -s 服务器监控  ${reciver_list}  < ${status_file}
+                rm -f ${status_file}
+        fi
+}
+
+for file_name in "centerserver" "loginserver"
+do
+  ps aux | grep ${file_name}| grep -v grep && { is_ok="ok";} || {  is_ok="error";error_server=${file_name}; break; }
+done
+
+if [ ${is_ok} = "ok" ];then
+        echo "ok" > ${status_file}
+else
+        send_mail ${error_server}
+        echo "server error"
+fi
+
+
+
+
