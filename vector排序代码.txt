@@ -1,0 +1,161 @@
+﻿
+#include <time.h>
+#include<stdio.h>
+#include <vector>
+#include<algorithm>
+
+#pragma region hbb_rank_demo
+
+class BasicPlayer
+{
+public:
+	int m_nLevle;
+	std::string m_strAccount;
+};
+
+static inline bool BasicPlayerSortDown( const BasicPlayer & left_ , const BasicPlayer & right_)
+{
+	return left_.m_nLevle > right_.m_nLevle;
+}
+
+std::vector<BasicPlayer> g_vecRank;
+bool IsDebug = true;
+
+void TestLoadRank()
+{
+	for(int i = 0 ; i < 5 ; ++i){
+		g_vecRank.resize(i+1);
+		BasicPlayer & o_player = g_vecRank[i];
+		o_player.m_nLevle = i*10;
+		o_player.m_strAccount = "hbb_" + std::to_string(i);
+	}
+	IsDebug= true;//用于断点调试
+	//排序
+	std::sort(g_vecRank.begin() , g_vecRank.end() , BasicPlayerSortDown );
+
+	IsDebug= true;//用于断点调试
+	return ;
+}
+
+int FindPosFromRankList(int level_ , const std::string & str_)
+{
+	BasicPlayer BasicPlayer_;
+	BasicPlayer_.m_nLevle = level_;
+
+	std::vector<BasicPlayer>::iterator find_it = std::lower_bound(g_vecRank.begin() , g_vecRank.end() , BasicPlayer_,BasicPlayerSortDown  );
+	std::vector<BasicPlayer>::iterator temp_it = find_it;
+	std::vector<BasicPlayer>::iterator end_it = g_vecRank.end();
+	for(; temp_it != end_it; ++temp_it ){
+		if(temp_it->m_strAccount == str_){
+			return temp_it - g_vecRank.begin();
+		}
+	}
+
+	end_it = find_it;
+	for(temp_it = g_vecRank.begin() ; temp_it != end_it ; ++temp_it){
+		if(temp_it->m_strAccount == str_){
+			return temp_it - g_vecRank.begin();
+		}
+	}
+	return -1;
+}
+
+int FindPosFromRankList(int level_  )
+{
+	BasicPlayer BasicPlayer_;
+	BasicPlayer_.m_nLevle = level_;
+
+	std::vector<BasicPlayer>::iterator find_it = std::lower_bound(g_vecRank.begin() , g_vecRank.end() , BasicPlayer_,BasicPlayerSortDown  );
+	return find_it - g_vecRank.begin();
+}
+
+void FirstAddRankList(int level_ , const std::string & str_)
+{
+	BasicPlayer BasicPlayer_;
+	BasicPlayer_.m_nLevle = level_;
+	BasicPlayer_.m_strAccount = str_;
+	std::vector<BasicPlayer>::iterator it = std::upper_bound(g_vecRank.begin() , g_vecRank.end() , BasicPlayer_,BasicPlayerSortDown  );
+	g_vecRank.insert(it , BasicPlayer_);
+}
+
+void AddRank(int old_level_ ,int new_level_, const std::string str_ )
+{
+	int pos_ = FindPosFromRankList(old_level_ , str_);
+	if( (size_t)pos_ >= g_vecRank.size() ){
+		//不存在
+		FirstAddRankList(new_level_ , str_);
+	}
+	else{
+		int now_pos_ = pos_;
+		int new_pos_ = FindPosFromRankList(new_level_ );
+		//确保索引有效
+		if(new_pos_ >= g_vecRank.size()){
+			return;
+		}
+
+		if(now_pos_ == new_pos_){
+			g_vecRank[now_pos_].m_nLevle = new_level_;
+			return;
+		}
+		else if(now_pos_ < new_pos_){
+			--new_pos_;
+			if(now_pos_ == new_pos_){
+				g_vecRank[now_pos_].m_nLevle = new_level_;
+				return;
+			}
+
+			IsDebug= true;//用于断点调试
+			int must_move_buff_len = new_pos_ - now_pos_;
+			BasicPlayer BasicPlayer_ = g_vecRank[now_pos_];
+			BasicPlayer_.m_nLevle = new_level_;
+
+			BasicPlayer * begin_ptr = &(g_vecRank[now_pos_]);
+			memmove((char*)begin_ptr  ,(char*)(begin_ptr +1) , sizeof(BasicPlayer)*must_move_buff_len  );
+			g_vecRank[new_pos_] = BasicPlayer_;
+			IsDebug= true;//用于断点调试
+		}
+		else{
+			IsDebug= true;//用于断点调试
+			int must_move_buff_len =  now_pos_ - new_pos_;
+			BasicPlayer BasicPlayer_ = g_vecRank[now_pos_];
+			BasicPlayer_.m_nLevle = new_level_;
+
+			BasicPlayer * begin_ptr = &(g_vecRank[new_pos_]);
+			memmove( (char*)(begin_ptr +1) ,(char*)begin_ptr , sizeof(BasicPlayer)*must_move_buff_len  );
+			g_vecRank[new_pos_] = BasicPlayer_;
+			IsDebug= true;//用于断点调试
+		}
+	}
+}
+
+void TestChangeRank()
+{
+	AddRank(30 ,31, "hbb_3" );
+	AddRank(31 ,29, "hbb_3" );
+	AddRank(29 ,10, "hbb_3" );
+
+	AddRank(10 ,30, "hbb_3" );//还原
+	AddRank(30 ,5, "hbb_3" );
+
+	AddRank(5 ,30, "hbb_3" );//还原
+	AddRank(30 ,40, "hbb_3" );
+
+	AddRank(40 ,30, "hbb_3" );//还原
+	AddRank(30 ,45, "hbb_3" );
+
+
+
+}
+
+#pragma endregion
+
+
+
+int main()
+{
+
+	//do
+	TestLoadRank();
+	TestChangeRank();
+	return 0;
+}
