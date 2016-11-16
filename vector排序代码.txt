@@ -89,7 +89,7 @@ void AddRank(int old_level_ ,int new_level_, const std::string str_ )
 		int now_pos_ = pos_;
 		int new_pos_ = FindPosFromRankList(new_level_ );
 		//确保索引有效
-		if(new_pos_ >= g_vecRank.size()){
+		if( (size_t)new_pos_ >= g_vecRank.size()){
 			return;
 		}
 
