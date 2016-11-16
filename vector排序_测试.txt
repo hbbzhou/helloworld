@@ -113,7 +113,7 @@ void UpdateVecByMove(int old_value_ ,int new_value_, const int key_)
 		int now_pos_ = pos_;
 		int new_pos_ = FindPosFromRankList(new_value_ );
 		//确保索引有效
-		if(new_pos_ >= g_vec_id_and_ability.size()){
+		if( (size_t)new_pos_ >= g_vec_id_and_ability.size()){
 			return;
 		}
 
