@@ -112,6 +112,11 @@ void UpdateVecByMove(int old_value_ ,int new_value_, const int key_)
 	else{
 		int now_pos_ = pos_;
 		int new_pos_ = FindPosFromRankList(new_value_ );
+		
+		if(now_pos_ < new_pos_){
+			--new_pos_;//位置向容器末尾移动时,new_pos_ 多计算了自己,故要减去
+		}		
+		
 		//确保索引有效
 		if( (size_t)new_pos_ >= g_vec_id_and_ability.size()){
 			return;
@@ -122,12 +127,6 @@ void UpdateVecByMove(int old_value_ ,int new_value_, const int key_)
 			return;
 		}
 		else if(now_pos_ < new_pos_){
-			--new_pos_;
-			if(now_pos_ == new_pos_){
-				g_vec_id_and_ability[now_pos_].value = new_value_;
-				return;
-			}
-
 			int must_move_buff_len = new_pos_ - now_pos_;
 			IntAndInt IntAndInt_ = g_vec_id_and_ability[now_pos_];
 			IntAndInt_.value = new_value_;
