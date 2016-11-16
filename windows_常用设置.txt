@@ -1,0 +1,5 @@
+﻿
+##访问谷歌
+https://github.com/racaljk/hosts/blob/master/hosts
+%SystemRoot%\System32\drivers\etc\
+=========
