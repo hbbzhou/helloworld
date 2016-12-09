@@ -1,0 +1,21 @@
+﻿
+
+:valgrind 搜索关键字
+8 bytes in 1 blocks are still reachable in loss record 4 of 745
+有8个字节的块 这个块还可以访问(即可能 丢失了). (全局变量 = new class() )
+
+8 bytes in 1 blocks are indirectly lost in loss record 5 of 745
+(ptr = new class() ; 这个时候原来的ptr 的地址就丢失了)
+
+64 bytes in 1 blocks are definitely lost in loss record 580 of 745
+(局部变量 = new class() )(一般看这个 definitely)
+
+
+:使用
+valgrind --tool=memcheck --num-callers=20 --log-file=valgrind_21_1.log --leak-check=full --show-reachable=yes ./myapp
+//参数的介绍
+http://blog.csdn.net/sunlylorn/article/details/7836953
+
+
+:报错的分析
+http://valgrind.org/docs/manual/mc-manual.html
