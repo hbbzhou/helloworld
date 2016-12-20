@@ -329,6 +329,9 @@ g_write2file(LoginServer() )
 
 g_write2file(NameServer() )
 
+#g_test_str = "完成.."
+#print g_test_str.decode('utf-8').encode('gbk')
+
 print("##work path:")
 os.system("echo %cd%")
 os.system("pause")
