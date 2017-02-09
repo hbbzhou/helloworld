@@ -26,7 +26,17 @@ namespace basefun {
 		return ONE_DAY_SECOND + second - n_diff;
 	}
 
-
+union CharAndShort {
+	//判断 大小端
+	bool IsLittleEndian()
+	{
+		m_n1 = (1<<8) + 1;
+		return m_c1;
+	}
+	char m_c1;
+	short m_n1;
+};
+	
 }
 
 
