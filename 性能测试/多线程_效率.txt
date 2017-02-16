@@ -1,0 +1,126 @@
+﻿#include <windows.h>  
+#include <ctime>
+#include <thread>
+
+
+float g_real_t = 0;
+clock_t g_n_start = 0;
+clock_t g_n_end = 0;
+std::stringstream g_ss;
+
+int g_num = 200;
+int g_thead_num = 1400;
+
+void acount(std::string str_)
+{
+	g_real_t = g_n_end - g_n_start;
+	if (str_[0] != '1') {
+		g_ss << g_thead_num;
+	}
+	g_ss <<str_ << g_num * g_thead_num << "次" << std::endl;
+	g_ss << "#real time " << g_real_t / CLOCKS_PER_SEC << "s" << std::endl<<std::endl;
+}
+
+void clear()
+{
+	g_real_t = 0;
+	g_n_start = 0;
+	g_n_end = 0;
+}
+
+void test(int i)
+{
+	SetThreadAffinityMask(GetCurrentThread(), i % 8);
+	if (g_n_start == 0) {
+		g_n_start = std::clock();
+	}
+
+	for (int i = 0; i < g_num; ++i) {
+		printf("huangbinbin\n");
+	}
+	g_n_end = std::clock();
+}
+
+void test2()
+{
+	if (g_n_start == 0) {
+		g_n_start = std::clock();
+	}
+
+	for (int i = 0; i < g_num; ++i) {
+		printf("huangbinbin\n");
+	}
+	g_n_end = std::clock();
+}
+
+void test1()
+{
+	if (g_n_start == 0) {
+		g_n_start = std::clock();
+	}
+
+	for (int i = 0; i < g_num *g_thead_num; ++i) {
+		printf("huangbinbin\n");
+	}
+	g_n_end = std::clock();
+}
+
+void test_main()
+{
+	
+
+	test1();
+	acount("1线程处理 xx函数 ");
+	clear();
+
+	{
+		std::vector<std::thread *> vec_;
+		for (int i = 0; i < g_thead_num; ++i) {
+			vec_.push_back(new std::thread(test2));
+		}
+
+		for (int i = 0; i < g_thead_num; ++i) {
+			vec_[i]->join();
+			delete vec_[i];
+		}
+		acount("线程处理 xx函数 总");
+		clear();
+	}
+
+
+	{
+		std::vector<std::thread *> vec_;
+		for (int i = 0; i < g_thead_num; ++i) {
+			vec_.push_back(new std::thread(test, i+1) );
+		}
+
+		for (int i = 0; i < g_thead_num; ++i) {
+			vec_[i]->join();
+			delete vec_[i];
+		}
+
+		acount(" 个线程处理(手动分配cup) xx函数 总");
+		clear();
+	}
+	std::cout << g_ss.str();
+}
+
+测试结果:
+1线程处理 xx函数 20000次
+#real time 0.683s
+
+100线程处理 xx函数 总20000次
+#real time 0.641s
+
+100 个线程处理(手动分配cup) xx函数 总20000次
+#real time 0.634s
+=================
+1线程处理 xx函数 280000次
+#real time 8.18s
+
+1400线程处理 xx函数 总280000次
+#real time 10.333s
+
+1400 个线程处理(手动分配cup) xx函数 总280000次
+#real time 11.318s
+
