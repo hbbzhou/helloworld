@@ -4,3 +4,7 @@ https://github.com/racaljk/hosts/blob/master/hosts
 %SystemRoot%\System32\drivers\etc\
 =========
 
+##安装vs组件
+Microsoft Visual C++ 2010 Redistributable Package
+=========
+
