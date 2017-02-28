@@ -133,8 +133,59 @@ libboost_system.so libmysqlcppconn.so)
 #TARGET_LINK_LIBRARIES(test libssl.a libcrypto.a)
 
 
+#####################################################
+#####################################################
+####例子2
+
+cmake_minimum_required(VERSION 2.4)
+
+SET(PROJECTNAME gameserver)
+
+SET(OUTPUT ../../bin/${PROJECTNAME}/debug)
+
+project(${PROJECTNAME})
 
 
+SET(CMAKE_C_COMPILER gcc)
+SET(CMAKE_CXX_COMPILER g++)
+
+#SET(CMAKE_CXX_FLAGS_DEBUG "$ENV{CXXFLAGS} -O0 -Wall -g -ggdb")
+#SET(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLAGS} -O3 -Wall")
+
+
+INCLUDE_DIRECTORIES( 
+	#
+	./
+	../protocol
+	../../proto/include
+	)
+
+SET(LIBRARIES
+	-lprotobuf
+    )
+
+LINK_DIRECTORIES(
+	${SGDPPATH}/lib/linux
+	/usr/local/lib
+	)
+
+ADD_DEFINITIONS(
+	-Wno-unused-variable
+	-DDEBUG
+	-Wno-deprecated
+	)
+
+SET(EXECUTABLE_OUTPUT_PATH ${OUTPUT})
+
+aux_source_directory("." SRC_FILES)	
+aux_source_directory("tools" SRC_FILES)
+
+ADD_EXECUTABLE(
+	${PROJECTNAME}
+	${SRC_FILES} 
+	)
+
+TARGET_LINK_LIBRARIES(${PROJECTNAME} ${LIBRARIES})
 
 
 
