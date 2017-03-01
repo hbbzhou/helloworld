@@ -1,3 +1,0 @@
-
-编译警告:deprecated conversion from string constant to ‘char*’
-屏蔽的方法: g++ -Wno-write-strings
