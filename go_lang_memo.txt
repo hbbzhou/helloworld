@@ -1,0 +1,448 @@
+
+
+
+//显示到屏幕
+#if 0
+func print_() {
+	var a = "w3cschool菜鸟教程"
+	var b = "w3cschool.cc"
+	var c bool
+
+	println(a, b, c)
+	fmt.Printf("hello, ,world \n")
+}
+#endif
+
+//map 容器的使用
+#if 0
+func map_() {
+	countryCapitalMap := make(map[string]string)
+	countryCapitalMap["France"] = "Paris"
+	countryCapitalMap["Italy"] = "Rome"
+	countryCapitalMap["Japan"] = "Tokyo"
+	countryCapitalMap["India"] = "New Delhi"
+
+	for country := range countryCapitalMap {
+		fmt.Println("Capital of", country, "is", countryCapitalMap[country])
+	}
+
+	captial, ok := countryCapitalMap["United States"]
+
+	if ok {
+		fmt.Println("Capital of United States is", captial)
+	} else {
+		fmt.Println("Capital of United States is not present")
+	}
+
+}
+#endif
+
+//类的使用
+#if 0
+type S struct {
+	i int
+}
+
+func (p *S) Get() int {
+	return p.i
+}
+
+func (p *S) Set(v int) {
+	p.i = v
+}
+
+func main() {
+	var hbb = new(S)
+	hbb.Set(6)
+	println(hbb.Get())
+}
+#endif
+
+//接口//备注:封装接口时,超容易
+#if 0
+
+type S struct {
+	i int
+}
+
+func (p *S) Get() int {
+	return p.i
+}
+
+func (p *S) Set(v int) {
+	p.i = v
+}
+
+type I interface {
+	Get() int
+	Set(int)
+}
+
+func f(p I) {
+	fmt.Println(p.Get())
+	p.Set(1)
+}
+
+func main() {
+	var oS = new(S)
+	oS.Set(100)
+	f(oS)
+}
+#endif
+
+//switch 用法
+#if 0
+
+type S struct {
+	i int
+}
+
+func (p *S) Get() int {
+	return p.i
+}
+
+func (p *S) Set(v int) {
+	p.i = v
+}
+
+type I interface {
+	Get() int
+	Set(int)
+}
+
+type R struct{ i int }
+
+func (p *R) Get() int {
+	return p.i
+}
+func (p *R) Set(v int) {
+	p.i = v
+}
+
+func f(p I) {
+
+	switch t := p.(type) { // 判断传递给 p 的实际类型
+	case *S: 
+		println("指向 S 的指针类型", t)
+	case *R: 
+		println("指向 R 的指针类型", t)
+	default: 
+		println("实现了 I 接口的其他类型", t)
+	}
+	fmt.Println(p.Get())
+	p.Set(1)
+}
+
+func main() {
+	var oS = new(R)
+	f(oS)
+}
+#endif
+
+//获取时间戳
+#if 0
+	t := time.Now().Unix()
+	fmt.Println(t)
+	fmt.Println(time.Now().Format("2006/01/02"))
+#endif
+
+//并发
+#if 0
+
+const gTheadNum = 8
+const gOneConut = 100000
+const gConut = gOneConut * gTheadNum
+
+var gCurNum int
+var gBegin, gEnd, gDiff int64
+
+func test_print() {
+	for i := 0; i < 10000; i++ {
+		var b int = i * i * i
+		b += 10
+	}
+	gCurNum++
+}
+
+func test2(done chan bool) {
+	for i := 0; i < gOneConut; i++ {
+		test_print()
+	}
+	done <- true
+}
+
+func test1() {
+	for i := 0; i < gConut; i++ {
+		test_print()
+	}
+}
+
+func wait() {
+	a := ""
+	fmt.Println("wait...")
+	fmt.Scanf("%s", &a)
+	fmt.Println(a)
+}
+
+func main() {
+
+	var oMap = make(map[string]int64)
+
+	{
+		runtime.GOMAXPROCS(4)
+		done := make(chan bool)
+		gCurNum = 0
+		gBegin = time.Now().UnixNano()
+
+		for i := 0; i < gTheadNum; i++ {
+			go test2(done)
+		}
+
+		for i := 0; i < gTheadNum; i++ {
+			<-done
+		}
+
+		gEnd = time.Now().UnixNano()
+		gDiff = (gEnd - gBegin) / (1000 * 1000)
+
+		wait()
+		oMap["多线程_耗时"] = gDiff
+	}
+
+	{
+		gCurNum = 0
+		gBegin = time.Now().UnixNano()
+		test1()
+		gEnd = time.Now().UnixNano()
+		gDiff = (gEnd - gBegin) / (1000 * 1000)
+
+		wait()
+		oMap["单线程_耗时"] = gDiff
+	}
+
+	println("run times: ", gConut)
+	for key, value := range oMap {
+		println(key, value/1000, "s", value%1000, "ms")
+	}
+	fmt.Printf("[end...]  \n")
+
+}
+
+// run times:  800000//windows(8核cup)
+// 多线程_耗时 0 s 700 ms
+// 单线程_耗时 2 s 225 ms
+
+
+//run times:  800000//linux(4核cup)
+//多线程_耗时 1 s 22 ms
+//单线程_耗时 2 s 227 ms
+
+#endif
+
+//c++多线程//windows
+#if 
+#include <windows.h>  
+#include <ctime>
+#include <thread>
+
+long GetCurrentTime()
+{
+	struct timeb tv;
+	ftime(&tv);
+	return ((long)tv.time) * 1000 + (long)tv.millitm;
+}
+
+
+const int g_thead_num = 8;
+const int gOneConut = 100000;
+const int gConut = gOneConut * g_thead_num;
+int gCurNum = 0;
+clock_t gBegin, gEnd, gDiff;
+
+inline void test_print() {
+	for (int i = 0; i < 10000; ++i) {
+		int b = i*i*i;
+		b += 10;
+	}
+	gCurNum++;
+}
+
+void clear()
+{
+	gCurNum = 0;
+}
+
+void test2()
+{
+	for (int i = 0; i < gOneConut; ++i) {
+		test_print();
+	}
+}
+
+void test1()
+{
+	for (int i = 0; i < gConut; ++i) {
+		test_print();
+	}
+}
+
+void test_main()
+{
+	std::map<std::string, int> map_;
+
+	{
+		gBegin = GetCurrentTime();
+		test1();
+		gEnd = GetCurrentTime();
+		gDiff = (gEnd - gBegin);
+
+		system("pause");
+		map_["单线程_耗时"] = gDiff;
+		clear();
+	}
+
+	{
+		std::vector<std::thread *> vec_;
+		gBegin = GetCurrentTime();
+		for (int i = 0; i < g_thead_num; ++i) {
+			vec_.push_back(new std::thread(test2));
+		}
+
+		for (int i = 0; i < g_thead_num; ++i) {
+			vec_[i]->join();
+		}
+		gEnd = GetCurrentTime();
+		gDiff = (gEnd - gBegin);
+
+		for (int i = 0; i < g_thead_num; ++i) {
+			delete vec_[i];
+		}
+		system("pause");
+		map_["多线程_耗时"] = gDiff;
+		clear();
+	}
+
+	printf("run times %d  \n", gConut);
+	for (std::map<std::string, int>::const_iterator it = map_.begin(); it != map_.end(); ++it) {
+		printf("%s %d s %d ms \n", it->first.c_str(), it->second/ 1000, it->second%1000);
+	}
+}
+
+//windows(8核cup)
+//run times 800000
+//单线程_耗时 17 s 917 ms
+//多线程_耗时 3 s 118 ms
+
+
+#endif
+
+//c++多线程//linux
+#if
+
+#include <map>
+#include <stdio.h>
+#include <time.h>
+#include <sstream> 
+#include <sys/timeb.h>
+
+#include <vector>
+#include <pthread.h>
+
+
+long GetCurrentTime()
+{
+	struct timeb tv;
+	ftime(&tv);
+	return ((long)tv.time) * 1000 + (long)tv.millitm;
+}
+
+const int g_thead_num = 8;
+const int gOneConut = 100000;
+const int gConut = gOneConut * g_thead_num;
+int gCurNum = 0;
+clock_t gBegin, gEnd, gDiff;
+
+
+inline void test_print() {
+	for (int i = 0; i < 10000; ++i) {
+		int b = i*i*i;
+		b += 10;
+	}
+	gCurNum++;
+}
+
+void clear(){	gCurNum = 0;}
+
+void * test2(void *arg)
+{
+	for (int i = 0; i < gOneConut; ++i) {
+		test_print();
+	}
+	return NULL;
+}
+
+void test1()
+{
+	for (int i = 0; i < gConut; ++i) {
+		test_print();
+	}
+}
+
+int main()
+{
+	std::map<std::string, int> map_;
+
+	{
+		gBegin = GetCurrentTime();
+		test1();
+		gEnd = GetCurrentTime();
+		gDiff = (gEnd - gBegin);
+    
+		map_["单线程_耗时"] = gDiff;
+		clear();
+	}
+
+	{
+		std::vector<pthread_t> vec_;
+		gBegin = GetCurrentTime();
+		for (int i = 0; i < g_thead_num; ++i) {
+			pthread_t id;
+			if(pthread_create(&id,NULL, test2 , NULL))
+			{
+				printf("Fail to Create Thread");
+				return -1;
+			}
+			
+			vec_.push_back(id);
+		}
+    
+		for (int i = 0; i < g_thead_num; ++i) {
+			pthread_join(vec_[i], NULL);
+		}
+		gEnd = GetCurrentTime();
+		gDiff = (gEnd - gBegin);
+    
+		map_["多线程_耗时"] = gDiff;
+		clear();
+	}
+
+	printf("run times %d  \n", gConut);
+	for (std::map<std::string, int>::const_iterator it = map_.begin(); it != map_.end(); ++it) {
+		printf("%s %d s %d ms \n", it->first.c_str(), it->second/ 1000, it->second%1000);
+	}
+	return 0;
+}
+//g++ main.c  -o main  -lpthread
+//linux(4核cpu)
+//run times 800000  
+//单线程_耗时 19 s 736 ms 
+//多线程_耗时 6 s 237 ms 
+//
+//real	0m25.974s
+//user	0m44.044s
+//sys	0m0.001s
+
+#endif
+
+
+

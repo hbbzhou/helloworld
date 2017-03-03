@@ -1,126 +1,297 @@
-﻿#include <windows.h>  
+﻿//并发
+#if 0
+
+const gTheadNum = 8
+const gOneConut = 100000
+const gConut = gOneConut * gTheadNum
+
+var gCurNum int
+var gBegin, gEnd, gDiff int64
+
+func test_print() {
+	for i := 0; i < 10000; i++ {
+		var b int = i * i * i
+		b += 10
+	}
+	gCurNum++
+}
+
+func test2(done chan bool) {
+	for i := 0; i < gOneConut; i++ {
+		test_print()
+	}
+	done <- true
+}
+
+func test1() {
+	for i := 0; i < gConut; i++ {
+		test_print()
+	}
+}
+
+func wait() {
+	a := ""
+	fmt.Println("wait...")
+	fmt.Scanf("%s", &a)
+	fmt.Println(a)
+}
+
+func main() {
+
+	var oMap = make(map[string]int64)
+
+	{
+		runtime.GOMAXPROCS(4)
+		done := make(chan bool)
+		gCurNum = 0
+		gBegin = time.Now().UnixNano()
+
+		for i := 0; i < gTheadNum; i++ {
+			go test2(done)
+		}
+
+		for i := 0; i < gTheadNum; i++ {
+			<-done
+		}
+
+		gEnd = time.Now().UnixNano()
+		gDiff = (gEnd - gBegin) / (1000 * 1000)
+
+		wait()
+		oMap["多线程_耗时"] = gDiff
+	}
+
+	{
+		gCurNum = 0
+		gBegin = time.Now().UnixNano()
+		test1()
+		gEnd = time.Now().UnixNano()
+		gDiff = (gEnd - gBegin) / (1000 * 1000)
+
+		wait()
+		oMap["单线程_耗时"] = gDiff
+	}
+
+	println("run times: ", gConut)
+	for key, value := range oMap {
+		println(key, value/1000, "s", value%1000, "ms")
+	}
+	fmt.Printf("[end...]  \n")
+
+}
+
+#endif
+
+//c++多线程//windows
+#if 
+#include <windows.h>  
 #include <ctime>
 #include <thread>
 
-
-float g_real_t = 0;
-clock_t g_n_start = 0;
-clock_t g_n_end = 0;
-std::stringstream g_ss;
-
-int g_num = 200;
-int g_thead_num = 1400;
-
-void acount(std::string str_)
+long GetCurrentTime()
 {
-	g_real_t = g_n_end - g_n_start;
-	if (str_[0] != '1') {
-		g_ss << g_thead_num;
+	struct timeb tv;
+	ftime(&tv);
+	return ((long)tv.time) * 1000 + (long)tv.millitm;
+}
+
+
+const int g_thead_num = 8;
+const int gOneConut = 100000;
+const int gConut = gOneConut * g_thead_num;
+int gCurNum = 0;
+clock_t gBegin, gEnd, gDiff;
+
+inline void test_print() {
+	for (int i = 0; i < 10000; ++i) {
+		int b = i*i*i;
+		b += 10;
 	}
-	g_ss <<str_ << g_num * g_thead_num << "次" << std::endl;
-	g_ss << "#real time " << g_real_t / CLOCKS_PER_SEC << "s" << std::endl<<std::endl;
+	gCurNum++;
 }
 
 void clear()
 {
-	g_real_t = 0;
-	g_n_start = 0;
-	g_n_end = 0;
-}
-
-void test(int i)
-{
-	SetThreadAffinityMask(GetCurrentThread(), i % 8);
-	if (g_n_start == 0) {
-		g_n_start = std::clock();
-	}
-
-	for (int i = 0; i < g_num; ++i) {
-		printf("huangbinbin\n");
-	}
-	g_n_end = std::clock();
+	gCurNum = 0;
 }
 
 void test2()
 {
-	if (g_n_start == 0) {
-		g_n_start = std::clock();
+	for (int i = 0; i < gOneConut; ++i) {
+		test_print();
 	}
-
-	for (int i = 0; i < g_num; ++i) {
-		printf("huangbinbin\n");
-	}
-	g_n_end = std::clock();
 }
 
 void test1()
 {
-	if (g_n_start == 0) {
-		g_n_start = std::clock();
+	for (int i = 0; i < gConut; ++i) {
+		test_print();
 	}
-
-	for (int i = 0; i < g_num *g_thead_num; ++i) {
-		printf("huangbinbin\n");
-	}
-	g_n_end = std::clock();
 }
 
 void test_main()
 {
-	
+	std::map<std::string, int> map_;
 
-	test1();
-	acount("1线程处理 xx函数 ");
-	clear();
+	{
+		gBegin = GetCurrentTime();
+		test1();
+		gEnd = GetCurrentTime();
+		gDiff = (gEnd - gBegin);
+
+		system("pause");
+		map_["单线程_耗时"] = gDiff;
+		clear();
+	}
 
 	{
 		std::vector<std::thread *> vec_;
+		gBegin = GetCurrentTime();
 		for (int i = 0; i < g_thead_num; ++i) {
 			vec_.push_back(new std::thread(test2));
 		}
 
 		for (int i = 0; i < g_thead_num; ++i) {
 			vec_[i]->join();
+		}
+		gEnd = GetCurrentTime();
+		gDiff = (gEnd - gBegin);
+
+		for (int i = 0; i < g_thead_num; ++i) {
 			delete vec_[i];
 		}
-		acount("线程处理 xx函数 总");
+		system("pause");
+		map_["多线程_耗时"] = gDiff;
 		clear();
 	}
 
-
-	{
-		std::vector<std::thread *> vec_;
-		for (int i = 0; i < g_thead_num; ++i) {
-			vec_.push_back(new std::thread(test, i+1) );
-		}
-
-		for (int i = 0; i < g_thead_num; ++i) {
-			vec_[i]->join();
-			delete vec_[i];
-		}
-
-		acount(" 个线程处理(手动分配cup) xx函数 总");
-		clear();
+	printf("run times %d  \n", gConut);
+	for (std::map<std::string, int>::const_iterator it = map_.begin(); it != map_.end(); ++it) {
+		printf("%s %d s %d ms \n", it->first.c_str(), it->second/ 1000, it->second%1000);
 	}
-	std::cout << g_ss.str();
 }
 
-测试结果:
-1线程处理 xx函数 20000次
-#real time 0.683s
+#endif
 
-100线程处理 xx函数 总20000次
-#real time 0.641s
+//c++多线程//linux
+#if
 
-100 个线程处理(手动分配cup) xx函数 总20000次
-#real time 0.634s
-=================
-1线程处理 xx函数 280000次
-#real time 8.18s
+#include <map>
+#include <stdio.h>
+#include <time.h>
+#include <sstream> 
+#include <sys/timeb.h>
 
-1400线程处理 xx函数 总280000次
-#real time 10.333s
+#include <vector>
+#include <pthread.h>
 
-1400 个线程处理(手动分配cup) xx函数 总280000次
-#real time 11.318s
 
+long GetCurrentTime()
+{
+	struct timeb tv;
+	ftime(&tv);
+	return ((long)tv.time) * 1000 + (long)tv.millitm;
+}
+
+const int g_thead_num = 8;
+const int gOneConut = 100000;
+const int gConut = gOneConut * g_thead_num;
+int gCurNum = 0;
+clock_t gBegin, gEnd, gDiff;
+
+
+inline void test_print() {
+	for (int i = 0; i < 10000; ++i) {
+		int b = i*i*i;
+		b += 10;
+	}
+	gCurNum++;
+}
+
+void clear(){	gCurNum = 0;}
+
+void * test2(void *arg)
+{
+	for (int i = 0; i < gOneConut; ++i) {
+		test_print();
+	}
+	return NULL;
+}
+
+void test1()
+{
+	for (int i = 0; i < gConut; ++i) {
+		test_print();
+	}
+}
+
+int main()
+{
+	std::map<std::string, int> map_;
+
+	{
+		gBegin = GetCurrentTime();
+		test1();
+		gEnd = GetCurrentTime();
+		gDiff = (gEnd - gBegin);
+    
+		map_["单线程_耗时"] = gDiff;
+		clear();
+	}
+
+	{
+		std::vector<pthread_t> vec_;
+		gBegin = GetCurrentTime();
+		for (int i = 0; i < g_thead_num; ++i) {
+			pthread_t id;
+			if(pthread_create(&id,NULL, test2 , NULL))
+			{
+				printf("Fail to Create Thread");
+				return -1;
+			}
+			
+			vec_.push_back(id);
+		}
+    
+		for (int i = 0; i < g_thead_num; ++i) {
+			pthread_join(vec_[i], NULL);
+		}
+		gEnd = GetCurrentTime();
+		gDiff = (gEnd - gBegin);
+    
+		map_["多线程_耗时"] = gDiff;
+		clear();
+	}
+
+	printf("run times %d  \n", gConut);
+	for (std::map<std::string, int>::const_iterator it = map_.begin(); it != map_.end(); ++it) {
+		printf("%s %d s %d ms \n", it->first.c_str(), it->second/ 1000, it->second%1000);
+	}
+	return 0;
+}
+//g++ main.c  -o main  -lpthread
+
+
+#endif
+
+
+//go并发结果
+// run times:  800000//windows(8核cup)
+// 单线程_耗时 2 s 225 ms
+// 多线程_耗时 0 s 700 ms
+
+//run times:  800000//linux(4核cup)
+//单线程_耗时 2 s 227 ms
+//多线程_耗时 1 s 22 ms
+
+
+//c++多线程 结果
+//windows(8核cup)
+//run times 800000
+//单线程_耗时 17 s 917 ms
+//多线程_耗时 3 s 118 ms
+
+//linux(4核cpu)
+//run times 800000  
+//单线程_耗时 19 s 736 ms 
+//多线程_耗时 6 s 237 ms 
