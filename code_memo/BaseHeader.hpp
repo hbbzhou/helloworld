@@ -2,6 +2,7 @@
 #pragma once
 
 #include <time.h>
+#include <sys/timeb.h>
 
 namespace basefun {
 #define ONE_DAY_SECOND (60*60*24)
@@ -25,17 +26,25 @@ namespace basefun {
 
 		return ONE_DAY_SECOND + second - n_diff;
 	}
-
-union CharAndShort {
-	//判断 大小端
-	bool IsLittleEndian()
+	
+	
+	long GetCurrentTime()//获取毫秒
 	{
-		m_n1 = (1<<8) + 1;
-		return m_c1;
+		struct timeb tv;
+		ftime(&tv);
+		return ((long)tv.time) * 1000 + (long)tv.millitm;
 	}
-	char m_c1;
-	short m_n1;
-};
+
+	union CharAndShort {
+		//判断 大小端
+		bool IsLittleEndian()
+		{
+			m_n1 = (1<<8) + 1;
+			return m_c1;
+		}
+		char m_c1;
+		short m_n1;
+	};
 	
 }
 
