@@ -23,7 +23,7 @@ const int g_count = 99999;
 //нчкЬ╤сап
 #if 0
 
-const static int Len = 100000;
+const static int Len = 10000;
 int g_list[Len];
 int g_in_index = 0, g_out_index = 0;
 
@@ -46,9 +46,9 @@ inline void AddIndex(int &index_)
 
 void Add2List(int v_)
 {
-	if (GetFreeLen() <= 0) {
-		exit(1);
-		return;
+	while (GetFreeLen() <= 0) {
+		printf("no free len\n");
+		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 	}
 	g_list[g_in_index] = v_;
 	AddIndex(g_in_index);
@@ -66,16 +66,18 @@ bool GetOne(int & out_)
 
 void run()
 {
+	int n_;
 	while (true) {
-		int n_;
 		if (GetOne(n_)) {
 			g_map[n_] += 1;
-			if (n_ == g_count && g_map.size() == g_count) {
-				return;
+			if (n_ == g_count) {
+				if (g_map.size() == g_count) {
+					return;
+				}
 			}
 		}
 		else {
-			Sleep(1);
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 		}
 	}
 }
@@ -92,6 +94,7 @@ void test_main()
 {
 	gBegin = GetMSec();
 	std::thread t_(run);
+
 	std::thread t_2(addJob);
 	t_.join();
 	t_2.join();
@@ -138,7 +141,7 @@ void run()
 			}
 		}
 		else {
-			Sleep(1);
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 		}
 	}
 }
