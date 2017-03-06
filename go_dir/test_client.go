@@ -22,40 +22,40 @@ func wait() {
 	fmt.Println(a)
 }
 
-const HeaderLength = 2
-const IDLength = 2
+const _HeaderLength = 2
+const _IDLength = 2
 
 //封包
-func Enpack(message []byte) []byte {
-	return append(append(IntToBytes(len(message)+IDLength), IntToBytes(10)...), message...)
+func enpack(message []byte) []byte {
+	return append(append(intToBytes(len(message)+_IDLength), intToBytes(10)...), message...)
 }
 
-func DepackContent(buffer []byte) {
+func depackContent(buffer []byte) {
 	msgLen := len(buffer)
-	if msgLen < IDLength {
+	if msgLen < _IDLength {
 		println("error ")
 	} else {
-		msgID := BytesToInt(buffer[0:HeaderLength])
-		println("消息id:", msgID, "内容:", string(buffer[HeaderLength:]))
+		msgID := bytesToInt(buffer[0:_HeaderLength])
+		println("消息id:", msgID, "内容:", string(buffer[_HeaderLength:]))
 	}
 }
 
 //解包
-func Depack(buffer []byte, readerChannel chan []byte) []byte {
+func depack(buffer []byte, readerChannel chan []byte) []byte {
 	length := len(buffer)
 
 	var i int
 	for i = 0; i < length; i = i + 1 {
-		if length < i+HeaderLength {
+		if length < i+_HeaderLength {
 			break
 		}
-		msgLen := BytesToInt(buffer[i : i+HeaderLength])
+		msgLen := bytesToInt(buffer[i : i+_HeaderLength])
 		println("消息长度:", msgLen)
 
-		if length < i+HeaderLength+msgLen {
+		if length < i+_HeaderLength+msgLen {
 			break
 		}
-		data := buffer[i+HeaderLength : i+HeaderLength+msgLen]
+		data := buffer[i+_HeaderLength : i+_HeaderLength+msgLen]
 		readerChannel <- data
 	}
 
@@ -66,7 +66,7 @@ func Depack(buffer []byte, readerChannel chan []byte) []byte {
 }
 
 //整形转换成字节
-func IntToBytes(n int) []byte {
+func intToBytes(n int) []byte {
 	x := uint16(n)
 
 	bytesBuffer := bytes.NewBuffer([]byte{})
@@ -75,7 +75,7 @@ func IntToBytes(n int) []byte {
 }
 
 //字节转换成整形
-func BytesToInt(b []byte) int {
+func bytesToInt(b []byte) int {
 	bytesBuffer := bytes.NewBuffer(b)
 
 	var x uint16
@@ -84,21 +84,21 @@ func BytesToInt(b []byte) int {
 }
 
 func sendMsg(c net.Conn, msg []byte) (int, error) {
-	return c.Write(Enpack(msg))
+	return c.Write(enpack(msg))
 }
 
 //连接服务器
 func connectServer() {
 	//接通
 	conn, err := net.Dial("tcp", "localhost:2017")
-	CheckError(err)
+	checkError(err)
 	fmt.Println("连接成功!")
 
 	readerChannel := make(chan []byte, 2)
 
 	//接收消息
-	go DealContent(readerChannel)
-	go ReadAll(conn, readerChannel)
+	go dealContent(readerChannel)
+	go readAll(conn, readerChannel)
 
 	//输入
 	inputReader := bufio.NewReader(os.Stdin)
@@ -124,11 +124,11 @@ func connectServer() {
 	}
 }
 
-func ReadAll(conn net.Conn, readerChannel chan []byte) {
+func readAll(conn net.Conn, readerChannel chan []byte) {
 
 	// 缓冲区，存储被截断的数据
+	defer conn.Close()
 	tmpBuffer := make([]byte, 0)
-
 	buffer := make([]byte, 1024)
 	for {
 		n, err := conn.Read(buffer)
@@ -137,21 +137,20 @@ func ReadAll(conn net.Conn, readerChannel chan []byte) {
 			return
 		}
 
-		tmpBuffer = Depack(append(tmpBuffer, buffer[:n]...), readerChannel)
+		tmpBuffer = depack(append(tmpBuffer, buffer[:n]...), readerChannel)
 	}
-	defer conn.Close()
 }
 
-func DealContent(readerChannel chan []byte) {
+func dealContent(readerChannel chan []byte) {
 	for {
 		select {
 		case data := <-readerChannel:
-			DepackContent(data)
+			depackContent(data)
 		}
 	}
 }
 
-func CheckError(err error) {
+func checkError(err error) {
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Fatal error: %s", err.Error())
 		os.Exit(1)

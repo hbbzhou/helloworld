@@ -460,3 +460,80 @@ func ReadWrite() bool {
 }
 #endif
 
+#protobuff
+#if
+
+import (
+	"example"
+	"fmt"
+
+	"github.com/golang/protobuf/proto"
+)
+
+func init() {
+	fmt.Printf("[auto run] init \n")
+}
+
+func wait() {
+	a := ""
+	fmt.Println("wait...")
+	fmt.Scanf("%s", &a)
+	fmt.Println(a)
+}
+
+func main() {
+	test := &example.Player{
+		Name: proto.String("zhou"),
+		Info: &example.Test{
+			Label: proto.String("hbb"),
+		},
+	}
+
+	println(test.GetName(), test.GetInfo().GetLabel())
+}
+
+// test.proto 文件
+// package example;
+
+// enum FOO { X = 17; };
+
+// message Test {
+// optional string label = 1;
+// optional int32 type = 2 [default=77];
+// optional int64 reps = 3;
+// }
+
+// test_user.proto 文件
+// import "test.proto";
+// package example;
+
+// message player {
+// 	optional string name = 1;
+// 	optional Test info = 2;
+// }
+
+// //命令
+// protoc --go_out=go_proto test.proto
+// protoc --go_out=go_proto test_user.proto test.proto
+#endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

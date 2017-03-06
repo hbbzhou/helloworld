@@ -28,7 +28,7 @@ namespace basefun {
 	}
 	
 	
-	long GetCurrentTime()//获取毫秒
+	long GetMSec()//获取毫秒
 	{
 		struct timeb tv;
 		ftime(&tv);
