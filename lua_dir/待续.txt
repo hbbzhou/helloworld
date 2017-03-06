@@ -1,0 +1,15 @@
+﻿
+lua与c 交互
+http://www.kancloud.cn/thinkphp/lua-guide/43809
+
+lua 文中文档
+http://cloudwu.github.io/lua53doc/
+
+lua安装
+http://www.cnblogs.com/osyun/archive/2012/01/12/2320698.html
+
+//tolua 的使用
+http://blog.csdn.net/devday/article/details/5796610
+https://github.com/dabing1022/Blog/tree/master/tolua
+http://www.cppblog.com/heath/archive/2009/01/18/72254.html
+

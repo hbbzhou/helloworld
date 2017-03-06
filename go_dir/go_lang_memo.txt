@@ -640,6 +640,8 @@ func (p *GameClient) sendMsg(msg []byte) (int, error) {
 }
 
 //连接服务器
+//等同于 c++模版connectServer(string, T)
+//编写顺序:先定义 [类] , 接着 定义 [接口]
 func (p *GameClient) connectServer(ip string, deal IGameDeal) {
 	p.strIPAndPort = ip
 	//连接

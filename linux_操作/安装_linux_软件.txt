@@ -1,0 +1,98 @@
+﻿
+//安装svn
+#if
+
+
+1.环境
+centos6.4
+
+2.安装svn
+yum -y install subversion
+
+3.配置
+
+建立版本库目录
+mkdir /var/www/svndata
+
+svnserve -d -r /var/www/svndata
+
+4.建立版本库
+
+创建一个新的xx项目
+svnadmin create /var/www/svndata/hbb_python
+
+配置允许用户hbb访问
+cd /var/www/svndata/hbb_python/conf
+
+vi svnserve.conf
+anon-access=none
+auth-access=write
+password-db=passwd
+
+注：修改的文件前面不能有空格，否则启动svn server出错
+
+vi passwd
+[users]
+#<用户1> = <密码1>
+#<用户2> = <密码2>
+jiqing=123456
+
+5.客户端连接
+svn co svn://ip/hbb_python
+用户名:jiqing
+
+密码：123456
+
+#endif
+
+//安装redis
+#if
+
+首先为yum添加epel源：yum install epel-release回车
+再次：yum install redis回车
+
+#endif
+
+//安装 go
+#if
+
+sudo yum install golang
+
+#endif
+
+//安装 阿帕奇
+#if
+
+####linux yum安装 Apache：--------
+yum install httpd
+
+##启动服务
+/etc/init.d/httpd start
+
+##验证是否安装成功
+现在打开http://ip地址，看看有没有Apache的默认页面出来了?如果有就对了。
+
+##安装目录介绍
+Apache默认将网站的根目录指向/var/www/html 目录 
+默认的主配置文件是/etc/httpd/conf/httpd.conf
+配置存储在的/etc/httpd/conf.d/目录
+--------------------------------
+
+####linux 设置Apache开机自启动：--
+chkconfig httpd on
+------------------------------------ 
+
+#endif
+
+
+
+
+
+
+
+
+
+
+
+
+
