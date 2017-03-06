@@ -15,56 +15,6 @@ func init() {
 	fmt.Printf("[auto run] init \n")
 }
 
-func wait() {
-	a := ""
-	fmt.Println("wait...")
-	fmt.Scanf("%s", &a)
-	fmt.Println(a)
-}
-
-const _HeaderLength = 2
-const _IDLength = 2
-
-//封包
-func enpack(message []byte) []byte {
-	return append(append(intToBytes(len(message)+_IDLength), intToBytes(10)...), message...)
-}
-
-func depackContent(buffer []byte) {
-	msgLen := len(buffer)
-	if msgLen < _IDLength {
-		println("error ")
-	} else {
-		msgID := bytesToInt(buffer[0:_HeaderLength])
-		println("消息id:", msgID, "内容:", string(buffer[_HeaderLength:]))
-	}
-}
-
-//解包
-func depack(buffer []byte, readerChannel chan []byte) []byte {
-	length := len(buffer)
-
-	var i int
-	for i = 0; i < length; i = i + 1 {
-		if length < i+_HeaderLength {
-			break
-		}
-		msgLen := bytesToInt(buffer[i : i+_HeaderLength])
-		println("消息长度:", msgLen)
-
-		if length < i+_HeaderLength+msgLen {
-			break
-		}
-		data := buffer[i+_HeaderLength : i+_HeaderLength+msgLen]
-		readerChannel <- data
-	}
-
-	if i == length {
-		return make([]byte, 0)
-	}
-	return buffer[i:]
-}
-
 //整形转换成字节
 func intToBytes(n int) []byte {
 	x := uint16(n)
@@ -83,48 +33,139 @@ func bytesToInt(b []byte) int {
 	return int(x)
 }
 
-func sendMsg(c net.Conn, msg []byte) (int, error) {
-	return c.Write(enpack(msg))
+const _HeaderLength = 2
+const _IDLength = 2
+
+type GameClient struct {
+	strName      string
+	strIPAndPort string
+	oConn        net.Conn
+	oReaderChan  chan []byte
 }
 
-//连接服务器
-func connectServer() {
-	//接通
-	conn, err := net.Dial("tcp", "localhost:2017")
-	checkError(err)
-	fmt.Println("连接成功!")
+type IGameDeal interface {
+	dealMsg(chan []byte, GameClient)
+}
 
-	readerChannel := make(chan []byte, 2)
+type DealLogin struct {
+}
 
-	//接收消息
-	go dealContent(readerChannel)
-	go readAll(conn, readerChannel)
-
-	//输入
-	inputReader := bufio.NewReader(os.Stdin)
-	fmt.Println("who?")
-	name, _ := inputReader.ReadString('\n')
-	//
-	trimName := strings.Trim(name, "\r\n")
-	sendMsg(conn, []byte(trimName+" join\n "))
+//处理消息
+func (p *DealLogin) dealMsg(readerChannel chan []byte, oClient GameClient) {
 	for {
-		fmt.Println("-按quit退出-")
-		//读一行
-		input, _ := inputReader.ReadString('\n')
-		trimInput := strings.Trim(input, "\r\n")
-		//如果quit就退出
-		if trimInput == "quit" {
-			fmt.Println("再见")
-			sendMsg(conn, []byte(trimName+" 退出了 "))
-			time.Sleep(1 * time.Second)
-			return
+		select {
+		case data := <-readerChannel:
+			msgLen := len(data)
+			if msgLen < _IDLength {
+				println("error ")
+			} else {
+				msgID := bytesToInt(data[0:_HeaderLength])
+				println("[login]消息id:", msgID, "内容:", string(data[_HeaderLength:]))
+				//oClient.sendMsg([]byte(" deal msg ok\n "))
+			}
 		}
-		//发送消息
-		_, err = sendMsg(conn, []byte(trimName+" [says:]"+trimInput))
 	}
 }
 
-func readAll(conn net.Conn, readerChannel chan []byte) {
+type DealGate struct {
+}
+
+//处理消息
+func (p *DealGate) dealMsg(readerChannel chan []byte, oClient GameClient) {
+	for {
+		select {
+		case data := <-readerChannel:
+			msgLen := len(data)
+			if msgLen < _IDLength {
+				println("error ")
+			} else {
+				msgID := bytesToInt(data[0:_HeaderLength])
+				println("[gate]消息id:", msgID, "内容:", string(data[_HeaderLength:]))
+				//oClient.sendMsg([]byte(" deal msg ok\n "))
+			}
+		}
+	}
+}
+
+//封包
+func (p *GameClient) enpack(message []byte) []byte {
+	return append(append(intToBytes(len(message)+_IDLength), intToBytes(10)...), message...)
+}
+
+//解析正文
+func (p *GameClient) depackContent(buffer []byte) {
+	msgLen := len(buffer)
+	if msgLen < _IDLength {
+		println("error ")
+	} else {
+		msgID := bytesToInt(buffer[0:_HeaderLength])
+		println("消息id:", msgID, "内容:", string(buffer[_HeaderLength:]))
+	}
+}
+
+//解包
+func (p *GameClient) depack(buffer []byte, readerChannel chan []byte) []byte {
+	length := len(buffer)
+
+	var i int
+	for i = 0; i < length; {
+		if length < i+_HeaderLength {
+			break
+		}
+		msgLen := bytesToInt(buffer[i : i+_HeaderLength])
+		println("消息长度:", msgLen)
+
+		if length < i+_HeaderLength+msgLen {
+			break
+		}
+		data := buffer[i+_HeaderLength : i+_HeaderLength+msgLen]
+		readerChannel <- data
+		i = i + _HeaderLength + msgLen
+	}
+
+	if i == length {
+		return make([]byte, 0)
+	}
+	return buffer[i:]
+}
+
+//发送消息
+func (p *GameClient) sendMsg(msg []byte) (int, error) {
+	return p.oConn.Write(p.enpack(msg))
+}
+
+//连接服务器
+func (p *GameClient) connectServer(ip string, deal IGameDeal) {
+	p.strIPAndPort = ip
+	//连接
+	var err error
+	p.oConn, err = net.Dial("tcp", p.strIPAndPort)
+	p.checkError(err)
+	fmt.Println(p.strName, " 连接成功!")
+
+	p.oReaderChan = make(chan []byte, 1024)
+
+	//接收消息
+	go deal.dealMsg(p.oReaderChan, *p)
+	go p.readAll(p.oConn, p.oReaderChan)
+
+	inputReader := bufio.NewReader(os.Stdin)
+	//如果quit就退出
+	for {
+		input, _ := inputReader.ReadString('\n')
+		trimInput := strings.Trim(input, "\r\n")
+		if trimInput == "quit" {
+			fmt.Println("再见")
+			time.Sleep(1 * time.Second)
+			return
+		}
+
+		p.sendMsg([]byte(trimInput))
+	}
+}
+
+//
+func (p *GameClient) readAll(conn net.Conn, readerChannel chan []byte) {
 
 	// 缓冲区，存储被截断的数据
 	defer conn.Close()
@@ -137,29 +178,23 @@ func readAll(conn net.Conn, readerChannel chan []byte) {
 			return
 		}
 
-		tmpBuffer = depack(append(tmpBuffer, buffer[:n]...), readerChannel)
+		tmpBuffer = p.depack(append(tmpBuffer, buffer[:n]...), readerChannel)
 	}
 }
 
-func dealContent(readerChannel chan []byte) {
-	for {
-		select {
-		case data := <-readerChannel:
-			depackContent(data)
-		}
-	}
-}
-
-func checkError(err error) {
+func (p *GameClient) checkError(err error) {
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Fatal error: %s", err.Error())
+		fmt.Fprintf(os.Stderr, "%s Fatal error: %s", p.strName, err.Error())
 		os.Exit(1)
 	}
 }
 
+//
 func main() {
+	oClient := new(GameClient)
+	//oDealLogin := new(DealLogin)
+	oDealGate := new(DealGate)
+	oClient.connectServer("localhost:2017", oDealGate)
 
-	//连接servser
-	connectServer()
 	fmt.Printf("[end...]  \n")
 }
