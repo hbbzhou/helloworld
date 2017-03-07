@@ -19,8 +19,19 @@ def SetPath():
 def ResetPath():
 	os.chdir(g_old_path )	
 	
-time.sleep(2)
-os.system("pause")
+
+#定时	
+def test2():
+	time.sleep(2)
+	os.system("pause")
+
+#参数
+def test1():
+	if len(sys.argv) == 1:
+		os.system("pause")
+		return
+	str_argv_1 = sys.argv[1]
+
 
 if __name__ == "__main__":
 	pass

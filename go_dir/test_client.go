@@ -12,7 +12,7 @@ import (
 )
 
 func init() {
-	fmt.Printf("[auto run] init \n")
+	fmt.Printf("[auto run] Go编码规范指南 \n")
 }
 
 //整形转换成字节
@@ -36,23 +36,24 @@ func bytesToInt(b []byte) int {
 const _HeaderLength = 2
 const _IDLength = 2
 
-//客户端_联网
-type _GameClient struct {
+//NetClient 客户端_联网
+type NetClient struct {
 	strName      string
-	strIPAndPort string
+	strIPAndPort string //localhost:2017
 	oConn        net.Conn
-	oReaderChan  chan []byte
+	oReaderChan  chan []byte //receive data chan
 }
 
-type _IGameDeal interface {
-	dealMsg(chan []byte, _GameClient)
+//IGameDeal 处理消息的接口
+type IGameDeal interface {
+	dealMsg(chan []byte, NetClient)
 }
 
 type dealLogin struct {
 }
 
 //处理消息
-func (p *dealLogin) dealMsg(readerChannel chan []byte, oClient _GameClient) {
+func (p *dealLogin) dealMsg(readerChannel chan []byte, oClient NetClient) {
 	for {
 		select {
 		case data := <-readerChannel:
@@ -72,7 +73,7 @@ type dealGate struct {
 }
 
 //处理消息
-func (p *dealGate) dealMsg(readerChannel chan []byte, oClient _GameClient) {
+func (p *dealGate) dealMsg(readerChannel chan []byte, oClient NetClient) {
 	for {
 		select {
 		case data := <-readerChannel:
@@ -89,12 +90,12 @@ func (p *dealGate) dealMsg(readerChannel chan []byte, oClient _GameClient) {
 }
 
 //封包
-func (p *_GameClient) enpack(message []byte) []byte {
+func (p *NetClient) enpack(message []byte) []byte {
 	return append(append(intToBytes(len(message)+_IDLength), intToBytes(10)...), message...)
 }
 
 //解析正文
-func (p *_GameClient) depackContent(buffer []byte) {
+func (p *NetClient) depackContent(buffer []byte) {
 	msgLen := len(buffer)
 	if msgLen < _IDLength {
 		println("error ")
@@ -105,7 +106,7 @@ func (p *_GameClient) depackContent(buffer []byte) {
 }
 
 //解包
-func (p *_GameClient) depack(buffer []byte, readerChannel chan []byte) []byte {
+func (p *NetClient) depack(buffer []byte, readerChannel chan []byte) []byte {
 	length := len(buffer)
 
 	var i int
@@ -131,14 +132,14 @@ func (p *_GameClient) depack(buffer []byte, readerChannel chan []byte) []byte {
 }
 
 //发送消息
-func (p *_GameClient) sendMsg(msg []byte) (int, error) {
+func (p *NetClient) sendMsg(msg []byte) (int, error) {
 	return p.oConn.Write(p.enpack(msg))
 }
 
 //连接服务器
 //等同于 c++模版connectServer(string, T)
 //编写顺序:先定义 [类] , 接着 定义 [接口]
-func (p *_GameClient) connectServer(ip string, deal _IGameDeal) {
+func (p *NetClient) connectServer(ip string, deal IGameDeal) {
 	p.strIPAndPort = ip
 	//连接
 	var err error
@@ -168,7 +169,7 @@ func (p *_GameClient) connectServer(ip string, deal _IGameDeal) {
 }
 
 //
-func (p *_GameClient) readAll(conn net.Conn, readerChannel chan []byte) {
+func (p *NetClient) readAll(conn net.Conn, readerChannel chan []byte) {
 
 	// 缓冲区，存储被截断的数据
 	defer conn.Close()
@@ -185,7 +186,7 @@ func (p *_GameClient) readAll(conn net.Conn, readerChannel chan []byte) {
 	}
 }
 
-func (p *_GameClient) checkError(err error) {
+func (p *NetClient) checkError(err error) {
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%s Fatal error: %s", p.strName, err.Error())
 		os.Exit(1)
@@ -194,7 +195,7 @@ func (p *_GameClient) checkError(err error) {
 
 //
 func main() {
-	oClient := new(_GameClient)
+	oClient := new(NetClient)
 	//oDealLogin := new(dealLogin)
 	oDealGate := new(dealGate)
 	oClient.connectServer("localhost:2017", oDealGate)

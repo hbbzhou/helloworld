@@ -1,5 +1,10 @@
 ﻿
-
+//阅读 Go编码规范指南
+#if
+百度 Go编码规范指南
+例如:
+http://studygolang.com/articles/2059
+#endif
 
 //显示到屏幕
 #if 0
