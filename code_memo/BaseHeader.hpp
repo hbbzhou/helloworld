@@ -7,27 +7,30 @@
 namespace basefun {
 #define ONE_DAY_SECOND (60*60*24)
 
-	int GetSecondNowToSomeTime(int second)
+	//获取时间差
+	//例如:假设现在为 3:00 点钟;
+	//如果:hour_and_minute = 60*60 那么 结果就是 60*60*22
+	//如果:hour_and_minute = 4*60*60 那么 结果就是 60*60
+	uint32 GetSecondDiff(uint32 hour_and_minute) const
 	{
-		int n_diff = time(NULL) % ONE_DAY_SECOND;
-		if (n_diff < second) {
-			return second - n_diff;
+		uint32 n_diff = GetCurSecond() % SECOND2DAY;
+		if (n_diff < hour_and_minute) {
+			return hour_and_minute - n_diff;
 		}
 
-		return ONE_DAY_SECOND + second - n_diff;
+		return SECOND2DAY + hour_and_minute - n_diff;
 	}
 
-	int GetSecondSomeTimeToSomeTime(int some_time, int second)
+	uint32 GetSecondDiff(uint32 begin_time, uint32 hour_and_minute)const
 	{
-		int n_diff = some_time % ONE_DAY_SECOND;
-		if (n_diff < second) {
-			return second - n_diff;
+		uint32 n_diff = begin_time % SECOND2DAY;
+		if (n_diff < hour_and_minute) {
+			return hour_and_minute - n_diff;
 		}
 
-		return ONE_DAY_SECOND + second - n_diff;
+		return SECOND2DAY + hour_and_minute - n_diff;
 	}
-	
-	
+
 	long GetMSec()//获取毫秒
 	{
 		struct timeb tv;
