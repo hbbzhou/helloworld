@@ -1,9 +1,25 @@
 ﻿
-//阅读 Go编码规范指南
+//前言
 #if
-百度 Go编码规范指南
-例如:
+[百度 Go编码规范指南]
 http://studygolang.com/articles/2059
+
+@学习链接
+http://www.runoob.com/go/go-tutorial.html
+http://www.yiibai.com/go/go_echo.html#go_echo
+
+@安装
+sudo yum install golang
+
+@常用命令
+go build
+go run test.go
+
+:go的 特殊
+没有构造函数
+new 相当一个函数
+defer 一个函数退出时,运行的语句
+
 #endif
 
 //显示到屏幕
@@ -20,6 +36,7 @@ func print_() {
 
 //map 容器的使用
 #if 0
+
 func map_() {
 	countryCapitalMap := make(map[string]string)
 	countryCapitalMap["France"] = "Paris"
@@ -31,8 +48,8 @@ func map_() {
 		fmt.Println("Capital of", country, "is", countryCapitalMap[country])
 	}
 
+	//查找key是否存在
 	captial, ok := countryCapitalMap["United States"]
-
 	if ok {
 		fmt.Println("Capital of United States is", captial)
 	} else {
@@ -40,6 +57,7 @@ func map_() {
 	}
 
 }
+
 #endif
 
 //类的使用
@@ -92,6 +110,28 @@ func main() {
 	var oS = new(S)
 	oS.Set(100)
 	f(oS)
+}
+#endif
+
+//工厂模式
+#if
+
+func initDealFun() {
+	mapDealFun := make(map[int]iGameDealOne)
+	mapDealFun[1] = new(msg1)
+}
+
+//IGameDeal 处理消息的接口//把这个看成函数指针
+type iGameDealOne interface {
+	dealOneMsg(msgContent string, oClient NetClient)
+}
+//看成 类的定义
+type msg1 struct {
+}
+
+//处理消息//看成类的实现
+func (p *msg1) dealOneMsg(msgContent string, oClient NetClient) {
+	//oClient.sendMsg([]byte(" deal msg ok\n "))
 }
 #endif
 
@@ -468,6 +508,44 @@ func ReadWrite() bool {
 //protobuff 的使用
 #if
 
+/*
+[安装][百度 go protobuff 安装]
+1.由于外网经常被封，把go版本的protobuf下载到本地，基本上是protobuf-master.zip这个形式。
+go版本的protobuf的下载地址为https://github.com/golang/protobuf
+2.将这个protobuf-master.zip加压后，改名为protobuf目录，并且在当前go工程的src目录下，新建一个子目录 github.com ，然后进入，
+再新建一个子目录golang然后把刚才改名为protobuf的目录，全部拷贝到刚才的golang文件夹里面 ok！
+
+3.在linux平台下，进入此protobuf文件夹，make 就OK了，会生成protoc可执行文件在gobin文件里里面，并且生成相关的.a文件在当前go工程的pkg文件夹里。
+4.在windows平台下，我使用的是LiteIDE工具，先在proto文件夹上右键点击go install ， 然后在protoc-gen-go文件夹上右键点击go install。
+在当前go工程的bin文件夹下会生成protoc-gen-go可执行文件进入自定义的.proto文件所在的文件夹，
+输入命令 protoc  --go_out=./ ***.proto，则在当前文件夹下生成***.go文件。
+*/
+
+/*
+ [命令]
+ protoc --go_out=go_proto test_user.proto test.proto
+
+ [test.proto 文件]
+ package example;
+
+ enum FOO { X = 17; };
+
+ message Test {
+ optional string label = 1;
+ optional int32 type = 2 [default=77];
+ optional int64 reps = 3;
+ }
+
+ [test_user.proto 文件]
+ import "test.proto";
+ package example;
+
+ message player {
+ 	optional string name = 1;
+ 	optional Test info = 2;
+ }
+*/
+
 import (
 	"example"
 	"fmt"
@@ -497,29 +575,7 @@ func main() {
 	println(test.GetName(), test.GetInfo().GetLabel())
 }
 
-// test.proto 文件
-// package example;
 
-// enum FOO { X = 17; };
-
-// message Test {
-// optional string label = 1;
-// optional int32 type = 2 [default=77];
-// optional int64 reps = 3;
-// }
-
-// test_user.proto 文件
-// import "test.proto";
-// package example;
-
-// message player {
-// 	optional string name = 1;
-// 	optional Test info = 2;
-// }
-
-// //命令
-// protoc --go_out=go_proto test.proto
-// protoc --go_out=go_proto test_user.proto test.proto
 #endif
 
 //客户端_联网
@@ -713,9 +769,83 @@ func main() {
 
 #endif
 
+//变量为_引用赋值?
+#if
+
+func main() {
+	num := 6
+	num2 := num //内容拷贝
+	num += 2
+	println(num2)
+}
+
+func main() {
+	str := "6"
+	str1 := str //内容拷贝
+	str += "2"
+	println(str)
+	println(str1)
+
+}
+
+func main() {
+	pbuffer := make([]byte, 1024)
+	pbuffer1 := pbuffer	//内容拷贝//内容为地址
+	pbuffer[0] = 5
+	println(pbuffer[0])
+	println(pbuffer1[0])
+}
+
+func main() {
+	pmap := make(map[int]string)
+	pmap2 := pmap	//内容拷贝//内容为地址
+	pmap[0] = "5"
+	println(pmap[0])
+	println(pmap2[0])
+}
+
+func main() {
+	ptestOne := new(test)
+	ptestOne1 := ptestOne	//内容拷贝//内容为地址
+	ptestOne.num = 5
+	println(ptestOne)
+	println(ptestOne1)
+	println(ptestOne.num)
+	println(ptestOne1.num)
+}
 
 
+#endif
 
+//参数为_引用传递?
+#if 
+
+type test struct {
+	num int
+}
+
+//参数是个地址
+func test1(pTest *test) {
+	pTest.num = 6
+}
+
+//参数是一个拷贝
+func test2(pTest test) {
+	pTest.num = 6
+}
+
+func main() {
+	ptestOne := new(test)
+	ptestOne1 := ptestOne
+	test2(*ptestOne)
+	println(ptestOne.num) //输出0
+	println(ptestOne1.num)//输出0
+	test1(ptestOne)
+	println(ptestOne.num)//输出6
+	println(ptestOne1.num)//输出6
+}
+
+#endif
 
 
 

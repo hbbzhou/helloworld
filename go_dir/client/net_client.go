@@ -5,7 +5,7 @@ package client
 oClient := new(client.NetClient)	//定义一个客户端
 oDealLogin := new(client.DealLogin)	//设置处理消息模块
 oDealGate := new(client.DealGate)	//设置处理消息模块
-oClient.ConnectServer("localhost:2017", oDealGate)	//连接网络
+oClient.Run("localhost:2017", oDealGate)	//连接网络
 */
 
 import (
@@ -46,11 +46,18 @@ type NetClient struct {
 	strIPAndPort string //localhost:2017
 	oConn        net.Conn
 	oReaderChan  chan []byte //receive data chan
+	mapDealFun   map[int]IGameDealOne
 }
 
 //IGameDeal 处理消息的接口
 type IGameDeal interface {
-	dealMsg(chan []byte, NetClient)
+	initDealFun(NetClient)
+	//dealMsgStep2(int, []byte, NetClient)
+}
+
+//IGameDealOne 处理消息的接口//把这个看成函数指针
+type IGameDealOne interface {
+	dealMsgStep3(msgContent []byte, oClient NetClient)
 }
 
 //封包
@@ -100,10 +107,31 @@ func (p *NetClient) sendMsg(msg []byte) (int, error) {
 	return p.oConn.Write(p.enpack(msg))
 }
 
-//ConnectServer 连接服务器
+//处理消息
+func (p *NetClient) dealMsgStep1(readerChannel chan []byte, deal IGameDeal) {
+	for {
+		select {
+		case data := <-readerChannel:
+			msgLen := len(data)
+			if msgLen < _IDLength {
+				println("error ")
+			} else {
+				msgID := bytesToInt(data[0:_HeaderLength])
+				println("[login]消息id:", msgID, "内容:", string(data[_HeaderLength:]))
+				if v, ok := p.mapDealFun[msgID]; ok {
+					v.dealMsgStep3(data[_HeaderLength:], *p)
+				} else {
+					println("not find deal func")
+				}
+			}
+		}
+	}
+}
+
+//Run 连接服务器
 //等同于 c++模版connectServer(string, T)
 //编写顺序:先定义 [类] , 接着 定义 [接口]
-func (p *NetClient) ConnectServer(ip string, deal IGameDeal) {
+func (p *NetClient) Run(ip string, deal IGameDeal) {
 	p.strIPAndPort = ip
 	//连接
 	var err error
@@ -111,10 +139,14 @@ func (p *NetClient) ConnectServer(ip string, deal IGameDeal) {
 	p.checkError(err)
 	fmt.Println(p.strName, " 连接成功!")
 
+	//初始化容器
 	p.oReaderChan = make(chan []byte, 1024)
 
+	//处理消息
+	p.mapDealFun = make(map[int]IGameDealOne)
+	deal.initDealFun(*p)
+	go p.dealMsgStep1(p.oReaderChan, deal)
 	//接收消息
-	go deal.dealMsg(p.oReaderChan, *p)
 	go p.readAll(p.oConn, p.oReaderChan)
 
 	inputReader := bufio.NewReader(os.Stdin)
