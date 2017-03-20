@@ -780,12 +780,11 @@ func main() {
 }
 
 func main() {
-	str := "6"
+	str := "6"	//go 的string 类似int类型 是内容拷贝
 	str1 := str //内容拷贝
 	str += "2"
 	println(str)
 	println(str1)
-
 }
 
 func main() {

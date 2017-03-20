@@ -59,8 +59,8 @@ def ReadAll():
 				#	break
 
 				if v.isBody == False:
-					print "receive head:",len(data)
 					v.nReadLen = struct.unpack("!h", data)[0]
+					print "receive head:",len(data) , "data:" , v.nReadLen
 					v.isBody = True
 				else :	
 					v.isBody = False

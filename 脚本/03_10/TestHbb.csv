@@ -1,0 +1,4 @@
+"属性ID	",属性值:权重;,技能a,技能名字,技能伤害,技能列表,技能名字列表,技能伤害列表,单个奖励,奖励列表,奖励列表
+#ID,ValueWeights,skillID,skillName,skillDamage,allSkillID,allSkillName,allSkillDamage,reward3,reward,reward2
+int,vector:SWeight[int:id;int:value],int,string,float,vector:int[],vector:string[],vector:float[],class:SItem[int:type;int:id;int:acount],class:SItem[int:type;int:id;int:acount],class:SItem[int:type;int:id;int:acount]
+20101,2:60;3:40;,305,hbb,1.2,201;203;204;205;,sk1;sk2;sk3;sk5;,1.2;1.3;1.4;,1:0:100;,1:0:100;2:0:200;,1:0:100;2:0:200;
