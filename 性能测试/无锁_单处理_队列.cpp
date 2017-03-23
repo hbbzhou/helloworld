@@ -1,4 +1,6 @@
 
+//°Ù¶È:kfifo
+
 #include <stdio.h>
 #include <windows.h>
 #include <map>

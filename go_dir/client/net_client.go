@@ -2,21 +2,19 @@ package client
 
 /*
 //使用说明
-oClient := new(client.NetClient)	//定义一个客户端
-oDealLogin := new(client.DealLogin)	//设置处理消息模块
-oDealGate := new(client.DealGate)	//设置处理消息模块
-oClient.Run("localhost:2017", oDealGate)	//连接网络
+pClient := new(client.NetClient) //定义一个客户端
+//pDealLogin := new(client.DealLogin) //设置处理消息模块
+pDealGate := new(client.DealGate)        //设置处理消息模块
+pClient.Run("localhost:2017", pDealGate) //连接网络
 */
 
 import (
-	"bufio"
 	"bytes"
 	"encoding/binary"
 	"fmt"
 	"net"
 	"os"
-	"strings"
-	"time"
+	"strconv"
 )
 
 //整形转换成字节
@@ -37,43 +35,45 @@ func bytesToInt(b []byte) int {
 	return int(x)
 }
 
-const _HeaderLength = 2
-const _IDLength = 2
+const _HeaderLength = 2 //2字节 描述消息长度
+const _IDLength = 2     //2字节 描述消息的id
+
+//Player 玩家数据
+type Player struct {
+	StrGateIP      string
+	NGatePort      int32
+	strAccount     string
+	nCheckServerID uint64
+	nUUID          uint64
+	strName        string
+}
 
 //NetClient 客户端_联网
 type NetClient struct {
 	strName      string
 	strIPAndPort string //localhost:2017
-	oConn        net.Conn
-	oReaderChan  chan []byte //receive data chan
-	mapDealFun   map[int]IGameDealOne
+	pConn        net.Conn
+	IsColse      bool
+	pReaderChan  chan []byte //receive data chan
+	pMapDealFun  map[int]IGameDealOne
+	pDealInit    IGameDeal
+	pPlayer      *Player
 }
 
 //IGameDeal 处理消息的接口
 type IGameDeal interface {
-	initDealFun(NetClient)
+	initDealFun(*NetClient)
 	//dealMsgStep2(int, []byte, NetClient)
 }
 
 //IGameDealOne 处理消息的接口//把这个看成函数指针
 type IGameDealOne interface {
-	dealMsgStep3(msgContent []byte, oClient NetClient)
+	dealMsgStep3([]byte, *NetClient) int
 }
 
 //封包
-func (p *NetClient) enpack(message []byte) []byte {
-	return append(append(intToBytes(len(message)+_IDLength), intToBytes(10)...), message...)
-}
-
-//解析正文
-func (p *NetClient) depackContent(buffer []byte) {
-	msgLen := len(buffer)
-	if msgLen < _IDLength {
-		println("error ")
-	} else {
-		msgID := bytesToInt(buffer[0:_HeaderLength])
-		println("消息id:", msgID, "内容:", string(buffer[_HeaderLength:]))
-	}
+func (p *NetClient) enpack(message []byte, msgID int) []byte {
+	return append(append(intToBytes(len(message)+_IDLength), intToBytes(msgID)...), message...)
 }
 
 //解包
@@ -103,64 +103,113 @@ func (p *NetClient) depack(buffer []byte, readerChannel chan []byte) []byte {
 }
 
 //发送消息
-func (p *NetClient) sendMsg(msg []byte) (int, error) {
-	return p.oConn.Write(p.enpack(msg))
+func (p *NetClient) sendMsg(msg []byte, msgID int) (int, error) {
+	return p.pConn.Write(p.enpack(msg, msgID))
 }
 
 //处理消息
 func (p *NetClient) dealMsgStep1(readerChannel chan []byte, deal IGameDeal) {
+	defer println("end dealMsgStep1")
 	for {
 		select {
-		case data := <-readerChannel:
+		case data, ok := <-readerChannel:
+			if ok == false {
+				return
+			}
+
 			msgLen := len(data)
 			if msgLen < _IDLength {
 				println("error ")
 			} else {
 				msgID := bytesToInt(data[0:_HeaderLength])
-				println("[login]消息id:", msgID, "内容:", string(data[_HeaderLength:]))
-				if v, ok := p.mapDealFun[msgID]; ok {
-					v.dealMsgStep3(data[_HeaderLength:], *p)
+				println("[receive]消息id:", msgID)
+				if v, ok := p.pMapDealFun[msgID]; ok {
+					v.dealMsgStep3(data[_HeaderLength:], p)
 				} else {
 					println("not find deal func")
 				}
 			}
 		}
 	}
+
+	// for data := range readerChannel {
+	// 	msgLen := len(data)
+	// 	if msgLen < _IDLength {
+	// 		println("error ")
+	// 	} else {
+	// 		msgID := bytesToInt(data[0:_HeaderLength])
+	// 		println("[receive]消息id:", msgID)
+	// 		if v, ok := p.pMapDealFun[msgID]; ok {
+	// 			v.dealMsgStep3(data[_HeaderLength:], p)
+	// 		} else {
+	// 			println("not find deal func")
+	// 		}
+	// 	}
+	// }
+
 }
 
 //Run 连接服务器
 //等同于 c++模版connectServer(string, T)
 //编写顺序:先定义 [类] , 接着 定义 [接口]
-func (p *NetClient) Run(ip string, deal IGameDeal) {
-	p.strIPAndPort = ip
+func (p *NetClient) Run(ip string, port int32, deal IGameDeal, pPlayer *Player) {
+	p.pDealInit = deal
+	p.pPlayer = pPlayer
+	p.strIPAndPort = ip + ":" + strconv.Itoa(int(port))
+
+	//初始化
+	p.pMapDealFun = make(map[int]IGameDealOne)
+	p.pDealInit.initDealFun(p)
+
+	p.baseRun()
+
+	// inputReader := bufio.NewReader(os.Stdin)
+	// //如果quit就退出
+	// for {
+	// 	input, _ := inputReader.ReadString('\n')
+	// 	trimInput := strings.Trim(input, "\r\n")
+	// 	if trimInput == "quit" {
+	// 		fmt.Println("再见")
+	// 		time.Sleep(1 * time.Second)
+	// 		return
+	// 	}
+
+	// 	p.sendMsg([]byte(trimInput), 10)
+	// }
+}
+
+func (p *NetClient) baseRun() {
 	//连接
 	var err error
-	p.oConn, err = net.Dial("tcp", p.strIPAndPort)
+	p.pConn, err = net.Dial("tcp", p.strIPAndPort)
 	p.checkError(err)
 	fmt.Println(p.strName, " 连接成功!")
 
-	//初始化容器
-	p.oReaderChan = make(chan []byte, 1024)
-
+	p.IsColse = false
+	p.pReaderChan = make(chan []byte, 1024)
 	//处理消息
-	p.mapDealFun = make(map[int]IGameDealOne)
-	deal.initDealFun(*p)
-	go p.dealMsgStep1(p.oReaderChan, deal)
+	go p.dealMsgStep1(p.pReaderChan, p.pDealInit)
 	//接收消息
-	go p.readAll(p.oConn, p.oReaderChan)
+	go p.readAll(p.pConn, p.pReaderChan)
+}
 
-	inputReader := bufio.NewReader(os.Stdin)
-	//如果quit就退出
-	for {
-		input, _ := inputReader.ReadString('\n')
-		trimInput := strings.Trim(input, "\r\n")
-		if trimInput == "quit" {
-			fmt.Println("再见")
-			time.Sleep(1 * time.Second)
-			return
-		}
+//Rerun zan wu
+func (p *NetClient) Rerun() {
+	if p.IsColse == true {
+		p.baseRun()
+	}
+}
 
-		p.sendMsg([]byte(trimInput))
+//Close zan wu
+func (p *NetClient) Close() {
+	p.baseClose(p.pConn, p.pReaderChan)
+}
+
+func (p *NetClient) baseClose(conn net.Conn, readerChannel chan []byte) {
+	if p.IsColse == false {
+		p.IsColse = true
+		conn.Close()
+		close(readerChannel)
 	}
 }
 
@@ -168,17 +217,17 @@ func (p *NetClient) Run(ip string, deal IGameDeal) {
 func (p *NetClient) readAll(conn net.Conn, readerChannel chan []byte) {
 
 	// 缓冲区，存储被截断的数据
-	defer conn.Close()
-	tmpBuffer := make([]byte, 0)
-	buffer := make([]byte, 1024)
+	defer p.baseClose(conn, readerChannel)
+	pTmpBuffer := make([]byte, 0)
+	pBuffer := make([]byte, 1024)
 	for {
-		n, err := conn.Read(buffer)
+		n, err := conn.Read(pBuffer)
 		if err != nil {
 			fmt.Println(conn.RemoteAddr().String(), " connection error: ", err)
 			return
 		}
 
-		tmpBuffer = p.depack(append(tmpBuffer, buffer[:n]...), readerChannel)
+		pTmpBuffer = p.depack(append(pTmpBuffer, pBuffer[:n]...), readerChannel)
 	}
 }
 

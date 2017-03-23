@@ -846,7 +846,105 @@ func main() {
 
 #endif
 
+//切片操作大全
+#if
+百度:go 用slice模拟vector功能
+http://studygolang.com/articles/9443
 
+#endif
+
+//排序
+#if
+
+type clientOp struct {
+	index     int
+	startTime int64
+	pSendFun  func(pClient *client.NetClient)
+}
+
+type clientOpList []*clientOp
+
+func (p clientOpList) Len() int {
+	return len(p)
+}
+
+func (p clientOpList) Less(i, j int) bool {
+	return p[i].startTime > p[j].startTime
+}
+
+func (p clientOpList) Swap(i, j int) {
+	p[i], p[j] = p[j], p[i]
+}
+
+type clientOpMgr struct {
+	list    clientOpList
+	isClose bool
+}
+
+func (p *clientOpMgr) insert2Vec(pdata *clientOp) {
+	nLen := len(p.list)
+	b := sort.Search(nLen, func(i int) bool { return pdata.startTime > p.list[i].startTime })
+	p.list = append(p.list, nil)
+	if b == nLen {
+		p.list[b] = pdata
+	} else {
+		copy(p.list[b+1:], p.list[b:])
+		p.list[b] = pdata
+	}
+}
+
+func (p *clientOpMgr) popFront() *clientOp {
+	nLen := len(p.list)
+	if nLen > 0 {
+		pdata := p.list[0]
+		p.list = p.list[1:]
+		return pdata
+	}
+	return nil
+}
+
+func (p *clientOpMgr) popBack() *clientOp {
+	nLen := len(p.list)
+	if nLen > 0 {
+		pdata := p.list[nLen-1]
+		p.list = p.list[:nLen-1]
+		return pdata
+	}
+	return nil
+}
+
+func (p *clientOpMgr) run(clients []*client.NetClient) {
+	for p.isClose {
+		pdata := p.popBack()
+		if pdata == nil {
+			time.Sleep(1 * time.Millisecond)
+			continue
+		}
+
+		if pdata.index < len(clients) {
+			pdata.pSendFun(clients[pdata.index])
+		}
+	}
+}
+
+func test3() {
+	mgr := clientOpMgr{}
+	nStart := time.Now().UnixNano()
+	for i := 0; i < 10*10000; i++ {
+		pdata := new(clientOp)
+		pdata.index = i
+		pdata.startTime = int64(rand.Intn(10))
+		mgr.insert2Vec(pdata)
+	}
+	nDiff := (time.Now().UnixNano() - nStart) / (1000 * 1000)
+
+	// for _, v := range mgr.list {
+	// 	println(v.index, "##", v.startTime)
+	// }
+	println("#####", len(mgr.list))
+	println(nDiff)
+}
+#endif
 
 
 

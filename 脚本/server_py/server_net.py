@@ -54,13 +54,15 @@ def ReadAll():
 		while 1:
 			try:
 				data=v.oSock.recv(v.nReadLen)
-				#if len(data) <= 0:
-				#	v.isClose = True
-				#	break
+				if len(data) <= 0:
+					list_del.append(k)
+					v.isClose = True
+					break
 
 				if v.isBody == False:
+					print "receive head:",len(data) 
 					v.nReadLen = struct.unpack("!h", data)[0]
-					print "receive head:",len(data) , "data:" , v.nReadLen
+					print "data:" , v.nReadLen
 					v.isBody = True
 				else :	
 					v.isBody = False
