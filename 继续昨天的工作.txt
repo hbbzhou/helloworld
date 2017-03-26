@@ -1,4 +1,17 @@
 
+//娱乐
+#if
+:一世之尊
+http://www.biquge.tw/3_3310/4494711.html
+
+:阴阳师_悬赏
+http://www.paopaoche.net/sj/109106.html
+
+#endif
+
+
+//工作备忘
+#if 
 :lua bind 的
 http://www.rasterbar.com/products/luabind/docs.html
 
@@ -42,6 +55,8 @@ vi /etc/profile
 修改 属性->c/c++ ->常规-> 多处理器编译 = 是(/MP) ; 
 修改 属性->c/c++ ->代码生成->启用最小重新生成 = 否(/Gm-)
 
+
+#endif
 
 
 
