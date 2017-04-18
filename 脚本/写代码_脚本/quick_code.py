@@ -6,7 +6,8 @@ g_str_list = '''	for ([type]::const_iterator it_ = [obj].begin();
 	
 }
 '''
-g_str_vec = '''	for (size_t i = 0; i < [obj].size(); ++i) {
+g_str_vec = '''	for (size_t i_ = 0; i_ < [obj].size(); ++i_) {
+	const class_name & one_ = [obj][i_];
 
 }
 '''
