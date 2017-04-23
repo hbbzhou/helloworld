@@ -3,9 +3,14 @@
 import os
 
 #待需改
-g_find_info = ["鲤鱼" , "海" , "金刚"]
+g_find_info = ["鬼青", "鬼绿", "帚"  ]
 
 g_job_s = []
+def OpenIE(str_url):
+	str_cmd = 'cd "C:\Program Files (x86)\Google\Chrome\Application" &&'
+	str_cmd += "start chrome.exe " + str_url
+	os.system(str_cmd)
+
 class Job:
 	def __init__(self , name , url):
 		global g_job_s
@@ -18,8 +23,9 @@ class Job:
 			#打开ie zhou
 			print self.name.decode("utf").encode("gbk")
 			print "open url" , self.url
-			str_cmd = "start iexplore " + self.url
-			os.system(str_cmd)
+			OpenIE(self.url)
+			#str_cmd = "start iexplore " + self.url
+			#os.system(str_cmd)
 			return True
 		return False	
 	
@@ -51,7 +57,9 @@ def AddJob():
 	Job("青蛙瓷器" , "http://www.paopaoche.net/sj/109110.html")
 	Job("鲤鱼精" , "http://www.paopaoche.net/sj/109052.html")
 	Job("海坊主" , "http://www.paopaoche.net/sj/109038.html")
-	Job("独眼小僧_金刚经" , "http://www.paopaoche.net/sj/109038.html")
+	Job("独眼小僧_金刚经" , "http://www.paopaoche.net/sj/109096.html")
+	Job("铁鼠" , "http://www.paopaoche.net/sj/109127.html")
+	Job("雪女" , "http://www.paopaoche.net/sj/109005.html")
 	
 
 
