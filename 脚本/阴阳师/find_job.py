@@ -1,9 +1,15 @@
 ﻿
 
 import os
+import hbb_tool
 
-#待需改
-g_find_info = ["鬼青", "鬼绿", "帚"  ]
+#从剪切板_获取数据(例如:鬼青,鬼绿)
+g_str_job = hbb_tool.GetText()
+print g_str_job
+
+g_str_job = g_str_job.replace(" " , "")
+g_str_job = g_str_job.decode("gbk").encode("utf")
+g_find_info = g_str_job.split(",")
 
 g_job_s = []
 def OpenIE(str_url):
