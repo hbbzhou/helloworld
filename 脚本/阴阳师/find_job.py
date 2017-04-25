@@ -42,6 +42,7 @@ def AddJob():
 	Job("天邪鬼绿" , "http://www.paopaoche.net/sj/109163.html")
 	Job("天邪鬼青" , "http://www.paopaoche.net/sj/109171.html")
 	Job("天邪鬼黄" , "http://www.paopaoche.net/sj/109166.html")
+	Job("天邪鬼赤" , "http://www.paopaoche.net/sj/109168.html")
 	Job("管狐" , "http://www.paopaoche.net/sj/109099.html")
 	Job("寄生魂" , "http://www.paopaoche.net/sj/109174.html")
 	Job("酒吞童子" , "http://www.paopaoche.net/sj/108968.html")
