@@ -36,6 +36,8 @@ class Job:
 		return False	
 	
 def AddJob():
+	#Job("" , "")
+	Job("赤舌" , "http://www.paopaoche.net/sj/109137.html")
 	Job("涂壁" , "http://www.paopaoche.net/sj/109175.html")
 	Job("水池" , "http://www.paopaoche.net/sj/109323.html")
 	Job("提灯小僧" , "http://www.paopaoche.net/sj/109140.html")
