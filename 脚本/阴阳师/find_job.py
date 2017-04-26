@@ -71,6 +71,8 @@ def AddJob():
 	Job("独眼小僧_金刚经" , "http://www.paopaoche.net/sj/109096.html")
 	Job("铁鼠" , "http://www.paopaoche.net/sj/109127.html")
 	Job("雪女" , "http://www.paopaoche.net/sj/109005.html")
+	Job("樱花树_红色" , "http://www.paopaoche.net/sj/108539.html")
+	
 	
 
 
