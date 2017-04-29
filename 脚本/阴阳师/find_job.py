@@ -37,6 +37,7 @@ class Job:
 	
 def AddJob():
 	#Job("" , "")
+	Job("蝴蝶精" , "http://www.paopaoche.net/sj/109128.html")
 	Job("九命猫" , "http://www.paopaoche.net/sj/109113.html")
 	Job("妖狐" , "http://www.paopaoche.net/sj/109018.html")
 	Job("巫蛊师" , "http://www.paopaoche.net/sj/109130.html")
