@@ -1,5 +1,5 @@
-
-//°Ù¶È:kfifo
+ï»¿
+//ç™¾åº¦:kfifo
 
 #include <stdio.h>
 #include <windows.h>
@@ -22,7 +22,7 @@ std::map<int, int> g_map;
 clock_t gBegin, gEnd, gDiff;
 const int g_count = 99999;
 
-//ÎŞËø¶ÓÁĞ
+//æ— é”é˜Ÿåˆ—
 #if 0
 
 const static int Len = 10000;
@@ -102,12 +102,123 @@ void test_main()
 	t_2.join();
 	gEnd = GetMSec();
 	gDiff = (gEnd - gBegin);
-	printf("%s %d s %d ms \n", "ÎŞËø¶ÓÁĞ##", gDiff / 1000, gDiff % 1000);
+	printf("%s %d s %d ms \n", "æ— é”é˜Ÿåˆ—##", gDiff / 1000, gDiff % 1000);
 }
 
 #endif
 
-//´øËøµÄ¶ÓÁĞ
+//æ— é”é˜Ÿåˆ—_2
+#if 0
+#include <thread>
+#include <stdio.h>
+#include <assert.h>
+
+template <class T>
+class LockFreeQueue
+{
+	const static int m_nLen = 10000;
+	int m_nInIndex;
+	int m_nPopIndex;
+
+	T m_list[m_nLen];
+public:
+	LockFreeQueue() {
+		m_nInIndex = 0;
+		m_nPopIndex = 0;
+	}
+
+	int GetFreeLen()
+	{
+		int n_len = 0;
+		if (m_nInIndex >= m_nPopIndex) {
+			n_len = m_nLen - (m_nInIndex - m_nPopIndex);
+		}
+		else {
+			n_len = m_nPopIndex - m_nInIndex;
+		}
+		return --n_len;
+	}
+
+
+	void AddIndex(int &index_)
+	{
+		index_ = (++index_) % m_nLen;
+	}
+
+
+	void Add2List(T v_)
+	{
+		while (GetFreeLen() <= 0) {
+			printf("no free len\n");
+			std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		}
+		m_list[m_nInIndex] = v_;
+		AddIndex(m_nInIndex);
+	}
+
+
+	bool GetOne(T & out_)
+	{
+		if (m_nInIndex == m_nPopIndex) {
+			return false;
+		}
+		out_ = m_list[m_nPopIndex];
+		AddIndex(m_nPopIndex);
+		return true;
+	}
+
+};
+
+
+LockFreeQueue<int> g_list;
+
+//æµ‹è¯• é˜Ÿåˆ—ä¸­æ•°æ®æ˜¯å¦æ­£ç¡®
+void run()
+{
+	int n_ = -1;
+	int n_old_data = 0;
+	while (true) {
+		if (g_list.GetOne(n_)) {
+			if (n_old_data + 1 == n_) {
+				n_old_data = n_;
+			}
+			else {
+				assert(0);//æ•°æ®å¼‚å¸¸
+			}
+
+			if (n_ == g_count) {
+				return;
+			}
+		}
+		else {
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
+		}
+	}
+}
+
+void addJob()
+{
+	for (int i = 0; i < g_count; ++i) {
+		g_list.Add2List(i + 1);
+	}
+}
+
+void test_main()
+{
+	gBegin = GetMSec();
+	std::thread t_(run);
+
+	std::thread t_2(addJob);
+	t_.join();
+	t_2.join();
+	gEnd = GetMSec();
+	gDiff = (gEnd - gBegin);
+	printf("%s %d s %d ms \n", "æ— é”é˜Ÿåˆ—##", gDiff / 1000, gDiff % 1000);
+}
+
+#endif
+
+//å¸¦é”çš„é˜Ÿåˆ—
 #if 1
 #include <mutex>
 
@@ -164,13 +275,13 @@ void test_main()
 	t_2.join();
 	gEnd = GetMSec();
 	gDiff = (gEnd - gBegin);
-	printf("%s %d s %d ms \n", "list¶ÓÁĞ##", gDiff / 1000, gDiff % 1000);
+	printf("%s %d s %d ms \n", "listé˜Ÿåˆ—##", gDiff / 1000, gDiff % 1000);
 }
 
 #endif
 /*
-ÎŞËø¶ÓÁĞ## 5 s 824 ms
-list¶ÓÁĞ## 9 s 359 ms
+æ— é”é˜Ÿåˆ—## 5 s 824 ms
+listé˜Ÿåˆ—## 9 s 359 ms
 */
 
 int main()
