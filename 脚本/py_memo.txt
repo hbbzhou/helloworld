@@ -117,4 +117,41 @@ hbb_tool.SetText(g_str_)
 
 #endif
 
+//反射
+#if
 
+class ManagerServer:
+	#定义基本属性
+	dict_ = {}
+	path_ = ''
+	#定义构造方法
+	def __init__(self):
+		pass
+		
+		
+class MailServer:
+	#定义基本属性
+	dict_ = {}
+	path_ = ''
+	#定义构造方法
+	def __init__(self):
+		pass
+
+
+def g_write2file(o_server):
+	pass
+
+
+if __name__ == "__main__":
+
+	for one_ in dir():
+		if one_ == "__builtins__":
+			break
+	
+		#筛选出指定类
+		if one_.find("Server") >= 0:
+			print one_
+			one_deal = getattr(sys.modules[__name__] ,one_ )()
+			g_write2file(one_deal)
+
+#end
