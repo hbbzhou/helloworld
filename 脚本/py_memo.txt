@@ -59,6 +59,28 @@ def test1():
 	str_argv_1 = sys.argv[1]
 
 
+def create_new_file(str_name):
+	f_ = open(str_name , "rb")
+	buff_ = f_.read()
+	f_.close()
+	str_ = base64.b64encode(buff_)
+	
+	f_new = open("zhou.txt" , "w")
+	f_new.write(str_)
+	f_new.close()
+	
+	
+def create_change_file(str_name , str_new_name):
+	f_ = open(str_name , "r")
+	buff_ = f_.read()
+	f_.close()
+	str_ = base64.b64decode(buff_)
+	
+	f_new = open(str_new_name , "wb")
+	f_new.write(str_)
+	f_new.close()
+	
+
 if __name__ == "__main__":
 	pass
 	
