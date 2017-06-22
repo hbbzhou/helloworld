@@ -3,6 +3,7 @@
 import win32api
 import win32con
 import win32gui
+import os
 from ctypes import *
 import time
 VK_CODE = {
@@ -184,12 +185,15 @@ def key_input_enter():
 	win32api.keybd_event(VK_CODE["enter"],0,0,0)
 	win32api.keybd_event(VK_CODE["enter"],0,win32con.KEYEVENTF_KEYUP,0)
 	
-#if __name__ == "__main__":
-#	print get_mouse_point()
-#	while 1:
-#		mouse_click(505,561)
-#		time.sleep(0.05)
-#		str = 'dir'
-#		key_input(str)
-#		key_input_enter()
-#		break
+if __name__ == "__main__":
+	print get_mouse_point()
+	if 1:
+		mouse_click(1472, 1185)
+		time.sleep(0.2)
+		mouse_click(1890, 956)
+		
+		#str = 'dir'
+		#key_input(str)
+		#key_input_enter()
+	else:
+		os.system("pause")
