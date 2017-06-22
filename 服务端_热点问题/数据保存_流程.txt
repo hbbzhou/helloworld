@@ -10,15 +10,15 @@
 	else
 		命令game 发一次完整数据过来 , 接着在 存储到redis中
 	endif
-	将该玩家id 保存到 redis 的 onlineIDs .例如:sadd("onlineIDs" , "玩家id")
+	将该玩家id 保存到 redis 的  Need2SaveKey .例如:sadd("Need2SaveKey" , "本次修改的key")
 
 :数据删除_逻辑
 	玩家下线时,更新一次 完整数据 并设置 6分钟的有效时间
 
 :定时保存_逻辑
 	5分钟 保存一次
-	通过 SPOP("onlineIDs") 获取 一个 玩家id
-	将这个 玩家id 对应的 数据 保存到 mysql 中
+	通过 SPOP("Need2SaveKey") 获取 一个 key
+	将这个 key 对应的 数据 保存到 mysql 中
 
 
 ::离线数据的操作_逻辑
@@ -32,15 +32,15 @@
 	else
 		从db上加载 ,并 修改
 	endif
-	将该玩家id 保存到 redis 的 offLineData .例如:sadd("offLineData" , "玩家id")
+	将该玩家id 保存到 redis 的 Need2SaveKey2 .例如:sadd("Need2SaveKey2" , "本次修改的key")
 
 :数据删除_逻辑
 	用不删除
 
 :定时保存_逻辑
 	30分钟 保存一次
-	通过 SPOP("offLineData") 获取 一个 玩家id
-	将这个 玩家id 对应的 离线数据 保存到 mysql 中
+	通过 SPOP("Need2SaveKey2") 获取 一个 key
+	将这个 key 对应的 离线数据 保存到 mysql 中
 
 
 
