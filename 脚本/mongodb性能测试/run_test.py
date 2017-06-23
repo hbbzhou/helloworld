@@ -4,13 +4,13 @@
 import os
 import sys
 import time
-import pymongo
 
 
 #设置工作目录
 g_old_path = ""
-g_run_times = 50
+g_run_times = 10
 g_str_file = "temp1.txt"
+g_run_app = "mongodb_.py"
 def SetPath():
 	global g_old_path
 	g_old_path = os.getcwd()
@@ -41,19 +41,16 @@ def DealFile():
 if __name__ == "__main__":
 	ClearFile()
 	for i in range(g_run_times):
-		os.system("start mongodb_.py")
+		os.system("start " + g_run_app)
 
 	os.system("pause")
 	DealFile()
 	
-	connection = pymongo.MongoClient('192.168.0.49',27017)
-	hbb_db = connection['hbb_db']
-	role_table = hbb_db["role"]
-	
 	raw_input("[begin] input one to clean\n")
-	for one_ in role_table.find():
-		role_table.remove(one_)
-	print "clean ok"
+	
+	import mongodb_
+	mongodb_.ClearDB()
+	
 	
 	
 	
