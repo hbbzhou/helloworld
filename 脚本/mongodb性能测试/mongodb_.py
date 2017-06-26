@@ -24,7 +24,7 @@ connection = pymongo.MongoClient('192.168.0.49',27017)
 hbb_db = connection['hbb_db']
 role_table = hbb_db["role"]
 
-g_total = run_test.g_total_data/ run_test.g_run_times
+g_total = run_test.g_part_data
 
 def ClearDB():
 	print role_table.count()
@@ -33,8 +33,16 @@ def ClearDB():
 	#	role_table.remove(one_)
 	print role_table.count()
 	print "clean ok"
+	
+def IsBegin():
+	if len(sys.argv) < 2:
+		print "error argv"
+		os._exit(0)
+	n_begin_time = long(sys.argv[1])
+	run_test.waitTo(n_begin_time)
 
 if __name__ == "__main__":
+	IsBegin()
 	n_begin_t = time.time()
 	for i in range(g_total):
 		o_data = {'name':'zhou', 'lv': '22', 'exp': '880'}

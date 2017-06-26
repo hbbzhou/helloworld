@@ -6,7 +6,7 @@ import time
 import run_test
 import MySQLdb
 
-g_total = run_test.g_total_data/ run_test.g_run_times
+g_total = run_test.g_part_data
 
 # 打开数据库连接
 db = MySQLdb.connect("192.168.0.49" ,"root","123456","hbb_test")
@@ -27,8 +27,16 @@ def ClearDB():
 	cursor.execute("TRUNCATE TABLE `role`;")
 	getCount()
 	print "clean ok"
-
+	
+def IsBegin():
+	if len(sys.argv) < 2:
+		print "error argv"
+		os._exit(0)
+	n_begin_time = long(sys.argv[1])
+	run_test.waitTo(n_begin_time)
+	
 if __name__ == "__main__":
+	IsBegin()
 	n_begin_t = time.time()
 	for i in range(g_total):
 		cursor.execute("INSERT INTO `role`( `name`,`lv`,`exp`) VALUES ( 'hbb','11','22');")
