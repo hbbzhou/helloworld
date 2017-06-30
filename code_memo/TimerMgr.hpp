@@ -1,6 +1,36 @@
 ﻿
-//定时器
-#if 1
+//用法
+//class TestOne : public CTimer
+//{
+//public:
+//	virtual void OnTimer(int id, long long uid)
+//	{
+//		printf("%s , %d \n", __FUNCTION__, __LINE__);
+//		printf("执行 任务id %d \n", id);
+//	}
+//
+//};
+//
+//void test_main()
+//{
+//
+//	TestOne oTestB;
+//	long long uid = oTestB.AddTimer(100, 11 + time(NULL));
+//	oTestB.DelTimer(uid);//删除 指定 定时器
+//
+//	while (1) {
+//		CTimerMgr::Instance().Run(10);
+//		Sleep(100);
+//	}
+//}
+
+
+#pragma once 
+#include <stdio.h>
+#include <map>
+#include <set>
+#include <time.h>
+
 
 class CTimer;
 class CTimerData
@@ -25,7 +55,7 @@ public:
 	void OnBaseTimer(int id, long long uid)
 	{
 		m_map.erase(uid);
-		OnTimer( id , uid);
+		OnTimer(id, uid);
 	}
 	//新增 定时器
 	long long AddTimer(int id, time_t time_);
@@ -49,7 +79,7 @@ public:
 		return g_oInstance;
 	}
 
-	CTimerData * GetFront() const 
+	CTimerData * GetFront() const
 	{
 		if (m_mapData.empty()) {
 			return NULL;
@@ -65,16 +95,16 @@ public:
 	void Pop()
 	{
 		if (m_mapData.empty()) {
-			return ;
+			return;
 		}
 
 		TimerSet & set_ = m_mapData.begin()->second;
 		if (set_.empty()) {
 			m_mapData.erase(m_mapData.begin());
-			return ;
+			return;
 		}
 		Destroy(*set_.begin());
-		set_.erase(set_.begin() );
+		set_.erase(set_.begin());
 	}
 
 	bool DealOne()
@@ -85,7 +115,7 @@ public:
 
 		bool is_continue = true;
 
-		do{
+		do {
 			CTimerData * pCTimerData = GetFront();
 			if (pCTimerData == NULL) {
 				break;
@@ -94,7 +124,7 @@ public:
 			if (pCTimerData->m_nEndTime <= time(NULL)) {
 				//调用 回调函数
 				if (pCTimerData->m_pTimer) {
-					pCTimerData->m_pTimer->OnBaseTimer(pCTimerData->m_nID , pCTimerData->m_nUID);
+					pCTimerData->m_pTimer->OnBaseTimer(pCTimerData->m_nID, pCTimerData->m_nUID);
 				}
 			}
 			else {
@@ -117,7 +147,7 @@ public:
 		return true;//任务 繁忙中
 	}
 
-	long long AddTimerJob(int id , time_t time_ , CTimer * p_timer)
+	long long AddTimerJob(int id, time_t time_, CTimer * p_timer)
 	{
 		static long long uid = 1000;
 		CTimerData * pCTimerData = new CTimerData();
@@ -130,10 +160,10 @@ public:
 		return pCTimerData->m_nUID;
 	}
 
-	void Close(long long uid , time_t n_time) 
+	void Close(long long uid, time_t n_time)
 	{
 		TimerMap::iterator it_ = m_mapData.find(n_time);
-		if (it_ == m_mapData.end() ) {
+		if (it_ == m_mapData.end()) {
 			printf("%s , %d \n", __FUNCTION__, __LINE__);
 			return;
 		}
@@ -155,7 +185,7 @@ public:
 	{
 		printf("%s , %d \n", __FUNCTION__, __LINE__);
 		if (pCTimerData) {
-			printf("删除 任务 id %d \n", pCTimerData->m_nID );
+			printf("删除 任务 id %d \n", pCTimerData->m_nID);
 			delete pCTimerData; pCTimerData = NULL;
 		}
 	}
@@ -171,7 +201,7 @@ public:
 		}
 		m_mapData.clear();
 	}
-	
+
 	TimerMap m_mapData;
 };
 
@@ -186,9 +216,9 @@ long long CTimer::AddTimer(int id, time_t time_)
 //删除 定时器
 void CTimer::DelTimer()
 {
-	for (std::map<long long , time_t>::const_iterator it_ = m_map.begin();
+	for (std::map<long long, time_t>::const_iterator it_ = m_map.begin();
 		it_ != m_map.end(); ++it_) {
-		CTimerMgr::Instance().Close(it_->first , it_->second);
+		CTimerMgr::Instance().Close(it_->first, it_->second);
 	}
 	m_map.clear();
 }
@@ -202,56 +232,6 @@ void CTimer::DelTimer(long long uid)
 		m_map.erase(it_);
 	}
 }
-
-
-class TestOne : public CTimer
-{
-public:
-	virtual void OnTimer(int id, long long uid)
-	{
-		printf("%s , %d \n" , __FUNCTION__, __LINE__);
-		printf("执行 任务id %d \n", id);
-	}
-
-};
-
-class Player : public CTimer
-{
-public:
-	virtual void OnTimer(int id, long long uid)
-	{
-		printf("%s , %d \n", __FUNCTION__, __LINE__);
-		printf("执行 任务id %d \n", id);
-	}
-};
-
-
-void test_main() 
-{
-	Player oPlayer;
-	for (int i = 0; i < 100000; ++i) {
-		oPlayer.AddTimer(i, rand()%30 + time( NULL));//新增 定时器
-	}
-
-	TestOne oTestB;
-	long long uid = oTestB.AddTimer(100, 11 + time(NULL));
-	oTestB.DelTimer(uid);//删除 指定 定时器
-
-	for (int i = 0; i < 100; ++i) 
-	{
-		TestOne oTest;
-		oTest.AddTimer(12, 10 + time(NULL));
-		//类型 析构时, 自动删除定时器
-	}
-
-	while (1) {
-		CTimerMgr::Instance().Run(10);
-		Sleep(100);
-	}
-
-}
-
-#endif
 
 
 
