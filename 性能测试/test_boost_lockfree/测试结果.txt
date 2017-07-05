@@ -1,0 +1,11 @@
+//有锁
+produced 10000000 objects.
+consumed 10000000 objects.
+diff time: 2920 ms
+
+
+//无锁
+produced 10000000 objects.
+consumed 10000000 objects.
+diff time: 1170 ms
+提升系数 59.931
