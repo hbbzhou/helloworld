@@ -1,0 +1,48 @@
+﻿//boost 内存池
+#if 1
+
+#include <boost/pool/pool.hpp>
+
+
+class hbbObj
+{
+public:
+	hbbObj(){
+		printf("%s \n", __FUNCTION__);
+	}
+
+	~hbbObj() {
+		printf("%s \n", __FUNCTION__);
+	}
+
+	int m1;
+	std::string m2;
+};
+
+template <class T>
+class CPool
+{
+public:
+	CPool():m_pool(sizeof(T)) {}
+	T * Create() {
+		T * ptr_ = (T *)m_pool.malloc();
+		new (ptr_) T();
+		return ptr_;
+	}
+
+	void Release(T * ptr_) {
+		ptr_->~T();
+		m_pool.free(ptr_);
+	}
+private:
+	boost::pool<> m_pool;
+};
+
+CPool<hbbObj> gPool;
+
+void test_main() {
+	hbbObj * ptr_ = gPool.Create();
+	gPool.Release(ptr_);
+}
+
+#endif
