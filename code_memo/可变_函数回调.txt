@@ -1,0 +1,64 @@
+﻿
+
+//可变 函数回调
+#if 1
+
+#include <functional>
+
+class chbb
+{
+public:
+	void run(int id1) {
+		printf("%s ,%d \n", __FUNCTION__ ,id1);
+	}
+
+	void run2(int id1, int id2) {
+		printf("%s ,%d ,%d \n", __FUNCTION__ , id1 , id2);
+	}
+
+	void run3(std::string str_, int id1) {
+		printf("%s ,%s ,%d \n", __FUNCTION__, str_.c_str() ,id1);
+	}
+};
+
+
+template<class T>
+void do_job(T p_) {
+	printf("%s \n", __FUNCTION__);
+	p_(5);
+}
+
+void test_main() {
+	chbb obj;
+	do_job(std::bind(&chbb::run, &obj, std::placeholders::_1));
+	do_job(std::bind(&chbb::run2, &obj, 4, std::placeholders::_1) );
+	do_job(std::bind(&chbb::run3, &obj, std::string("ok") , std::placeholders::_1));
+}
+
+#endif
+
+
+inline int GetCurMs()
+{
+#if defined(WIN32) || defined(WIN64)
+	struct timeb tp;
+	ftime(&tp);
+	return tp.time * 1000 + tp.millitm;
+
+#else
+	struct timeval tv;
+	gettimeofday(&tv, NULL);
+	return tv.tv_sec * 1000 + tv.tv_usec / 1000;
+#endif
+}
+
+
+int _tmain()
+{
+	int nCurT = GetCurMs();
+	test_main();
+	printf("diff time: %d ms\n", GetCurMs() - nCurT);
+	//system("pause");
+	return 0;
+}
+

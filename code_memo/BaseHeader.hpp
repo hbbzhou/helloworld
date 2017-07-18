@@ -38,16 +38,9 @@ namespace basefun {
 		return ((long)tv.time) * 1000 + (long)tv.millitm;
 	}
 
-	union CharAndShort {
-		//判断 大小端
-		bool IsLittleEndian()
-		{
-			m_n1 = (1<<8) + 1;
-			return m_c1;
-		}
-		char m_c1;
-		short m_n1;
-	};
+	const int endian = 1;
+	#define is_bigendian() ( (*(char*) &endian) == 0 )
+	#define is_littlendbian() ( (*(char*) &endian) == 1 )
 	
 }
 
