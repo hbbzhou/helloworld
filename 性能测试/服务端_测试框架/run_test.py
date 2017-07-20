@@ -4,6 +4,7 @@
 import os
 import sys
 import time
+#import fcntl
 
 
 #设置工作目录
@@ -11,7 +12,7 @@ g_old_path = ""
 #g_total_data = 100000
 g_run_times = 80
 g_part_data = 2500
-g_str_file = "temp1.txt"
+g_str_dir = "report_dir"
 g_run_app = "test_asio.py"
 
 def waitTo(n_begin_t):
@@ -36,36 +37,46 @@ def SetPath():
 def ResetPath():
 	os.chdir(g_old_path )
 	
-def ClearFile():
-	f = open(g_str_file , "w")
-	f.close()
-	
-def Add2File(str_ ):
-	f = open(g_str_file , "a")
+def InitDir():
+	os.system("del /q " + g_str_dir)
+	if os.path.exists(g_str_dir) == False:
+		os.mkdir(g_str_dir)
+
+def Add2File(str_ , i):
+	str_file = g_str_dir + "/" + str(i) + ".txt"
+	f = open(str_file , "a")
 	f.write(str_ + "\n")
 	f.close()
-	
+
 def DealFile():
-	f = open(g_str_file , "r")
-	f_total = 0.0
-	n_max = 0
-	list_data = f.readlines()
-	f.close()
-	
-	for one_ in list_data:
-		if len(one_) > 1:
-			n_max += 1
-			f_total += float(one_)
+	list_data = []
+	for parent, dirnames, filenames in os.walk("./" + g_str_dir):
+		for filename in filenames:
+			if filename.find(".txt") < 0:
+				continue
+				
+			fullpath = os.path.join(parent,filename)
+			f = open(fullpath , "r")
+			list_data.append(f.readline() )
+			f.close()
 			
-	if n_max > 0:
-		print "g_run_times:" , g_run_times , "file_line:" , n_max
-		print f_total/ n_max , "s"
-		return f_total/ n_max
+	if len(list_data) == g_run_times:
+		f_total = 0.0
+		n_max = 0
+		for one_ in list_data:
+			if len(one_) > 1:
+				n_max += 1
+				f_total += float(one_)
+			
+		if n_max > 0:
+			print "g_run_times:" , g_run_times , "max_line:" , n_max
+			print f_total/ n_max , "s"
+			return f_total/ n_max
 	
 	return 0
 
 if __name__ == "__main__":
-	ClearFile()
+	InitDir()
 	n_begin_t = time.time() + 6
 	
 	str_cmd = "start " + g_run_app + " " + str( long(n_begin_t) )
@@ -77,8 +88,7 @@ if __name__ == "__main__":
 		f_value = DealFile()
 		if f_value == 0:
 			continue
-
-		if DealFile() + 2 < time.time() - n_begin_t:
+		else:
 			break
 
 	print "n_diff_t:", time.time() - n_begin_t , "s"

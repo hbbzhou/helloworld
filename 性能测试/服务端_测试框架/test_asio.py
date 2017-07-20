@@ -21,14 +21,17 @@ def EncodeSendMsg(msg_id , str_buff):
 	str_ = struct.pack(str_format, len(str_buff) + 2 ,msg_id, str_buff)
 	return str_
 	
+def GetAppID():
+	if len(sys.argv) < 3:
+		print "error argv"
+		os._exit(0)
+	return int(sys.argv[2])
+	
 g_session = None
 g_send_msg = EncodeSendMsg(10, "aaaa")
 def ConnectLogin():
 	print "do ConnectLogin ..."
-	if len(sys.argv) < 3:
-		print "error argv"
-		os._exit(0)
-	n_app_id = int(sys.argv[2])
+	n_app_id = GetAppID()
 	#n_port = 2017 + (n_app_id % 2)
 	n_port = 2017
 	
@@ -91,7 +94,7 @@ if __name__ == "__main__":
 	print "g_total:",g_total
 	str_dirr = str(time.time() - n_begin_t)
 	list_diff = str_dirr.split(".")
-	run_test.Add2File(str_dirr)
+	run_test.Add2File(str_dirr , GetAppID() )
 	print "n_diff_t:", list_diff[0] , "s" , list_diff[1][0:3] , "ms"
 
 	getCount()

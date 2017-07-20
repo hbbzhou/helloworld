@@ -16,6 +16,13 @@ cursor = db.cursor()
 cursor.execute("SET NAMES utf8")
 
 
+def GetAppID():
+	if len(sys.argv) < 3:
+		print "error argv"
+		os._exit(0)
+	return int(sys.argv[2])
+	
+
 
 def getCount():
 	cursor.execute("select count(*) from role;")
@@ -44,7 +51,7 @@ if __name__ == "__main__":
 	print "g_total:",g_total
 	str_dirr = str(time.time() - n_begin_t)
 	list_diff = str_dirr.split(".")
-	run_test.Add2File(str_dirr)
+	run_test.Add2File(str_dirr , GetAppID() )
 	print "n_diff_t:", list_diff[0] , "s" , list_diff[1][0:3] , "ms"
 
 	getCount()
