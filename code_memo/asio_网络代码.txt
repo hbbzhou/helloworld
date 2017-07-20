@@ -1,1 +1,781 @@
-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
+﻿//boost asio_server_收发多线程
+#if 0
+
+#define BOOST_ERROR_CODE_HEADER_ONLY
+#define BOOST_REGEX_NO_LIB
+#define BOOST_DATE_TIME_SOURCE
+#define BOOST_SYSTEM_NO_LIB
+
+#include <boost/asio.hpp>
+
+#include <boost/pool/pool.hpp>
+#include <boost/lockfree/spsc_queue.hpp>
+#include "thread.h"
+#include "base64.h"
+
+using boost::asio::ip::tcp;
+
+
+template <class T >
+class CPool
+{
+public:
+	CPool() :m_pool(sizeof(T)) {}
+	T * CreateSession(boost::asio::io_service &io_service) {
+		T * ptr_ = (T *)m_pool.malloc();
+		new (ptr_) T(io_service);
+		return ptr_;
+	}
+
+	void Release(T * ptr_) {
+		ptr_->~T();
+		m_pool.free(ptr_);
+	}
+private:
+	boost::pool<> m_pool;
+};
+
+
+class CSession;//声明
+struct SOptSession;//声明
+inline void FreeSession(int socket_id);//声明
+inline bool Add2MsgQueue(int nSocketID, short nMsgID, const std::string & str_);//声明
+inline bool Add2SendQueue(int nSocketID, short nMsgID, const std::string & str_);//声明
+inline void CloseSession(int socket_id);//声明
+inline CSession * GetSession(int socket_id);//声明
+inline bool Add2CloseNetQueue(int nSocketID);//声明
+
+enum E_Session_Status
+{
+	E_S_None = 0,
+	E_S_Begin ,
+	//E_S_Reading,
+	E_S_Read_Error,
+	//E_S_End,
+};
+
+struct SOptSession {
+	int nSocketID;
+	int nMsgID;
+	std::string strContent;
+};
+
+struct MsgHead {
+	short nLen;
+	short nMsgID;
+};
+
+//全局变量
+#define Max_Session (1024 * 10)
+CPool<CSession > gPool;
+CSession * gSession[Max_Session];
+boost::lockfree::spsc_queue<SOptSession, boost::lockfree::capacity<Max_Session * 10> > gMsgQueue;
+boost::lockfree::spsc_queue<SOptSession, boost::lockfree::capacity<Max_Session * 10> > gSendQueue;
+boost::lockfree::spsc_queue<int, boost::lockfree::capacity<Max_Session * 10> > gCloseNetQueue;
+
+
+class CSession
+{
+public:
+#define MSG_MAX_  (1024*101)
+	CSession(boost::asio::io_service &io_service) : socket_(io_service) {
+		m_nStatus = E_S_None;
+	}
+
+	void start()
+	{
+		m_nDataLen = 0;
+		m_nStatus = E_S_Begin;
+		async_read();
+	}
+private:
+	bool GetMsg() {
+		if (m_nDataLen > 2) {
+			short len_ = ((short *)data_.data()) [0];
+			len_ = ntohs(len_);
+			if (len_ + 2 <= m_nDataLen) {
+
+				if (m_nDataLen > 4) {
+					short msg_id = ((short *)data_.data())[1];
+					msg_id = ntohs(msg_id);
+					if (Add2MsgQueue(m_nID, msg_id, std::string(data_.data() + 2 + 2, len_ - 2)) == false) {
+						printf("%s:%d thread_id : %d \n", __FUNCTION__, __LINE__, GetCurrentThreadId());
+						return false;
+					}
+				}
+
+				m_nDataLen -= len_ + 2;
+				memmove(data_.data() , data_.data() + len_ +2 , m_nDataLen);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	void async_read()
+	{
+		int len_ = MSG_MAX_ - m_nDataLen;
+		if (len_ <= 0) {
+			m_nStatus = E_S_Read_Error;
+			FreeSession(m_nID);
+			return;
+		}
+
+		socket_.async_read_some(boost::asio::buffer(data_.data() + m_nDataLen , len_),
+			std::bind(&CSession::read_cb , this, std::placeholders::_1 , std::placeholders::_2)
+		);
+	}
+
+	void read_cb(const boost::system::error_code &ec , std::size_t length)
+	{
+		m_nDataLen += length;
+		while (GetMsg());
+
+		if (!ec) {	
+			async_read();
+		}
+		else {
+			m_nStatus = E_S_Read_Error;
+			FreeSession(m_nID);
+		}
+	}
+public:
+	void SendMsg(const char * buff_ , std::size_t length)
+	{
+		//zhou//测试下//同步写快,还是异步写快
+		boost::system::error_code ec;
+		size_t len = boost::asio::write(socket_ , boost::asio::buffer(buff_, length), ec);
+	}
+
+public:
+	int m_nID;
+	E_Session_Status m_nStatus;
+	tcp::socket socket_;
+private:
+	std::array<char, MSG_MAX_> data_;
+	int m_nDataLen;
+	
+};
+
+//网络_线程//可调用
+inline bool Add2MsgQueue(int nSocketID , short nMsgID, const std::string & str_)
+{
+	SOptSession obj_;
+	obj_.nSocketID = nSocketID;
+	obj_.strContent = str_;
+	obj_.nMsgID = nMsgID;
+	return gMsgQueue.push(obj_);
+}
+
+//主_线程//可调用
+inline bool Deal_MsgQueue(int count) {
+	for (int i = 0; i < count; ++i) {
+		SOptSession obj_;
+		if (gMsgQueue.pop(obj_)) {
+			//printf("msg_id :%d ,msg:%s \n", obj_.nMsgID, obj_.strContent.c_str() );
+			//printf("cur socket_id :%d \n", obj_.nSocketID);
+			printf("-");
+			if (obj_.nMsgID == 10) {
+				if (Add2SendQueue(obj_.nSocketID, 12, std::string("ok")) == false) {
+					printf("%s:%d thread_id : %d \n", __FUNCTION__, __LINE__,GetCurrentThreadId());
+				}
+			}
+			else if (obj_.nMsgID == 8) {
+				//关闭网络
+				if (Add2CloseNetQueue(obj_.nSocketID) == false) {
+					printf("%s:%d thread_id : %d \n", __FUNCTION__, __LINE__, GetCurrentThreadId());
+				}
+			}
+		}
+		else {
+			break;
+		}
+	}
+	return gMsgQueue.empty();
+}
+
+
+//主_线程//可调用
+inline bool Add2SendQueue(int nSocketID, short nMsgID, const std::string & str_)
+{
+	MsgHead oHead;
+	oHead.nLen = short(str_.size() + 2);
+	oHead.nMsgID = short(nMsgID);
+	oHead.nLen = htons(oHead.nLen);
+	oHead.nMsgID = htons(oHead.nMsgID);
+
+	SOptSession obj_;
+	obj_.nSocketID = nSocketID;
+	obj_.strContent.resize(str_.size() + 2 + 2);
+
+
+	memcpy( ( void *)obj_.strContent.data() , (const void *)&oHead, sizeof(MsgHead) );
+	memcpy( (void *)(obj_.strContent.data() + sizeof(MsgHead) ) , (const void *)str_.data() , str_.size() );
+	obj_.nMsgID = nMsgID;
+	return gSendQueue.push(obj_);
+}
+
+//网络_线程//可调用
+inline bool Deal_SendQueue(int count) {
+	for (int i = 0; i < count; ++i) {
+		SOptSession obj_;
+		if (gSendQueue.pop(obj_)) {
+			CSession *ptr_ = GetSession(obj_.nSocketID);
+			if (ptr_) {
+				ptr_->SendMsg(obj_.strContent.c_str(), obj_.strContent.size());
+			}
+		}
+		else {
+			break;
+		}
+	}
+	return gSendQueue.empty();
+}
+
+//主_线程//可调用
+inline bool Add2CloseNetQueue(int nSocketID)
+{
+	return gCloseNetQueue.push(nSocketID);
+}
+
+//网络_线程//可调用
+inline bool Deal_CloseNetQueue(int count) {
+	for (int i = 0; i < count; ++i) {
+		int id_;
+		if (gCloseNetQueue.pop(id_)) {
+			CloseSession(id_);
+		}
+		else {
+			break;
+		}
+	}
+	return gCloseNetQueue.empty();
+}
+
+
+
+//网络_线程//可调用
+inline CSession * CreateSession(boost::asio::io_service &io_service)
+{
+	for (int i = 0; i < sizeof(gSession) / sizeof(gSession[0]); ++i) {
+		if (gSession[i] != NULL) {
+			continue;
+		}
+		gSession[i] = gPool.CreateSession(io_service);
+
+		if (gSession[i] == NULL) {
+			return NULL;
+		}
+
+		gSession[i]->m_nID = i;
+		printf("create socket_id:%d \n" , i);
+		return gSession[i];
+	}
+
+	return NULL;
+}
+
+//网络_线程//可调用
+inline CSession * GetSession(int socket_id) {
+	if ( (size_t) socket_id < sizeof(gSession) / sizeof(gSession[0]) ) {
+		return gSession[socket_id];
+	}
+	return NULL;
+}
+
+//网络_线程//可调用
+inline void CloseSession(int socket_id) {
+	CSession * ptr_ = GetSession(socket_id);
+	if (ptr_) {
+		if (ptr_->socket_.is_open() ) {
+			ptr_->socket_.shutdown(tcp::socket::shutdown_both);
+			ptr_->socket_.close();
+		}
+		printf("%s thread_id : %d \n", __FUNCTION__, GetCurrentThreadId());
+	}
+}
+
+//网络_线程//可调用//该函数 私有
+inline void FreeSession(int socket_id) {
+	CSession * ptr_ = GetSession(socket_id);
+	if (ptr_) {
+		gSession[socket_id] = NULL;
+		gPool.Release(ptr_);
+		printf("free socket_id:%d \n", socket_id);
+	}
+}
+
+//网络_线程//可调用
+inline void FreeSession() {
+	for (size_t i = 0; i < sizeof(gSession) / sizeof(gSession[0]) ; ++i ) {
+		if (gSession[i] == NULL) {
+			continue;
+		}
+		gSession[i] = NULL;
+		gPool.Release(gSession[i]);
+	}
+}
+
+class CServer
+{
+public:
+	CServer(boost::asio::io_service &io_service, short port)
+		: acceptor_(io_service, tcp::endpoint(tcp::v4(), port)), m_oIO(io_service)
+	{
+		async_accept();
+	}
+
+private:
+	void async_accept()
+	{
+		CSession * ptr_session = CreateSession(m_oIO);
+		if (ptr_session == NULL) {
+			printf("error in %s " , __FUNCTION__);
+			return;
+		}
+
+		acceptor_.async_accept(ptr_session->socket_, std::bind(&CServer::handle_accept, this, ptr_session->m_nID, std::placeholders::_1));
+	}
+
+	void handle_accept(int socket_id , const boost::system::error_code &ec)
+	{
+		if (!ec)
+		{
+			CSession * ptr_ = GetSession(socket_id);
+			if (ptr_) {
+				ptr_->start();
+			}
+		}
+		else {
+			FreeSession(socket_id);
+			printf("error %s \n", ec.message().c_str() );
+		}
+		async_accept();  // 继续监听客户端连接请求
+	}
+
+	tcp::acceptor acceptor_;
+	boost::asio::io_service & m_oIO;
+};
+
+class COptServer :public CThreadEx
+{
+
+	virtual void run() {
+		printf("%s thread_id : %d \n", __FUNCTION__, GetCurrentThreadId());
+		boost::asio::io_service o_io;
+		CServer o_server(o_io, 2017);
+
+		for (; ; ) {//网络_线程
+			bool is_empty = false;
+			if (o_io.poll_one() == 0) {
+					is_empty = true;
+			}
+			else {
+				printf("*");
+			}
+
+			bool is_empty2 = Deal_SendQueue(50);
+			bool is_empty3 = Deal_CloseNetQueue(50);
+
+			if (is_empty && is_empty2 && is_empty3) {
+				sleep_msec(1);//xx毫秒
+			}
+		}
+		//zhou//捕获关闭信号
+
+		//处理_关闭网络_请求//网络_线程
+		//释放资源//网络_线程
+		o_io.stop();
+		FreeSession();
+		printf("%s thread_id : %d is end \n", __FUNCTION__, GetCurrentThreadId());
+	}
+};
+
+void test_main() {
+	printf("%s thread_id : %d \n", __FUNCTION__, GetCurrentThreadId());
+	
+	COptServer oNet;
+	oNet.start();
+
+	for (; ; ) {
+		bool is_empty = Deal_MsgQueue(50);
+
+		if (is_empty) {
+			sleep_msec(1);//xx毫秒
+		}
+	}
+	//zhou//捕获关闭信号
+
+}
+
+#endif
+
+//boost asio_server_收发单线程
+#if 1
+
+#define BOOST_ERROR_CODE_HEADER_ONLY
+#define BOOST_REGEX_NO_LIB
+#define BOOST_DATE_TIME_SOURCE
+#define BOOST_SYSTEM_NO_LIB
+
+#include <boost/asio.hpp>
+
+#include <boost/pool/pool.hpp>
+#include <boost/lockfree/spsc_queue.hpp>
+#include "thread.h"
+#include "base64.h"
+
+using boost::asio::ip::tcp;
+
+
+template <class T >
+class CPool
+{
+public:
+	CPool() :m_pool(sizeof(T)) {}
+	T * CreateSession(boost::asio::io_service &io_service) {
+		T * ptr_ = (T *)m_pool.malloc();
+		new (ptr_) T(io_service);
+		return ptr_;
+	}
+
+	void Release(T * ptr_) {
+		ptr_->~T();
+		m_pool.free(ptr_);
+	}
+private:
+	boost::pool<> m_pool;
+};
+
+enum E_Session_Status
+{
+	E_S_None = 0,
+	E_S_Begin,
+	//E_S_Reading,
+	E_S_Read_Error,
+	//E_S_End,
+};
+
+struct MsgHead {
+	short nLen;
+	short nMsgID;
+};
+
+inline void write_handler(int nScoketID, const boost::system::error_code& error, std::size_t bytes_transferred)
+{
+	//暂无
+}
+
+
+class CSession
+{
+public:
+#define MSG_MAX_  (1024*101)
+	CSession(boost::asio::io_service &io_service) : socket_(io_service) {
+		m_nStatus = E_S_None;
+	}
+
+	void start()
+	{
+		m_nDataLen = 0;
+		m_nStatus = E_S_Begin;
+		async_read();
+	}
+
+	//网络_线程//可调用
+	void CloseSession() {
+		if (socket_.is_open()) {
+			socket_.shutdown(tcp::socket::shutdown_both);
+			socket_.close();
+		}
+		printf("%s thread_id : %d \n", __FUNCTION__, GetCurrentThreadId());
+	}
+
+	virtual bool Deal_Msg( short nMsgID, const std::string & str_) = 0;
+	virtual bool Send_Msg( short nMsgID, const std::string & str_) = 0;
+	virtual void WillFree() = 0;//在下一帧,释放该对象
+private:
+	bool GetMsg() {
+		if (m_nDataLen > 2) {
+			short len_ = ((short *)data_.data())[0];
+			len_ = ntohs(len_);
+			if (len_ + 2 <= m_nDataLen) {
+
+				if (m_nDataLen > 4) {
+					short msg_id = ((short *)data_.data())[1];
+					msg_id = ntohs(msg_id);
+					if (Deal_Msg( msg_id, std::string(data_.data() + 2 + 2, len_ - 2)) == false) {
+						printf("%s:%d thread_id : %d \n", __FUNCTION__, __LINE__, GetCurrentThreadId());
+						return false;
+					}
+				}
+
+				m_nDataLen -= len_ + 2;
+				memmove(data_.data(), data_.data() + len_ + 2, m_nDataLen);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	void async_read()
+	{
+		int len_ = MSG_MAX_ - m_nDataLen;
+		if (len_ <= 0) {
+			m_nStatus = E_S_Read_Error;
+			WillFree();
+			return;
+		}
+
+		socket_.async_read_some(boost::asio::buffer(data_.data() + m_nDataLen, len_),
+			std::bind(&CSession::read_cb, this, std::placeholders::_1, std::placeholders::_2)
+		);
+	}
+
+	void read_cb(const boost::system::error_code &ec, std::size_t length)
+	{
+		m_nDataLen += length;
+		while (GetMsg());
+		//当网络close后//read不会异常
+		//当网络close后//read能触发回调
+		if (!ec) {
+			async_read();
+		}
+		else {
+			m_nStatus = E_S_Read_Error;
+			WillFree();
+		}
+	}
+public:
+	void BaseSendMsg(const char * buff_, std::size_t length)
+	{
+#if 1
+		socket_.async_write_some(boost::asio::buffer(buff_, length), std::bind(write_handler, m_nID, std::placeholders::_1, std::placeholders::_2));
+#else
+		boost::system::error_code ec;
+		size_t len = boost::asio::write(socket_, boost::asio::buffer(buff_, length), ec);
+#endif
+	}
+
+public:
+	int m_nID;
+	E_Session_Status m_nStatus;
+	tcp::socket socket_;
+private:
+	std::array<char, MSG_MAX_> data_;
+	int m_nDataLen;
+
+};
+
+template<class T>
+class CServer
+{
+public:
+	#define Max_Session (1024 * 10)
+
+	CServer( short port)
+		: acceptor_(m_oIO, tcp::endpoint(tcp::v4(), port))
+	{
+		memset(gSession, 0, sizeof(gSession));
+		async_accept();
+	}
+
+	//在下一帧进行操作
+	void WillFreeSession(int socket_id) {
+		m_vecFreeSession.push_back(socket_id);
+	}
+
+	void FreeSession(int socket_id) {
+		T * ptr_ = GetSession(socket_id);
+		if (ptr_) {
+			gSession[socket_id] = NULL;
+			gPool.Release(ptr_);
+			printf("free socket_id:%d \n", socket_id);
+		}
+	}
+
+	void DealFreeSessionReq() {
+		for (size_t i_ = 0; i_ < m_vecFreeSession.size(); ++i_) {
+			const int & one_ = m_vecFreeSession[i_];
+			FreeSession(one_);
+		}
+
+	}
+
+	void FreeSession() {
+		for (size_t i = 0; i < sizeof(gSession) / sizeof(gSession[0]); ++i) {
+			if (gSession[i] == NULL) {
+				continue;
+			}
+			gSession[i] = NULL;
+			gPool.Release(gSession[i]);
+		}
+	}
+
+	T * GetSession(int socket_id) {
+		if ((size_t)socket_id < sizeof(gSession) / sizeof(gSession[0])) {
+			return gSession[socket_id];
+		}
+		return NULL;
+	}
+
+private:
+	T * CreateSession(boost::asio::io_service &io_service)
+	{
+		for (int i = 0; i < sizeof(gSession) / sizeof(gSession[0]); ++i) {
+			if (gSession[i] != NULL) {
+				continue;
+			}
+			gSession[i] = gPool.CreateSession(io_service);
+
+			if (gSession[i] == NULL) {
+				return NULL;
+			}
+
+			gSession[i]->m_nID = i;
+			printf("create socket_id:%d \n", i);
+			return gSession[i];
+		}
+
+		return NULL;
+	}
+
+	void async_accept()
+	{
+		T * ptr_session = CreateSession(m_oIO);
+		if (ptr_session == NULL) {
+			printf("error in %s ", __FUNCTION__);
+			return;
+		}
+
+		acceptor_.async_accept(ptr_session->socket_, std::bind(&CServer::handle_accept, this, ptr_session->m_nID, std::placeholders::_1));
+	}
+
+	void handle_accept(int socket_id, const boost::system::error_code &ec)
+	{
+		if (!ec)
+		{
+			T * ptr_ = GetSession(socket_id);
+			if (ptr_) {
+				ptr_->start();
+			}
+		}
+		else {
+			FreeSession(socket_id);
+			printf("error %s \n", ec.message().c_str());
+		}
+		async_accept();  // 继续监听客户端连接请求
+	}
+
+public:
+	boost::asio::io_service m_oIO;
+private:
+	CPool<T > gPool;
+	T * gSession[Max_Session];
+	tcp::acceptor acceptor_;
+	std::vector<int> m_vecFreeSession;
+};
+
+
+
+//举例================
+//全局变量
+class CGateSession;
+CServer<CGateSession> * P_server = NULL;
+
+class CGateSession :public CSession
+{
+public:
+	CGateSession(boost::asio::io_service &io_service):CSession(io_service)	{}
+
+
+	//zhou//给 其他session 发消息
+	void Send2OtherServer() {
+		int nSocketID = 0;
+		if (P_server == NULL) {
+			return;
+		}
+
+		CGateSession *ptr_ = P_server->GetSession(nSocketID);
+		if (ptr_ == NULL) {
+			return;
+		}
+		//ptr_->Send_Msg();
+	}
+
+	virtual bool Deal_Msg( short nMsgID, const std::string & str_) {
+		if (nMsgID == 10) {
+			if (Send_Msg(12, std::string("ok")) == false) {
+				printf("%s:%d thread_id : %d \n", __FUNCTION__, __LINE__, GetCurrentThreadId());
+			}
+		}
+		else if (nMsgID == 8) {
+			//关闭网络//并解除对应的玩家绑定
+			CloseSession();
+		}
+		//zhou//处理协议
+		return true;
+	}
+
+	virtual bool Send_Msg( short nMsgID, const std::string & str_) {
+		MsgHead oHead;
+		oHead.nLen = short(str_.size() + 2);
+		oHead.nMsgID = short(nMsgID);
+		oHead.nLen = htons(oHead.nLen);
+		oHead.nMsgID = htons(oHead.nMsgID);
+
+		std::string strContent;
+		strContent.resize(str_.size() + 2 + 2);
+
+		memcpy((void *)strContent.data(), (const void *)&oHead, sizeof(MsgHead));
+		memcpy((void *)(strContent.data() + sizeof(MsgHead)), (const void *)str_.data(), str_.size());
+
+		BaseSendMsg(strContent.c_str(), strContent.size());
+		return true;
+	}
+
+	virtual void WillFree()//在下一帧,释放该对象
+	{
+		if (P_server == NULL) {
+			return;
+		}
+		P_server->WillFreeSession(m_nID);
+	}
+};
+
+
+void test_main() {
+
+	printf("%s thread_id : %d \n", __FUNCTION__, GetCurrentThreadId());
+	P_server = new CServer<CGateSession>(2017);
+	if (P_server == NULL) {
+		return;
+	}
+
+	for (; ; ) {//网络_线程
+		bool is_empty = false;
+		if (P_server->m_oIO.poll_one() == 0) {
+			is_empty = true;
+		}
+		else {
+			printf("*");
+		}
+		P_server->DealFreeSessionReq();
+
+		if (is_empty) {
+			sleep_msec(1);//xx毫秒
+		}
+	}
+	//zhou//捕获关闭信号
+
+	//处理_关闭网络_请求
+	//释放资源
+	P_server->m_oIO.stop();
+	P_server->FreeSession();
+
+	delete P_server; P_server = NULL;
+	printf("%s thread_id : %d is end \n", __FUNCTION__, GetCurrentThreadId());
+
+}
+
+#endif
