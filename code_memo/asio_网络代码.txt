@@ -410,8 +410,8 @@ void test_main() {
 
 #endif
 
-//boost asio_server_收发单线程
-#if 1
+//boost asio_server_and_client收发单线程
+#if 1 
 
 #define BOOST_ERROR_CODE_HEADER_ONLY
 #define BOOST_REGEX_NO_LIB
@@ -461,57 +461,72 @@ struct MsgHead {
 	short nMsgID;
 };
 
-inline void write_handler(int nScoketID, const boost::system::error_code& error, std::size_t bytes_transferred)
+inline void write_handler(int nModuleID, int nScoketID, const boost::system::error_code& error, std::size_t bytes_transferred)
 {
+	//建议这个回调用全局的//整个框架有2个回调//一个读回调,一个写回调//它们都在一个线程处理//读回调_会释放类对象//
 	//暂无
 }
 
+typedef std::vector<int> ToBeDeletedSocketIDs;
 
-class CSession
+class CSession :public CNoncopy
 {
 public:
 #define MSG_MAX_  (1024*101)
-	CSession(boost::asio::io_service &io_service) : socket_(io_service) {
+	CSession(boost::asio::io_service &io_service) : m_oSocket(io_service) {
 		m_nStatus = E_S_None;
+		m_pvecFreeSession = NULL;
+		m_nModuleID = 0;
 	}
 
-	void start()
+	void start(ToBeDeletedSocketIDs * p_vec, int nModuleID)
 	{
+		m_pvecFreeSession = p_vec;
+		m_nModuleID = nModuleID;
 		m_nDataLen = 0;
 		m_nStatus = E_S_Begin;
+		OnInit();
 		async_read();
 	}
 
-	//网络_线程//可调用
 	void CloseSession() {
-		if (socket_.is_open()) {
-			socket_.shutdown(tcp::socket::shutdown_both);
-			socket_.close();
+		if (m_oSocket.is_open()) {
+			m_oSocket.shutdown(tcp::socket::shutdown_both);
+			m_oSocket.close();
 		}
 		printf("%s thread_id : %d \n", __FUNCTION__, GetCurrentThreadId());
 	}
 
-	virtual bool Deal_Msg( short nMsgID, const std::string & str_) = 0;
-	virtual bool Send_Msg( short nMsgID, const std::string & str_) = 0;
-	virtual void WillFree() = 0;//在下一帧,释放该对象
+	void FreeSession() {
+		if (m_pvecFreeSession) {
+			(*m_pvecFreeSession).push_back(m_nSocketID);
+		}
+		OnFreeSession();
+	}
+
+
+	//zhou//开始接收消息
+	virtual void OnInit() = 0;
+	virtual bool OnDeal_Msg(short nMsgID, const std::string & str_) = 0;
+	virtual void OnFreeSession() = 0;
 private:
 	bool GetMsg() {
 		if (m_nDataLen > 2) {
-			short len_ = ((short *)data_.data())[0];
+			short len_ = ((short *)m_arrData.data())[0];
 			len_ = ntohs(len_);
 			if (len_ + 2 <= m_nDataLen) {
 
 				if (m_nDataLen > 4) {
-					short msg_id = ((short *)data_.data())[1];
+					short msg_id = ((short *)m_arrData.data())[1];
 					msg_id = ntohs(msg_id);
-					if (Deal_Msg( msg_id, std::string(data_.data() + 2 + 2, len_ - 2)) == false) {
+					if (OnDeal_Msg(msg_id, std::string(m_arrData.data() + 2 + 2, len_ - 2)) == false) {
 						printf("%s:%d thread_id : %d \n", __FUNCTION__, __LINE__, GetCurrentThreadId());
 						return false;
 					}
 				}
 
 				m_nDataLen -= len_ + 2;
-				memmove(data_.data(), data_.data() + len_ + 2, m_nDataLen);
+				memmove(m_arrData.data(), m_arrData.data() + len_ + 2, m_nDataLen);
 				return true;
 			}
 		}
@@ -523,11 +538,11 @@ private:
 		int len_ = MSG_MAX_ - m_nDataLen;
 		if (len_ <= 0) {
 			m_nStatus = E_S_Read_Error;
-			WillFree();
+			FreeSession();
 			return;
 		}
 
-		socket_.async_read_some(boost::asio::buffer(data_.data() + m_nDataLen, len_),
+		m_oSocket.async_read_some(boost::asio::buffer(m_arrData.data() + m_nDataLen, len_),
 			std::bind(&CSession::read_cb, this, std::placeholders::_1, std::placeholders::_2)
 		);
 	}
@@ -543,98 +558,104 @@ private:
 		}
 		else {
 			m_nStatus = E_S_Read_Error;
-			WillFree();
+			FreeSession();
 		}
 	}
 public:
 	void BaseSendMsg(const char * buff_, std::size_t length)
 	{
 #if 1
-		socket_.async_write_some(boost::asio::buffer(buff_, length), std::bind(write_handler, m_nID, std::placeholders::_1, std::placeholders::_2));
+		m_oSocket.async_write_some(boost::asio::buffer(buff_, length), std::bind(write_handler, m_nModuleID, m_nSocketID, std::placeholders::_1, std::placeholders::_2));
 #else
 		boost::system::error_code ec;
-		size_t len = boost::asio::write(socket_, boost::asio::buffer(buff_, length), ec);
+		size_t len = boost::asio::write(m_oSocket, boost::asio::buffer(buff_, length), ec);
 #endif
 	}
 
 public:
-	int m_nID;
+	int m_nSocketID;
 	E_Session_Status m_nStatus;
-	tcp::socket socket_;
+	tcp::socket m_oSocket;
 private:
-	std::array<char, MSG_MAX_> data_;
+	std::array<char, MSG_MAX_> m_arrData;
 	int m_nDataLen;
-
+	ToBeDeletedSocketIDs * m_pvecFreeSession;
+	int m_nModuleID;
 };
 
+//server_
+#if 1
+
 template<class T>
-class CServer
+class CServer :public CNoncopy
 {
 public:
-	#define Max_Session (1024 * 10)
+#define Max_Session (1024 * 10)
 
-	CServer( short port)
-		: acceptor_(m_oIO, tcp::endpoint(tcp::v4(), port))
+	CServer(short port, int nModuleID)
+		: m_oAcceptor(m_oIO, tcp::endpoint(tcp::v4(), port))
 	{
-		memset(gSession, 0, sizeof(gSession));
+		m_nModuleID = nModuleID;
+		memset(m_arrSession, 0, sizeof(m_arrSession));
 		async_accept();
-	}
-
-	//在下一帧进行操作
-	void WillFreeSession(int socket_id) {
-		m_vecFreeSession.push_back(socket_id);
-	}
-
-	void FreeSession(int socket_id) {
-		T * ptr_ = GetSession(socket_id);
-		if (ptr_) {
-			gSession[socket_id] = NULL;
-			gPool.Release(ptr_);
-			printf("free socket_id:%d \n", socket_id);
-		}
 	}
 
 	void DealFreeSessionReq() {
 		for (size_t i_ = 0; i_ < m_vecFreeSession.size(); ++i_) {
 			const int & one_ = m_vecFreeSession[i_];
-			FreeSession(one_);
+			FreeOneSession(one_);
 		}
 
-	}
-
-	void FreeSession() {
-		for (size_t i = 0; i < sizeof(gSession) / sizeof(gSession[0]); ++i) {
-			if (gSession[i] == NULL) {
-				continue;
-			}
-			gSession[i] = NULL;
-			gPool.Release(gSession[i]);
-		}
 	}
 
 	T * GetSession(int socket_id) {
-		if ((size_t)socket_id < sizeof(gSession) / sizeof(gSession[0])) {
-			return gSession[socket_id];
+		if ((size_t)socket_id < sizeof(m_arrSession) / sizeof(m_arrSession[0])) {
+			return m_arrSession[socket_id];
 		}
 		return NULL;
 	}
 
+	void Stop() {
+		m_oIO.stop();
+		FreeAllSession();
+	}
+
 private:
-	T * CreateSession(boost::asio::io_service &io_service)
-	{
-		for (int i = 0; i < sizeof(gSession) / sizeof(gSession[0]); ++i) {
-			if (gSession[i] != NULL) {
+
+	void FreeOneSession(int socket_id) {
+		T * ptr_ = GetSession(socket_id);
+		if (ptr_) {
+			m_oPool.Release(ptr_);
+			m_arrSession[socket_id] = NULL;
+			printf("free socket_id:%d \n", socket_id);
+		}
+	}
+
+	void FreeAllSession() {
+		for (size_t i = 0; i < sizeof(m_arrSession) / sizeof(m_arrSession[0]); ++i) {
+			if (m_arrSession[i] == NULL) {
 				continue;
 			}
-			gSession[i] = gPool.CreateSession(io_service);
+			m_oPool.Release(m_arrSession[i]);
+			m_arrSession[i] = NULL;
+		}
+	}
 
-			if (gSession[i] == NULL) {
+	T * CreateSession(boost::asio::io_service &io_service)
+	{
+		for (int i = 0; i < sizeof(m_arrSession) / sizeof(m_arrSession[0]); ++i) {
+			if (m_arrSession[i] != NULL) {
+				continue;
+			}
+			m_arrSession[i] = m_oPool.CreateSession(io_service);
+
+			if (m_arrSession[i] == NULL) {
 				return NULL;
 			}
 
-			gSession[i]->m_nID = i;
+			m_arrSession[i]->m_nSocketID = i;
 			printf("create socket_id:%d \n", i);
-			return gSession[i];
+			return m_arrSession[i];
 		}
 
 		return NULL;
@@ -648,7 +669,7 @@ private:
 			return;
 		}
 
-		acceptor_.async_accept(ptr_session->socket_, std::bind(&CServer::handle_accept, this, ptr_session->m_nID, std::placeholders::_1));
+		m_oAcceptor.async_accept(ptr_session->m_oSocket, std::bind(&CServer::handle_accept, this, ptr_session->m_nSocketID, std::placeholders::_1));
 	}
 
 	void handle_accept(int socket_id, const boost::system::error_code &ec)
@@ -657,11 +678,11 @@ private:
 		{
 			T * ptr_ = GetSession(socket_id);
 			if (ptr_) {
-				ptr_->start();
+				ptr_->start(&m_vecFreeSession, m_nModuleID);
 			}
 		}
 		else {
-			FreeSession(socket_id);
+			FreeOneSession(socket_id);
 			printf("error %s \n", ec.message().c_str());
 		}
 		async_accept();  // 继续监听客户端连接请求
@@ -670,10 +691,11 @@ private:
 public:
 	boost::asio::io_service m_oIO;
 private:
-	CPool<T > gPool;
-	T * gSession[Max_Session];
-	tcp::acceptor acceptor_;
-	std::vector<int> m_vecFreeSession;
+	CPool<T > m_oPool;
+	T * m_arrSession[Max_Session];
+	tcp::acceptor m_oAcceptor;
+	ToBeDeletedSocketIDs m_vecFreeSession;//在下一帧对容器进行操作
+	int m_nModuleID;
 };
 
 
@@ -686,7 +708,7 @@ CServer<CGateSession> * P_server = NULL;
 class CGateSession :public CSession
 {
 public:
-	CGateSession(boost::asio::io_service &io_service):CSession(io_service)	{}
+	CGateSession(boost::asio::io_service &io_service) :CSession(io_service) {}
 
 
 	//zhou//给 其他session 发消息
@@ -703,7 +725,12 @@ public:
 		//ptr_->Send_Msg();
 	}
 
-	virtual bool Deal_Msg( short nMsgID, const std::string & str_) {
+	virtual void OnInit()
+	{
+		//绑定玩家数据
+	}
+
+	virtual bool OnDeal_Msg(short nMsgID, const std::string & str_) {
 		if (nMsgID == 10) {
 			if (Send_Msg(12, std::string("ok")) == false) {
 				printf("%s:%d thread_id : %d \n", __FUNCTION__, __LINE__, GetCurrentThreadId());
@@ -717,7 +744,7 @@ public:
 		return true;
 	}
 
-	virtual bool Send_Msg( short nMsgID, const std::string & str_) {
+	bool Send_Msg(short nMsgID, const std::string & str_) {
 		MsgHead oHead;
 		oHead.nLen = short(str_.size() + 2);
 		oHead.nMsgID = short(nMsgID);
@@ -734,20 +761,16 @@ public:
 		return true;
 	}
 
-	virtual void WillFree()//在下一帧,释放该对象
-	{
-		if (P_server == NULL) {
-			return;
-		}
-		P_server->WillFreeSession(m_nID);
+	virtual void OnFreeSession() {
+		//解绑玩家数据
 	}
 };
 
 
-void test_main() {
+void test_main(int argc, char* argv[]) {
 
 	printf("%s thread_id : %d \n", __FUNCTION__, GetCurrentThreadId());
-	P_server = new CServer<CGateSession>(2017);
+	P_server = new CServer<CGateSession>(2017, 0);
 	if (P_server == NULL) {
 		return;
 	}
@@ -770,12 +793,331 @@ void test_main() {
 
 	//处理_关闭网络_请求
 	//释放资源
-	P_server->m_oIO.stop();
-	P_server->FreeSession();
+	P_server->Stop();
 
 	delete P_server; P_server = NULL;
 	printf("%s thread_id : %d is end \n", __FUNCTION__, GetCurrentThreadId());
 
 }
+
+
+#else
+
+
+template<class T>
+class CClient :public CNoncopy
+{
+public:
+#define Max_Session (1024 * 10)
+
+	CClient(int nModuleID)
+	{
+		m_nModuleID = nModuleID;
+		memset(m_arrSession, 0, sizeof(m_arrSession));
+	}
+
+	T * Connect(const std::string str_ip, const std::string str_port)
+	{
+		T * ptr_session = CreateSession(m_oIO);
+		if (ptr_session == NULL) {
+			printf("error in %s ", __FUNCTION__);
+			return NULL;
+		}
+
+		//zhou//再封装一个 异步的方法
+
+		tcp::resolver r(m_oIO);
+		tcp::resolver::query q(str_ip.c_str(), str_port.c_str());
+		boost::system::error_code ec;
+		boost::asio::connect(ptr_session->m_oSocket, r.resolve(q), ec);
+		if (!ec) {
+			ptr_session->start(&m_vecFreeSession, m_nModuleID);
+			return ptr_session;
+		}
+		else {
+			FreeOneSession(ptr_session->m_nSocketID);
+			return NULL;
+		}
+	}
+
+	void DealFreeSessionReq() {
+		for (size_t i_ = 0; i_ < m_vecFreeSession.size(); ++i_) {
+			const int & one_ = m_vecFreeSession[i_];
+			FreeOneSession(one_);
+		}
+
+	}
+
+	T * GetSession(int socket_id) {
+		if ((size_t)socket_id < sizeof(m_arrSession) / sizeof(m_arrSession[0])) {
+			return m_arrSession[socket_id];
+		}
+		return NULL;
+	}
+
+	void Stop() {
+		m_oIO.stop();
+		FreeAllSession();
+	}
+
+private:
+
+	void FreeOneSession(int socket_id) {
+		T * ptr_ = GetSession(socket_id);
+		if (ptr_) {
+			m_oPool.Release(ptr_);
+			m_arrSession[socket_id] = NULL;
+			printf("free socket_id:%d \n", socket_id);
+		}
+	}
+
+	void FreeAllSession() {
+		for (size_t i = 0; i < sizeof(m_arrSession) / sizeof(m_arrSession[0]); ++i) {
+			if (m_arrSession[i] == NULL) {
+				continue;
+			}
+			m_oPool.Release(m_arrSession[i]);
+			m_arrSession[i] = NULL;
+		}
+	}
+
+	T * CreateSession(boost::asio::io_service &io_service)
+	{
+		for (int i = 0; i < sizeof(m_arrSession) / sizeof(m_arrSession[0]); ++i) {
+			if (m_arrSession[i] != NULL) {
+				continue;
+			}
+			m_arrSession[i] = m_oPool.CreateSession(io_service);
+
+			if (m_arrSession[i] == NULL) {
+				return NULL;
+			}
+
+			m_arrSession[i]->m_nSocketID = i;
+			printf("create socket_id:%d \n", i);
+			return m_arrSession[i];
+		}
+
+		return NULL;
+	}
+
+public:
+	boost::asio::io_service m_oIO;
+private:
+	CPool<T > m_oPool;
+	T * m_arrSession[Max_Session];
+	ToBeDeletedSocketIDs m_vecFreeSession;//在下一帧对容器进行操作
+	int m_nModuleID;
+};
+
+
+
+//举例================
+inline time_t GetCurMs();//声明
+						 //全局变量
+#define Max_Send_Msg (2500)
+#define Session_Num (80)
+volatile int Total_All_Send_Msg = 0;
+class CGateSession;
+CClient<CGateSession> * P_client = NULL;
+
+class CGateSession :public CSession
+{
+public:
+	CGateSession(boost::asio::io_service &io_service) :CSession(io_service)
+	{
+		m_nBeginT = 0;
+		m_nEndT = 0;
+		m_nSendNum = 0;
+	}
+
+public:
+
+	time_t m_nBeginT;
+	time_t m_nEndT;
+	int m_nSendNum;
+
+	//给 其他session 发消息
+	void Send2OtherServer() {
+		int nSocketID = 0;
+		if (P_client == NULL) {
+			return;
+		}
+
+		CGateSession *ptr_ = P_client->GetSession(nSocketID);
+		if (ptr_ == NULL) {
+			return;
+		}
+		//ptr_->Send_Msg();
+	}
+
+	virtual void OnInit()
+	{
+		//绑定玩家数据
+	}
+
+	virtual bool OnDeal_Msg(short nMsgID, const std::string & str_) {
+		if (nMsgID == 12) {
+			if (Send_Msg(10, std::string("hello")) == false) {
+				printf("%s:%d thread_id : %d \n", __FUNCTION__, __LINE__, GetCurrentThreadId());
+			}
+		}
+		//处理协议
+		return true;
+	}
+
+	bool Send_Msg(short nMsgID, const std::string & str_) {
+		if (nMsgID == 10) {
+			if (m_nSendNum < Max_Send_Msg) {
+				++m_nSendNum;
+			}
+			else {
+				m_nEndT = GetCurMs();
+				return false;
+			}
+			++Total_All_Send_Msg;
+		}
+
+		MsgHead oHead;
+		oHead.nLen = short(str_.size() + 2);
+		oHead.nMsgID = short(nMsgID);
+		oHead.nLen = htons(oHead.nLen);
+		oHead.nMsgID = htons(oHead.nMsgID);
+
+		std::string strContent;
+		strContent.resize(str_.size() + 2 + 2);
+
+		memcpy((void *)strContent.data(), (const void *)&oHead, sizeof(MsgHead));
+		memcpy((void *)(strContent.data() + sizeof(MsgHead)), (const void *)str_.data(), str_.size());
+
+		BaseSendMsg(strContent.c_str(), strContent.size());
+		return true;
+	}
+
+	virtual void OnFreeSession() {
+		//解绑玩家数据
+	}
+};
+
+
+void test_main(int argc, char* argv[]) {
+
+	if (argc < 5) {
+		return;
+	}
+	time_t nBeginTime = _atoi64(argv[1]);
+	int nAppID = atoi(argv[2]);
+	std::string str_ip(argv[3]);
+	std::string str_port(argv[4]);
+
+	printf("%s thread_id : %d \n", __FUNCTION__, GetCurrentThreadId());
+	P_client = new CClient<CGateSession>(0);
+	if (P_client == NULL) {
+		return;
+	}
+	std::vector<int> vecSocketID;
+	std::stringstream oss_;
+
+	for (int i = 0; i < Session_Num; ++i) {
+		CGateSession *ptr_ = P_client->Connect(str_ip, str_port);
+		if (ptr_) {
+			vecSocketID.push_back(ptr_->m_nSocketID);
+		}
+		else {
+			printf("#");
+		}
+	}
+
+	int nStep = 0;
+	for (int run_i = 0; ; ++run_i) {//网络_线程
+		bool is_empty = false;
+		if (P_client->m_oIO.poll_one() == 0) {
+			is_empty = true;
+		}
+		else {
+			//printf("*");
+		}
+		P_client->DealFreeSessionReq();
+
+		if (time(NULL) < nBeginTime) {
+			sleep_msec(1);//xx毫秒
+			if (run_i % 1000 == 0) {
+				printf("%lld \n ", nBeginTime - time(NULL));
+			}
+			continue;
+		}
+
+		if (nStep == 0) {
+			nStep = 1;
+			for (std::vector<int>::const_iterator it_ = vecSocketID.begin();
+				it_ != vecSocketID.end(); ++it_) {
+				CGateSession *ptr_ = P_client->GetSession(*it_);
+				if (ptr_) {
+					ptr_->m_nBeginT = GetCurMs();
+					printf("%lld %lld %d\n", ptr_->m_nEndT, ptr_->m_nBeginT, ptr_->m_nSendNum);
+					ptr_->Send_Msg(10, std::string("hello"));
+				}
+				else {
+					printf("#");
+				}
+			}
+		}
+		else if (nStep == 1) {
+			if (Total_All_Send_Msg >= Max_Send_Msg * Session_Num) {
+				nStep++;
+			}
+		}
+		else if (nStep < 4000) {
+			nStep++;
+		}
+		else if (nStep == 4000) {
+			nStep++;
+
+			int n_total_time = 0;
+			for (std::vector<int>::const_iterator it_ = vecSocketID.begin();
+				it_ != vecSocketID.end(); ++it_) {
+				CGateSession *ptr_ = P_client->GetSession(*it_);
+				if (ptr_) {
+					ptr_->Send_Msg(8, std::string("exit"));
+
+					int n1 = ptr_->m_nEndT - ptr_->m_nBeginT;
+					n_total_time += n1;
+					oss_ << ptr_->m_nEndT << " " << ptr_->m_nBeginT << " " << ptr_->m_nSendNum << " " << n1 << "\n";
+				}
+				else {
+					printf("#");
+				}
+			}
+			oss_ << "job:" << float(n_total_time / Session_Num / 1000.0) << "s\n";
+			write2File(nAppID, std::to_string(float(n_total_time / Session_Num / 1000.0)));
+		}
+		else if (nStep < 5000) {
+			nStep++;
+		}
+		else if (nStep == 5000) {
+			break;
+		}
+
+
+		if (is_empty) {
+			sleep_msec(1);//xx毫秒
+		}
+	}
+
+	std::cout << oss_.str() << std::endl;
+
+	//zhou//捕获关闭信号
+
+	//处理_关闭网络_请求
+	//释放资源
+	P_client->Stop();
+
+	delete P_client; P_client = NULL;
+	printf("%s thread_id : %d is end \n", __FUNCTION__, GetCurrentThreadId());
+
+}
+
+#endif
+
 
 #endif
