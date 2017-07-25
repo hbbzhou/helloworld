@@ -23,14 +23,14 @@ int GetWriteBoxIndex()
 
 :数据修改_逻辑
 	if key存在
-		直接修改redis的数据
+		直接修改redis的数据,并设置6分钟有效时间
 	else
-		命令game 发一次完整数据过来 , 接着在 存储到redis中
+		先从mysql加载数据 到 redis
+		修改redis数据,并设置6分钟有效时间
 	endif
 	将该玩家id 保存到 redis 的  Need2SaveKey .例如:sadd("Need2SaveKey" , "本次修改的key")
 
 :数据删除_逻辑
-	玩家下线时,更新一次 完整数据 并设置 6分钟的有效时间
 
 :定时保存_逻辑
 	5分钟 保存一次
