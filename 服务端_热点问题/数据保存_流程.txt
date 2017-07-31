@@ -1,5 +1,10 @@
 ﻿
 :前言
+
+全部获取数据流程->redis(可能数据不完整)->mysql(对缺失的数据进行查找,组合,返回消息,会写redis)
+修改_部分数据_流程->redis(更新对应的数据块)->更新_定时保存容器
+定时保存流程->redis(却出key)->redis(获取对应的数据)->mysql(写入对应的数据表)
+
 保存key的容器_用轮盘的方式来选择
 int GetReadBoxIndex()
 {
@@ -14,6 +19,7 @@ int GetWriteBoxIndex()
 	int32 n1 = (GetReadBoxIndex() + 2) % [容器总数];
 	return n1;
 }
+
 
 
 ::非离线数据的操作_逻辑
