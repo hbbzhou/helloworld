@@ -59,7 +59,7 @@ def test1():
 	str_argv_1 = sys.argv[1]
 
 
-def create_new_file(str_name):
+def encode_file(str_name):
 	f_ = open(str_name , "rb")
 	buff_ = f_.read()
 	f_.close()
@@ -70,13 +70,13 @@ def create_new_file(str_name):
 	f_new.close()
 	
 	
-def create_change_file(str_name , str_new_name):
-	f_ = open(str_name , "r")
+def decode_file(str_src_name , str_dst_name):
+	f_ = open(str_src_name , "r")
 	buff_ = f_.read()
 	f_.close()
 	str_ = base64.b64decode(buff_)
 	
-	f_new = open(str_new_name , "wb")
+	f_new = open(str_dst_name , "wb")
 	f_new.write(str_)
 	f_new.close()
 	
