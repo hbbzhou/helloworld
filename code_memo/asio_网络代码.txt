@@ -605,7 +605,7 @@ public:
 			const int & one_ = m_vecFreeSession[i_];
 			FreeOneSession(one_);
 		}
-
+		m_vecFreeSession.clear();
 	}
 
 	T * GetSession(int socket_id) {
@@ -845,7 +845,7 @@ public:
 			const int & one_ = m_vecFreeSession[i_];
 			FreeOneSession(one_);
 		}
-
+		m_vecFreeSession.clear();
 	}
 
 	T * GetSession(int socket_id) {
