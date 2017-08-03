@@ -31,13 +31,6 @@ namespace basefun {
 		return SECOND2DAY + hour_and_minute - n_diff;
 	}
 
-	long GetMSec()//获取毫秒
-	{
-		struct timeb tv;
-		ftime(&tv);
-		return ((long)tv.time) * 1000 + (long)tv.millitm;
-	}
-
 	const int endian = 1;
 	#define is_bigendian() ( (*(char*) &endian) == 0 )
 	#define is_littlendbian() ( (*(char*) &endian) == 1 )
