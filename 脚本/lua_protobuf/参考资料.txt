@@ -1,0 +1,7 @@
+
+将my_git\脚本\lua_protobuf\protoc-gen-lua\protobuf\pb.c 编译成 pb.dll
+
+
+
+//参考
+http://ziplee.iteye.com/blog/2078851
