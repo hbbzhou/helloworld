@@ -1,0 +1,76 @@
+﻿
+
+//加载dll
+#if
+package.path = package.path ..';protobuf\\?.lua;proto\\?.lua';
+package.cpath = package.cpath .. ';lib\\?.dll'
+
+local lib_test =require "testlib"
+
+print(lib_test.add(1, 2) )
+
+#endif
+
+//反射
+#if
+--lua 反射
+for k,v in pairs(lib_test) do
+	--print(k,v)
+	if k == "add" then
+		print(v(2,2) )
+		break
+	end
+end
+
+#endif
+
+//位操作
+#if
+
+local bit =require "bit"
+
+--bitIndex 范围[0-31]
+local function GetBit(srcNum, bitIndex )
+	return bit.band(bit.rshift(srcNum, bitIndex), 1)
+end
+
+local function SetBit(srcNum, bitIndex )
+	return bit.bor(bit.lshift(1, bitIndex), srcNum)
+end
+
+local function ResetBit(srcNum, bitIndex )
+	local n1 = bit.bnot( bit.lshift(1, bitIndex) )
+	return bit.band(n1, srcNum)
+end
+
+
+#end
+
+//protobuff
+#if 
+
+-- 如果require失败，请参考lua中`package.path`的使用
+local pb =require("Test_pb")
+
+local test = pb.Test()
+test.id = 1
+test.name = "hello"
+test.ary:append(1) -- 内置类型的repeated使用append()
+test.ary:append(2)
+
+local foo1 = pb.foos:add() -- 复合类型的repeated使用add()
+foo1.fid = 1
+foo1.fname = "foo1"
+local foo2 = pb.foos:add()
+foo2.fid = 2
+foo2.fname = "foo2"
+-- 序列化为字符串
+local pb_data =test:SerializeToString()
+
+-- 从字符串解析
+local recover = pb.Test()
+recover:ParseFromString(pb_data)
+print(recover.id, recover.foos[1].name, recover.foos[2].name) 
+#endif
+
+
