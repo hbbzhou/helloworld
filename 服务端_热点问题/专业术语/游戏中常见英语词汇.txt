@@ -1,0 +1,745 @@
+游戏中常见英语词汇
+
+Electronic Game电子游戏
+AVG（Adventure Game）冒险类游戏
+Graphic Adventure图形冒险类游戏
+Text Adventure文字冒险类游戏
+PZL（puzzle game）解密类游戏
+STG （shooting Game）射击类游戏
+Doom－like三维设计类游戏
+FTG（Fighting Game）格斗类游戏
+FlightSim飞机模型类游戏
+RPG（RolePlaying Game）角色扮演类游戏
+Hidden Level隐藏关卡
+High－Res高解析度　　
+Hint攻略提示
+HP（HIT Point）生命力
+HUD（HeadsUP display）飞行仪表盘　Interface游戏界面
+Joypad游戏手柄
+Joystick游戏操纵杆
+Level关卡
+Moves 出招
+MP（Magic Point）魔法点
+NPC（Non Player Character）非玩者人物
+Passord通行证
+Player killing玩者杀手
+Puzzle谜题
+Round回合
+Scaling缩放比例
+Stage 关卡
+Storyline剧情
+Sub－boss 隐藏头目
+Walkthrough游戏攻略
+NetworkGames 网络游戏
+MUD（Multi－user Dungeon）
+多用户地牢，俗称泥巴埋在互联网络上的一种允许许多人参与的实时游戏，一般类似RPG的玩法但目前多为文字模式
+RSG（Realtime Strategy Game）即时战略 游戏
+SPT（sport）运动类游戏
+Bug程序漏洞
+Cheat游戏秘技
+Clock Speed游戏执行速度
+Code 密码
+EasterEgg 复活节彩蛋
+Engine游戏引擎
+ExperiencePoint 经验点数
+View视角
+FirstPerson第一人称视角
+Second Person第二人称视角
+Third Person第三人称视角
+FMV（Full－motion Video）全动态影像
+FreeGuy 额外的命
+力量Strength
+敏捷Agility/Dexterity
+耐力Stamina/Patience
+智力Intellect
+精神Spirit
+精力Vigor
+活力Vitality/Vigor
+意志Willpower
+净化Cleansing
+魅力Charmsty
+法力Spell/Mana
+运气Luck
+祈祷Prayer
+感知力Perception
+免疫力Immune/Immunity
+生命力Hit Point(HP)
+魔法力Magic Point(MP)
+经验点数Experience Point
+强力的Mighty
+恐吓/威胁Intimidate
+灌注/注入Infuse
+渗透Infiltrate
+寄生Infest
+复活Reincarnate
+迫近Impending
+刺穿Impale
+坚韧Fortitude
+佯攻Feint
+瘟疫Plague
+假死Feign
+石化Petrify
+穿刺Pierce
+侦测Detection
+攻击强度Attack Power
+战斗Combat
+离开战斗Out Combat
+进入战斗In Combat
+伤害Damage
+灼烧Cauterize
+大火Conflagration
+爆炸Detonation
+焚烧Incinerate
+易燃的/点燃Combust
+每秒伤害Damage Per Sec(DPS)
+护甲Armor
+重击Smite
+赞扬/赞扬Exalt
+唤醒Evocation
+闪避Dodge/Evade
+格挡几率Block
+招架几率/招架Parry
+命中率Accuracy
+速度speed
+防御Defense
+踢Kick
+痛苦/折磨afflict/affliction
+痛苦诅咒Curse Of Agony
+精准Precision
+投掷Throwing
+狂乱Frenzy
+震荡Concussion
+震荡射击Consussive Shot
+兴奋激发Adrenaline Rush
+敏锐Subtlety
+诡计大师Master of Deception
+伪装Camouflage
+狡诈Elusiveness
+规避Evasion
+消失Vanish
+致盲Blind
+时机Opportunity
+背刺Backstab
+埋伏Ambush
+绞喉Garrorte
+炼金术Alchemy
+伏击Ambush
+伤害加深Amlify Damage
+奥术Arcane
+放逐Banish
+冲击波Blast
+暴风雪Blizzard
+施魔法/使迷惑Enchant
+拥抱Clasp
+吸收absorb
+握Grasp
+吸魔Drain Mana
+吸血Drain Life
+躲避Miss
+隐形Clock
+厚重Thick
+耐久Durability
+野性Wild
+祝福Blessed
+翼Wing
+昏暗的Dim
+恶魔的Diabolical
+虔诚的Devout
+专注光环Devotion Aura
+狂热光环Aura of Fanatism
+神圣的/预言Divine
+驱散Dispel
+戒律Discipline
+光环Aura
+瞄准Aim
+冲锋Charge
+反抗Defiance
+神圣之盾Holy Shield
+神圣冰冻Holy Freeze
+荆棘Thorns
+魔法书/魔书Grimoire
+魔法值Mana
+跳Jump
+射击Shooter
+链枷Flail
+巨战之剑Colossus Blade
+残忍利刃Brutality Blade
+野兽狂怒之锤Hammer of Bestial Fury
+双挥(武器双持)Dual Wield
+木槌Gavel/Mallet
+锤Mace/Hammer
+刀刃/刀Blade
+屠龙刀Dragonslayer
+弯形刀Falchion
+刀剑Brand
+剑Sword
+双刃剑Rapier
+符文剑Runesword
+短剑Shortsword
+阔剑Broadsword
+棒Stick
+铁头棒Quarterstaff
+柱Pillar
+尾Tail
+斧Axe
+利刃斧Edge
+龙牙斧Dragontooth
+龙爪巨斧Drake Talon Cleaver
+切肉斧/切肉刀Cleaver
+法兰飞斧Francisca
+掠夺斧Reaver
+印第安斧Tomahawk
+战斧Battle Axe
+斧头Chopper
+小斧Hatchet
+手斧Hand Axe
+拳头Fist
+武器Weapon
+弩炮Ballista
+投石车Stone Thrower
+重型投石车Catapult
+冲撞车Ram
+爪Talons
+叉Fork
+弓Bow
+小提琴弓Violin Bow
+提琴弓Fiddle Bow
+箭Arrow
+神刃Godblade
+龙牙匕Dragonfang
+棘Thorn
+ 
+长钉Spike
+长弓Longbow
+弩Crossbow
+巨剑Great Sword
+匕首Dagger/Knife
+剃刀Razor
+棍Rod
+细棍Splinter
+拨火棍Poker
+波形刀Kris
+刮刀Shiv
+锐匕Poniard
+刀Blade
+小刀Knife
+矛Spear
+长枪Pike
+骑士用的长枪Lance
+戟Halberd
+流星锤Morning Star
+工匠锤Hammer
+杖Staff
+法杖Wand
+权杖Mace/Sceptre
+月牙砍刀Bardiche
+长柄镰刀Scythe
+魔杖Staff
+柄Pole
+板斧Berserker Axe
+枪Gun
+飞镖Dart
+辟邪符Phylactert
+水晶Crystal
+球Ball
+球体Sphere
+铁球Globe
+法珠Orb
+石Stone
+圣甲虫Scarab
+碎片Shard/Fragment
+筝Zither
+风琴Harpanola
+七弦琴Lyre
+管Didgeridoo
+古弦Psaltery
+木号Alphorn
+竖琴Harp
+项
+链Necklace
+吊饰Pendant
+摆饰Bauble
+法宝Talisman
+咒符Charm
+铁链Chain
+颈毛Collar
+圣物Relic
+残暴之刃Barbarous Blade
+尖刺颈饰Barbed Choker
+多彩之剑Chromatically Tempered Sword
+多彩披风Chromatic Cloak
+多彩之靴Chromatic Boots
+尖牙Fang
+龙牙饰物Drake Fang Talisman
+无面者之牙Fang of the Faceless
+手&枪Handgun/Pistol
+步枪/来复枪Rifle
+突击步枪Assault Rifle
+机枪Machine Gun/Pillbox
+冲锋枪Sub-Machine Gun
+狙击步枪Sniper Rifle
+火焰喷射器Flame Thrower
+离子Ion
+等离子Plasma
+激光Laser
+榴弹/手榴弹Grenade
+炸弹Bomb
+照明弹Flare
+发射器Launcher
+火箭Rocket
+六管机枪Minigun/Vulcano
+散弹枪Shotgun
+加农炮Cannon
+榴弹炮Howitzer
+闪光弹Flash Grenade
+穿甲弹AP
+高爆弹HE
+防空炮AA-Guns
+高斯步枪Gauss
+电池Battery
+ 
+装甲Armor
+医疗箱Med Kit
+弹药Ammo
+弹夹Clip
+散弹枪子弹/炮弹Shell
+手电筒Flash Light
+钉子Nail
+雷达Radar
+长袍Loof
+头盔Helmet
+荣光Halo
+冠羽Crest
+巨盔Greathelm
+头环Circlet
+角盔Horns
+三重冠Tiara
+镰刀Sickle
+衣服Uniforms
+小背包Satchel
+背包Backpack
+束带Cinch
+皮带Strap
+腰带Belt
+腱Sinew
+褡带Girdle
+饰带Sash
+绳索Cord
+护腰Waistguard
+护膝Kneepads
+手套Gloves
+短裤Pants
+法衣Vestments
+鳞片Scale
+外衣Cover
+披肩Shawl
+面纱Veil
+寿衣Shroud
+帷帘Drape
+披风Cape
+斗篷Cloak
+锁子甲Chain Mail
+链Link
+带Band
+箍Sinew
+印章Signet
+环Circle
+封印Seal
+腕甲Bracer
+板甲Plate
+盾/盾牌/防护罩Shield
+手盾Small Shield
+巨盾Large Shield
+圆盾Buckler
+塔盾Tower Shield
+神盾Aegis
+壁垒Bulwark
+防御盾Defender
+盘Disk
+小盾Targe
+保护盾Protector
+守护Guard
+护身符Amulet
+护胫Greaves
+便鞋Sandals
+绑腿Footwraps
+行军靴Striders
+凯靴Sabatons
+拖鞋Slippers
+靴子/靴Footwear/Boots
+木屐Geta
+鞋Shoes
+草帽Chinese Hat
+圈Loop
+手镯Bracelet
+戒指Ring
+粮仓Granary
+帐篷Tent
+复仇者Avenger
+灭绝胸甲Breastplate of Annihilation
+毁灭护手Gauntlets of Annihilation
+明晰披风Cloak of Clarity
+项圈Collar
+上古腐蚀护腿Ancient Corroded Leggings
+深渊纹章Abyssal Crest
+欺诈宝珠Orb of Deception
+异常生长之帽Deviate Growth Cap
+吞噬披风Cloak of the Devoured
+吞噬之戒Ring of the Devoured
+吞噬者之帽Guise of the Devourer
+衰弱之眼Eys if Diminution
+强能护腿Empowered Leggings
+启示项链Choker of Enlightenment
+肩饰Epaulet
+彩虹刻面Rainbow Facet
+秘法之牙Fang of the Mystics
+号角Horn
+军号Bugle
+龙角号Dragonhorn
+星Star
+铲子Spade
+旗帜Banner
+旗Flag
+勋章Medallion
+徽章Badge
+图腾Totem
+符号Symbol
+ 
+圣典Writ
+皮革Hide
+碑Tablet
+锻造Forge
+燧石Flint
+船Ship
+火焰Flame
+火/开火Fire
+解毒剂/解毒药水Antidote
+竞技场Arena
+军械库Armory
+修道院Cloister
+拍卖行Auction
+绷带Bandage
+磨坊Mill
+储物箱Cache
+火焰之王的储物箱Cache of the Fire Lord
+大锅炉Caldron
+催化剂Catalyst
+亚麻布Linen Cloth
+灰烬之海Sea if Cinders
+魔法水晶Conjured Crytal Water
+魔法甜面包Conjured Sweet Roll
+飓风Cyclone
+契约Deed
+污染Defile
+精致的Delicate
+士气Morale
+士气受挫Demoralize
+挫志咆哮Demoralizing Shout
+册Manual
+法典Codex
+本Tome
+卷抽Scroll
+收入Income
+金币Gold Coin
+狂狼Dire Wolf
+变异兽皮Deviate Hides
+变异鱼Deviate Fish
+海龟Turtle
+鹰Eagle
+螃蟹Crab
+骷髅头Skull
+马Horse
+蜘蛛Spider
+蜘蛛网Spider Web
+绵羊Sheep
+蝎子Scorpion
+乌鸦Crow
+瓢虫Ladybug
+甲虫Beetle
+花栗鼠Chipmunk
+蜥蜴Lizard
+小兔子Bunny
+毛毛虫Caterpillar
+蟑螂Cockroach
+扇贝Scalloped Shell
+狐狸Fox
+海星Starfish
+海胆Sand Dollar
+骆驼Camel
+蜻蜓Dragonfly
+龙虾Lobster
+海鸥Seagull
+长颈鹿Giraffe
+公鸡Rooster
+狼蛛Tarantula
+恐龙Dinosaur
+龙Dragon
+兽群Pack
+傀儡Dummy
+吞噬者Devourer
+百夫长Centurion
+半人马Centaur
+野蛮人Barbarian
+占卜师Augur
+将军General
+军队Army
+萨满祭司Shaman
+巨魔狂暴者Troll Berserker
+巨魔猎头者Troll Headhunter
+兽族步兵Grunt
+伐木材工/伐木工人Lumberjack
+蒸汽机车Steam Tank
+迫击炮小队Mortar Team
+矮人直升机Gyrocopter
+魔法破坏者Spell Breaker
+苦工Peon
+ 
+女巫Sorceress
+剑圣Blademaster
+骑士Knight
+矮人火枪手Rifleman
+先知Far Seer
+平民Civilian
+民兵Milltia
+牛头人酋长Tauren Chieftain
+暗影猎手Troll Shadow Hunter
+暗夜精灵Eif Night
+小精灵Wisp
+弓箭手Archer
+女猎手Huntress
+投刃车Glaive Thrower
+树妖Dryad
+利爪德鲁伊Druid of the Claw
+山岭巨人Mountain Giant
+角鹰兽Hippogryph
+猛禽德鲁伊Druid of the Talon
+精灵龙Faerie Dragon
+奇美拉Chimaera
+恶魔猎手Demon Hunter
+丛林守护者Keeper of the Grover
+月之女祭司Priestess of the moon
+守望者Warden
+侍僧Acolyte
+食尸鬼Ghoul
+地穴恶魔Crypt Fiend
+石像鬼Gargoyle
+亡灵巫师Necromancer
+女精灵Banshee
+绞肉车Meat Wagon
+憎恶Abomination
+毁灭者Destroyer
+阴影Shade
+冰霜巨龙Frost Wyrm
+恐惧魔王Dread Lord
+巫妖Lich
+地穴领主Crypt Lord
+纳迦女海巫Naga Sea Witch
+黑暗游侠Dark Ranger
+熊猫酒仙Pandaren Brewmaster
+深渊魔王Pit Lord
+驯兽师Beastmaster
+地精修补匠Goblin Tinker
+地精术士Goblin Alchemist
+火焰领主Fire Lord
+山丘之王Mountain King
+大魔法师Archmage
+血魔法师Blood Mage
+龙鹰骑士Gragonhawk Rider
+狮鹫骑士Gryphon Rider
+带枪的歹徒Gunslinger
+强盗/盗贼Bandit
+援军Convoy
+联盟Alliance
+君主Monarch
+人类Human
+矮人Dwarf
+夜精灵Night Eif
+地精Gnome
+德莱尼Draenei
+部落Horde
+兽人Orc
+食人妖Troll
+牛头人Tauren
+不死族Undead/Forsaken
+血精灵Blood Eif
+鱼人Murlocs
+巨魔Ogres
+纳迦Nagas
+战士Warrior
+牧师Priest
+盗贼Rogue
+猎人Hunter
+法师Mage
+术士Warlock
+德鲁伊Druid
+圣骑士Paladin
+死亡骑士Death Knight
+学徒Apprentice
+黑豹Panther
+美味风蛇Savory Deviate Delight
+猪肉Pork
+熏肉Bacon
+番茄Tomato
+啤酒Beer
+绿豆Greem Bean
+红辣椒Chili Pepper
+香蕉Banana
+菠菜Spinach
+蜂蜜Honey
+土豆Potato
+梨Pear
+铁Iron
+铁砧Anvil
+铜Copper
+锡Stannum
+金Gold
+银Silver
+矿石Ore
+宝石Gem
+红宝石Ruby
+钻石Diamond
+亚马逊石Amazonium
+粗糙的石头Coarse Stone
+木材Lumber
+劣质的，未加工的Crude
+持续时间Duration
+精英Elite
+决斗Duel
+吸血鬼的拥抱Vampire's Embrace
+使者Emissary
+遭遇战Encounter
+吞没Engulf
+增强/提高Enhance
+照亮Lighten
+激怒Enrage
+缠绕Entangle
+史诗Epic
+蚀刻Etch
+冰冷的Glacial
+光环Halo
+治疗Heal
+蹄Hoof
+灌注Imbue
+灌魔之瓶Imbued Vial
+网格Mend
+殉难者Martyr
+角色扮演类游戏Role Playing Game
+即时战略类游戏Realtime Strategy Game
+回合制战略游戏Turn-based Strategy Game
+冒险类游戏Adventure Game(AVG)
+格斗类游戏
+Fighting Game(FTG)
+射击类游戏Shooting Game(STG)
+剧情Story Line
+秘笈Cheat
+游戏攻略Walkthrough
+角色Character
+游戏game
+玩play
+玩家player
+存档save
+读档load
+继续continue
+退出exit/quit
+返回back
+应用apply
+声音sound
+音量volume
+视频video
+音频audio
+ 
+试玩trial/demo
+注册register
+购买purchase/buy
+卖出sell
+破解crack
+补丁patch
+教学tutorial
+跳过skip
+单人的single
+多人的multiply
+按、压力press
+困难度difficulty
+简单easy
+正常normal
+中等medium
+困难的hard/difficult
+发狂的insane
+疯狂crazy/insane
+噩梦的nightmare
+专家expert
+档案profile
+对手opponent
+选择choose
+魔法magic
+北north
+南south
+西west
+东east
+生物creature
+怪物monster/Alien
+快的quick/haste
+慢的slow
+敌人enemy
+击败defeat
+任务mission
+关stage
+完成complete
+失败fail
+失去lose
+花费cost
+能量power
+目标target
+发送send
+接收receive
+初级的Beginner
+中级的Intermediate
+高级的Advanced
+技能skill
+探索quest
+危险danger
+安全safety
+中止abort
+继续resume
+升级Level Up
+外传legend
+原始original
+作弊Cheat
+古代卷轴Ancient Scroll
+挑战模式Chanllenge
+冒险模式Adventure
+闯关失败Stage Failed
+雇佣Hire
+训练Torial/Traning
+原谅Pardon
+不公平unfair
+外挂Rabot
+加血add blood
+分辨率Resolution
+显示模式Display Mode
+亮度Brightness
+图像质量Graphic Quality
+反射Bloom
+光晕Glow
+景深Depth of Field
+反锯齿Anti Aliasing
+模糊Blur
+后处理Post Processing
+火焰Flares
+动态模糊Motion Blur
+动态痕迹Decals
+曝光Exposure
+贴图质量Shader Quality
+阴影质量Shadow Quality
+走/跑Toggle Walk/Run
+快跑Sprint
+蹲伏Crouch
+物品栏Inventory
+护腕Bracer
+护腿Leggings
+望眼镜Telescope
+双眼望远镜Binoculars
+面具Mask
+帽Cap
+权冠Diadem
+王冠Crowns
