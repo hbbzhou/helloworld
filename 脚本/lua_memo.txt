@@ -1,4 +1,9 @@
 ﻿
+//调试
+#if
+print ( "###########################" , debug.getinfo(1).name , debug.getinfo(1).currentline )
+#end
+
 
 //加载dll
 #if
@@ -30,15 +35,15 @@ end
 local bit =require "bit"
 
 --bitIndex 范围[0-31]
-local function GetBit(srcNum, bitIndex )
+function GetBit(srcNum, bitIndex )
 	return bit.band(bit.rshift(srcNum, bitIndex), 1)
 end
 
-local function SetBit(srcNum, bitIndex )
+function SetBit(srcNum, bitIndex )
 	return bit.bor(bit.lshift(1, bitIndex), srcNum)
 end
 
-local function ResetBit(srcNum, bitIndex )
+function ResetBit(srcNum, bitIndex )
 	local n1 = bit.bnot( bit.lshift(1, bitIndex) )
 	return bit.band(n1, srcNum)
 end
