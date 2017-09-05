@@ -1,9 +1,8 @@
 ﻿
 //调试
 #if
-print ( "###########################" , debug.getinfo(1).name , debug.getinfo(1).currentline )
+print ( "#####" , debug.getinfo(1).name , debug.getinfo(1).currentline )
 #end
-
 
 //加载dll
 #if
@@ -19,6 +18,11 @@ print(lib_test.add(1, 2) )
 //反射
 #if
 --lua 反射
+for k,v in pairs(lib_test) do
+	print(k,v)
+end
+
+
 for k,v in pairs(lib_test) do
 	--print(k,v)
 	if k == "add" then
@@ -78,4 +82,39 @@ recover:ParseFromString(pb_data)
 print(recover.id, recover.foos[1].name, recover.foos[2].name) 
 #endif
 
+//常用函数
+#if
 
+//字符串_切片
+function string:split(sep)  
+    local sep, fields = sep or ":", {}  
+    local pattern = string.format("([^%s]+)", sep)  
+    self:gsub(pattern, function (c) fields[#fields + 1] = c end)  
+    return fields  
+end 
+
+//查找字符串
+function StrFind(str_src , str_dst)
+	for i_ = 1 , #str_src do
+		local end_i = i_ + #str_dst - 1
+		if end_i > #str_src then
+			return 0
+		end
+		
+		local b_ok = true
+		for key_i = 1 , #str_dst do
+			local begin_i = i_ + key_i - 1;
+			if string.sub(str_src , begin_i , begin_i) ~= string.sub(str_dst , key_i , key_i ) then
+				b_ok = false
+				break;
+			end
+		end
+		
+		if b_ok == true then
+			return i_
+		end
+	end
+	return 0
+end
+
+#end
