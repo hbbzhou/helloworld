@@ -2,6 +2,34 @@
 //调试
 #if
 print ( "#####" , debug.getinfo(1).name , debug.getinfo(1).currentline )
+
+
+function trace (event, line)
+    local s = debug.getinfo(2).short_src
+    print(s .. ":##########" .. line)
+end
+
+function deal_pve_msg(n_mode)
+	debug.sethook(trace, "l")
+	local nRet = 0
+	if n_mode == 1 then
+		nRet = 4
+	end
+	
+	if n_mode > 10 then
+		nRet = 5
+	end
+	
+	if n_mode > 20 then
+		nRet = 5
+	end
+
+	debug.sethook()
+end
+
+--测试_代码
+deal_pve_msg(1)
+
 #end
 
 //加载dll
@@ -118,3 +146,8 @@ function StrFind(str_src , str_dst)
 end
 
 #end
+
+
+
+
+
