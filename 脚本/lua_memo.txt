@@ -246,4 +246,30 @@ end
 
 #end
 
+//待删除
+#if
+function ShowProto(obj)
+	local strRet = ""
+	for k,v in pairs(obj) do
+	
+		if type(k) == "table" then
+			if type(v) == "table" then
+				strRet = strRet .. " \n"
+				strRet = strRet .. k.name .. "={\n"
+				strRet = strRet .. ShowProto(v)
+				strRet = strRet .. "}\n"
+			else
+				strRet = strRet .. k.name .. "=" .. v .. "\n"
+			end
+		elseif type(k) == "number" then
+			strRet = strRet .. ShowProto(v)
+		end
+		
+		if k == "_fields" then
+			strRet = strRet .. ShowProto(v)
+		end
+	end
+	return strRet
+end
 
+#end
