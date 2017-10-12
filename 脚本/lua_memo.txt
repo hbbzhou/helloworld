@@ -79,6 +79,21 @@ for k,v in pairs(lib_test) do
 	end
 end
 
+function ShowTable(obj)
+	local strRet = ""
+	for k,v in pairs(obj) do
+		if type(v) == "table" then
+			strRet = strRet .. k .. ":\n{\n"
+			strRet = strRet .. ShowTable(v)
+			strRet = strRet .. "}\n"
+		else
+			strRet = strRet .. k .. ":"
+			strRet = strRet .. v .. "\n"
+		end
+	end
+	return strRet
+end
+
 #endif
 
 //位操作
@@ -246,8 +261,9 @@ end
 
 #end
 
-//待删除
+//proto//反射
 #if
+
 function ShowProto(obj)
 	local strRet = ""
 	for k,v in pairs(obj) do
@@ -273,3 +289,54 @@ function ShowProto(obj)
 end
 
 #end
+
+//proto//判断成员是否存在
+#if
+
+function IsMemberInProto(obj , str_member)
+	for k,v in pairs(obj) do
+		if type(k) == "table" then
+			if k.name == str_member then
+				return true
+			end
+		end
+
+		if k == "_fields" then
+			return IsMemberInProto(v , str_member )
+		end
+	end
+	return false
+end
+
+
+function UpdateRoleInfoNtf(msgBody_)
+	local ack = ClientProto.update_role_info_ntf()
+	ack:ParseFromString(msgBody_);
+	print(tostring(ack))
+	
+	if IsMemberInProto(ack , "playername") then
+		print("playername ok")
+	end
+	
+	if IsMemberInProto(ack , "lv") then
+		print("lv ok")
+	end
+	
+	if IsMemberInProto(ack , "exp") then
+		print("exp ok")
+	end
+	
+end
+
+local ack = ClientProto.update_role_info_ntf()
+ack.exp = 10
+UpdateRoleInfoNtf(ack:SerializeToString() )
+#end
+
+
+
+
+
+
+
+
