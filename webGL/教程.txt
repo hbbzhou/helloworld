@@ -1,0 +1,46 @@
+﻿
+html
+http://www.runoob.com/html/html-basic.html
+
+java script
+http://www.runoob.com/js/js-tutorial.html
+
+webGL_API_说明文档
+http://www.csdn.net/article/a/2013-12-21/15817510
+
+鼠标_事件
+http://www.w3school.com.cn/tags/html_ref_eventattributes.asp
+
+webGL_demo
+https://webglfundamentals.org/webgl/lessons/webgl-3d-textures.html
+
+
+备忘:
+
+setLookAt(0,0,1 , 0,0,0 , 0,1,0);//[视点 , 观察目标点 , 上方向]
+
+
+WebGLContext:
+//对 attribute 变量进行操作//[对象, 个数 , 类型 , 暂无, 单块字节, 偏移字节]
+vertexAttribPointer(pSize , 1 , gl.FLOAT, false , 0,0);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,12 +1,20 @@
 ﻿
 //顶点着色器
 var VSHADER_SOURCE = 
+'attribute float a_type;\n'+
 'attribute vec4 a_Position;\n'+
 'attribute vec2 a_TexCoord;\n'+
 'varying vec2 v_Texcoord;\n'+
+'varying float v_Type;\n'+
 'uniform mat4 u_ModelMatrix;\n'+
 'void main(){\n'+
-'	gl_Position = u_ModelMatrix * a_Position;\n'+
+'	v_Type = a_type;\n'+
+'	if(v_Type == 1.0 ){\n'+
+'		gl_Position = u_ModelMatrix * a_Position;\n'+
+'	}\n'+
+'	else{\n'+
+'		gl_Position = a_Position;\n'+
+'	}\n'+
 '	v_Texcoord = a_TexCoord;\n'+
 '}\n';
 
@@ -14,9 +22,16 @@ var VSHADER_SOURCE =
 var FSHADER_SOURCE=
 'precision mediump float;\n' +
 'uniform sampler2D u_Sampler;\n' +
+'uniform sampler2D u_Sampler2;\n' +
 'varying vec2 v_Texcoord;\n'+
+'varying float v_Type;\n'+
 'void main(){\n' +
-'	gl_FragColor = texture2D(u_Sampler ,v_Texcoord);\n' +
+'	if(v_Type == 1.0){\n' +
+'		gl_FragColor = texture2D(u_Sampler ,v_Texcoord);\n' +
+'	}\n' +
+'	else{\n' +
+'		gl_FragColor = texture2D(u_Sampler2 ,v_Texcoord);\n' +
+'	}\n' +
 '}\n';
 
 var ANGLE_STEP = 45.0;
@@ -54,7 +69,7 @@ function main(){
 		return;
 	}
 	
-	initTextures(gl , n);
+	initTextures(gl);
 	//开始_绘制
 	
 	var curData = [0.0 , 0.0];
@@ -65,42 +80,47 @@ function main(){
 		requestAnimationFrame(tick);
 	}
 	tick();
-
 }
 
+var max_surface = 7;
 function initVertexBuffers(gl){
 	var vertices = new Float32Array([
-	-0.2,0.2,0.2,		0,0.5,
-	-0.2,-0.2,0.2,		0,0,
-	0.2,0.2,0.2,		0.25,0.5,
-	0.2,-0.2,0.2,		0.25,0,
+	-1,-1,0.9,				0,0,			0,
+	1,-1,0.9,				1,0,			0,
+	-1,1,0.9,				0,1,			0,
+	1,1,0.9,				1,1,			0,
 	
-	-0.2,0.2,-0.2,		0.25,0.5,
-	-0.2,-0.2,-0.2,		0.25,0,
-	0.2,0.2,-0.2,		0.5,0.5,
-	0.2,-0.2,-0.2,		0.5,0,
-
-	-0.2,0.2,0.2,		0.5,0.5,
-	-0.2,-0.2,0.2,		0.5,0,
-	-0.2,0.2,-0.2,		0.75,0.5,
-	-0.2,-0.2,-0.2,		0.75,0,
+	-0.125,0.125,0.125,		0,0.5,			1,
+	-0.125,-0.125,0.125,		0,0,			1,
+	0.125,0.125,0.125,			0.25,0.5,		1,
+	0.125,-0.125,0.125,		0.25,0,			1,
 	
-	0.2,0.2,0.2,		0,1,
-	0.2,-0.2,0.2,		0,0.5,
-	0.2,0.2,-0.2,		0.25,1,
-	0.2,-0.2,-0.2,		0.25,0.5,
+	-0.125,0.125,-0.125,		0.25,0.5,		1,
+	-0.125,-0.125,-0.125,		0.25,0,			1,
+	0.125,0.125,-0.125,		0.5,0.5,		1,
+	0.125,-0.125,-0.125,		0.5,0,			1,
+    
+	-0.125,0.125,0.125,		0.5,0.5,		1,
+	-0.125,-0.125,0.125,		0.5,0,			1,
+	-0.125,0.125,-0.125,		0.75,0.5,		1,
+	-0.125,-0.125,-0.125,		0.75,0,			1,
 	
-	-0.2,0.2,0.2,		0.25,1,
-	0.2,0.2,0.2,		0.25,0.5,
-	-0.2,0.2,-0.2,		0.5,1,
-	0.2,0.2,-0.2,		0.5,0.5,
+	0.125,0.125,0.125,			0,1,			1,
+	0.125,-0.125,0.125,		0,0.5,			1,
+	0.125,0.125,-0.125,		0.25,1,			1,
+	0.125,-0.125,-0.125,		0.25,0.5,		1,
 	
-	-0.2,-0.2,0.2,		0.5,1,
-	0.2,-0.2,0.2,		0.5,0.5,
-	-0.2,-0.2,-0.2,		0.75,1,
-	0.2,-0.2,-0.2,		0.75,0.5,
+	-0.125,0.125,0.125,		0.25,1,			1,
+	0.125,0.125,0.125,			0.25,0.5,		1,
+	-0.125,0.125,-0.125,		0.5,1,			1,
+	0.125,0.125,-0.125,		0.5,0.5,		1,
+	
+	-0.125,-0.125,0.125,		0.5,1,			1,
+	0.125,-0.125,0.125,		0.5,0.5,		1,
+	-0.125,-0.125,-0.125,		0.75,1,			1,
+	0.125,-0.125,-0.125,		0.75,0.5,		1,
 	]);
-	var perCount = 5;
+	var perCount = 6;
 	var n = vertices.length/perCount;
 	var perSize = vertices.BYTES_PER_ELEMENT;
 	
@@ -115,6 +135,14 @@ function initVertexBuffers(gl){
 	
 	//编辑_缓冲区
 	gl.bufferData(gl.ARRAY_BUFFER ,vertices , gl.STATIC_DRAW);
+	
+	var pType = gl.getAttribLocation(gl.program, 'a_type');
+	if(pType < 0){
+		console.log("##error pType");
+		return -1;
+	}
+	gl.vertexAttribPointer(pType , 1,gl.FLOAT,false ,perSize*perCount ,perSize*5);
+	gl.enableVertexAttribArray(pType);
 	
 	var pPosition = gl.getAttribLocation(gl.program , 'a_Position');
 	if(pPosition < 0){
@@ -136,7 +164,27 @@ function initVertexBuffers(gl){
 	return n;
 }
 
-function initTextures(gl , n){
+function initTextures(gl ){
+	var pImage =new Image();
+	if(!pImage){
+		console.log("##error  pImage");
+		return -1;
+	}
+	pImage.onload = function(){	loadTexture(gl , pImage);	};
+	pImage.src = 'res/test_all.png';
+	
+	var pImage2 =new Image();
+	if(!pImage2){
+		console.log("##error  pImage2");
+		return -1;
+	}
+	pImage2.onload = function(){	loadTexture2(gl , pImage2);	};
+	pImage2.src = 'res/back_ground.png';
+	
+	return 0;
+}
+
+function loadTexture(gl ,pImage){
 	var pTexture = gl.createTexture();
 	if(pTexture < 0){
 		console.log("##error pTexture");
@@ -149,24 +197,11 @@ function initTextures(gl , n){
 		return -1;
 	}
 	
-	var pImage =new Image();
-	if(!pImage){
-		console.log("##error  pImage");
-		return -1;
-	}
-	
-	pImage.onload = function(){	loadTexture(gl , n , pTexture , pSampler , pImage);	};
-	pImage.src = 'res/test_all.png';
-	
-	return 0;
-	
-}
-
-function loadTexture(gl , n , pTexture , pSampler , pImage){
 	gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL ,1);//纹理_进行Y轴_反转
 	
 	//开启0号纹理单位
-	gl.activeTexture(gl.TEXTURE0);
+	gl.activeTexture(gl.TEXTURE1);
+	
 	//绑定纹理
 	gl.bindTexture(gl.TEXTURE_2D , pTexture);
 	
@@ -176,7 +211,36 @@ function loadTexture(gl , n , pTexture , pSampler , pImage){
 	//配置_纹理图像
 	gl.texImage2D(gl.TEXTURE_2D , 0 , gl.RGB , gl.RGB , gl.UNSIGNED_BYTE , pImage);
 	
-	gl.uniform1i(pSampler, 0);
+	gl.uniform1i(pSampler, 1);
+}
+
+function loadTexture2(gl , pImage2){
+	var pTexture2 = gl.createTexture();
+	if(pTexture2 < 0){
+		console.log("##error pTexture2");
+		return -1;
+	}
+	
+	var pSampler2 = gl.getUniformLocation(gl.program , 'u_Sampler2');
+	if(pSampler2 < 0){
+		console.log("##error  pSampler2");
+		return -1;
+	}
+	gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL ,1);//纹理_进行Y轴_反转
+
+	//开启0号纹理单位
+	gl.activeTexture(gl.TEXTURE0);
+
+	//绑定纹理
+	gl.bindTexture(gl.TEXTURE_2D , pTexture2);
+
+	//配置_纹理参数
+	gl.texParameteri(gl.TEXTURE_2D , gl.TEXTURE_MIN_FILTER , gl.LINEAR );
+
+	//配置_纹理图像
+	gl.texImage2D(gl.TEXTURE_2D , 0 , gl.RGB , gl.RGB , gl.UNSIGNED_BYTE , pImage2);
+
+	gl.uniform1i(pSampler2, 0);
 }
 
 function draw(gl , n , curData , modelMatrix , pModelMatrix ){
@@ -189,8 +253,7 @@ function draw(gl , n , curData , modelMatrix , pModelMatrix ){
 	gl.clearColor(0,0,0,1);
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 	
-	gl.drawArrays(gl.TRIANGLES, 0, n);
-	for(var i = 0 ; i < 6 ; i++){
+	for(var i = 0 ; i < max_surface ; i++){
 		var nBegin = i*4;
 		gl.drawArrays(gl.TRIANGLE_STRIP, nBegin, 4 );
 	}
