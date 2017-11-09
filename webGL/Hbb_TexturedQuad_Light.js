@@ -49,6 +49,7 @@ var FSHADER_SOURCE=
 
 var ANGLE_STEP = 45.0;
 var MOVE_STEP = 1.0;
+var nCurNum = 1;
 
 function main(){
 	//获取<canvas> 元素
@@ -93,16 +94,36 @@ function main(){
 	}
 	
 	initTextures(gl);
-	//开始_绘制
 	
+	//注册事件
+	initEventHandlers(canvas );
+	
+	//开始_绘制
 	var curData = [0.0 , 0.0];
 	var modelMatrix = new Matrix4();
 	var tick = function(){
 		curData = animate(curData[0],curData[1]);
-		draw(gl,n , curData , modelMatrix , pModelMatrix );
+		draw(gl,n , curData , modelMatrix , pModelMatrix ,nCurNum);
 		requestAnimationFrame(tick);
 	}
 	tick();
+}
+
+function initEventHandlers(canvas){
+	canvas.onmousedown = function(ev){
+		var x= ev.clientX;
+		if(x < canvas.width/2){
+			nCurNum -= 1;
+		}
+		else{
+			nCurNum += 1;
+		}
+	}
+	
+	if(nCurNum < 0){
+		nCurNum = 0;
+	}
+	return nCurNum;
 }
 
 var max_surface = 7;
@@ -274,8 +295,9 @@ function loadTexture2(gl , pImage2){
 	gl.uniform1i(pSampler2, 0);
 }
 
-function draw(gl , n , curData , modelMatrix , pModelMatrix ){
-	modelMatrix.setTranslate( Math.cos(curData[1])/2, Math.sin(curData[1])/2, 0.0);
+function draw(gl , n , curData , modelMatrix , pModelMatrix ,nStep ){
+	
+	modelMatrix.setTranslate( (Math.cos(curData[1])/20)*nStep, (Math.sin(curData[1])/20)*nStep, 0.0);
 	modelMatrix.rotate(curData[0], 1 , 1 , 0);
 	
 	gl.uniformMatrix4fv(pModelMatrix , false , modelMatrix.elements);
