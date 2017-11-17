@@ -1,0 +1,16 @@
+﻿	{
+		int64_t n_test;
+		std::string str_script = "\n\
+			local str_v = redis.pcall('get' , KEYS[1])\n\
+			local n_opt_v = tonumber(ARGV[1])\n\
+			local str_ret = nil\n\
+			if n_opt_v >= 0 then\n\
+				if tonumber(str_v) > n_opt_v then\n\
+					str_ret = redis.pcall('decrby', KEYS[1], n_opt_v)\n\
+				end\n\
+			end\n\
+		return str_ret";
+
+		bool b_test = oClient.command_integer(oDBIndex, n_test, "EVAL %s %s %s %s", str_script.c_str(), "1", "hbb_test_lua", "50");
+		USR_INFOEX(true, "%lld", n_test);
+	}
