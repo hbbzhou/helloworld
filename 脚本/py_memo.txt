@@ -141,7 +141,6 @@ hbb_tool.SetText(g_str_)
 
 //反射
 #if
-
 class ManagerServer:
 	#定义基本属性
 	dict_ = {}
@@ -177,3 +176,171 @@ if __name__ == "__main__":
 			g_write2file(one_deal)
 
 #end
+
+//arp相关操作
+#if
+
+import os
+import sys
+import ctypes
+
+#设置工作目录
+g_old_path = ""
+def SetPath():
+	global g_old_path
+	g_old_path = os.getcwd()
+	os.chdir(os.path.split(os.path.realpath(__file__))[0] )
+	
+def ResetPath():
+	os.chdir(g_old_path )
+	
+
+
+STD_INPUT_HANDLE = -10
+STD_OUTPUT_HANDLE= -11
+STD_ERROR_HANDLE = -12
+
+FOREGROUND_BLACK = 0x0  
+FOREGROUND_BLUE = 0x01 # text color contains blue.  
+FOREGROUND_GREEN= 0x02 # text color contains green.  
+FOREGROUND_RED = 0x04 # text color contains red.  
+FOREGROUND_INTENSITY = 0x08 # text color is intensified.  
+
+BACKGROUND_BLUE = 0x10 # background color contains blue.  
+BACKGROUND_GREEN= 0x20 # background color contains green.  
+BACKGROUND_RED = 0x40 # background color contains red.  
+BACKGROUND_INTENSITY = 0x80 # background color is intensified.  
+
+class Color:
+	std_out_handle = ctypes.windll.kernel32.GetStdHandle(STD_OUTPUT_HANDLE)
+	
+	def set_cmd_color(self, color, handle=std_out_handle):
+		"""(color) -> bit 
+		Example: set_cmd_color(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY) 
+		"""  
+		bool = ctypes.windll.kernel32.SetConsoleTextAttribute(handle, color)
+		return bool
+	
+	def reset_color(self):
+		self.set_cmd_color(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE)
+	
+	def print_red_text(self, print_text):  
+		self.set_cmd_color(FOREGROUND_RED | FOREGROUND_INTENSITY)
+		print print_text
+		self.reset_color()
+		
+	def print_green_text(self, print_text):  
+		self.set_cmd_color(FOREGROUND_GREEN | FOREGROUND_INTENSITY)  
+		print print_text
+		self.reset_color()
+	
+	def print_blue_text(self, print_text):
+		self.set_cmd_color(FOREGROUND_BLUE | FOREGROUND_INTENSITY)
+		print print_text
+		self.reset_color()
+			
+	def print_red_text_with_blue_bg(self, print_text):
+		self.set_cmd_color(FOREGROUND_RED | FOREGROUND_INTENSITY| BACKGROUND_BLUE | BACKGROUND_INTENSITY)
+		print print_text
+		self.reset_color()
+	
+#mac_地址_表
+g_list = [ 
+["hbb","黄斌斌","00-00-00-00-00-00"],
+]
+
+def getMyMac(str_my_ip):
+	str_file = "ipconfig.txt"
+	os.system("ipconfig /all > " + str_file)
+	f_ = open(str_file , "r")
+	list_ = f_.readlines()
+	f_.close()
+	os.system("del " + str_file)
+	
+	for index_ in range( len(list_) ):
+		one_ = list_[index_]
+		if one_.find(str_my_ip) >= 0:
+			return list_[index_ - 4]
+
+	return ""
+
+g_str_ret = ""
+def findOneIP(list_ , str_mac):
+	global g_str_ret
+	g_str_ret = ""
+	str_mac = str_mac.lower()
+	for one_ in list_:
+		one_list = one_.split()
+		if len(one_list) != 3:
+			continue
+
+		if one_list[1] == str_mac:
+			g_str_ret = one_list[0]
+	return g_str_ret
+	
+if __name__ == "__main__":
+	SetPath()
+	
+	
+	f_bak = open("arp_bak.txt" , "r")
+	list_bak = f_bak.readlines()
+	f_bak.close()
+	
+	str_file = "arp.txt"
+	os.system("arp -a > " + str_file)
+	f_ = open(str_file , "r")
+	list_ = f_.readlines()
+	f_.close()
+	os.system("del " + str_file)
+	str_my_ip = list_[1].split()[1]
+	str_my_mac = getMyMac(str_my_ip)
+	cr = Color()
+	cr.print_green_text("本地ip信息:".decode("utf").encode("gbk"))
+	print str_my_ip
+	print str_my_mac
+	#cr.print_green_text(str_my_ip)
+	#cr.print_green_text(str_my_mac)
+	
+	print "==========="
+	print "输入名字_拼音_首字母".decode("utf").encode("gbk")
+	print "例如:小明 等于 xm".decode("utf").encode("gbk")
+	str_tip = "Input:"
+	while 1:
+		str_name = raw_input(str_tip)
+		str_tip = "again input:"
+		
+		is_find = False
+		for one_ in g_list:
+			if str_name == one_[0]:
+				str_find_mac = one_[2].upper()
+				
+				str_ip = ""
+				#判断是否为自己
+				if str_my_mac.find(str_find_mac) >= 0:
+					str_ip = str_my_ip
+				elif findOneIP(list_ , str_find_mac) != "":
+					str_ip = g_str_ret
+				elif findOneIP(list_bak , str_find_mac) != "":#查询备份_arp_数据
+					cr.print_red_text("历史记录(本次查找失败):".decode("utf").encode("gbk"))
+					str_ip = g_str_ret
+					
+				
+				if str_ip != "":
+					is_find = True
+					str_log = one_[0] + " " + one_[1] + " " + str_ip
+					cr.print_red_text(str_log.decode("utf").encode("gbk"))
+		
+		if is_find == False:
+			print "目标未登记mac地址,可联系hbb".decode("utf").encode("gbk")
+		
+		print "---------"
+	ResetPath()
+
+#endif
+
+
+
+
+
+
+
