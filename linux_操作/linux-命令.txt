@@ -22,6 +22,11 @@ perf top -p 25812
 cat /etc/redhat-release
 ------------------------------------ 
 
+####查看c++ stl 版本
+rpm -qa | grep glibc
+glibc 的官网：http://www.gnu.org/software/libc/
+------------------------------------ 
+
 ####删除 svn 的帐号信息
 rm -rf ~/.subversion/auth
 ------------------------------------ 
