@@ -34,6 +34,10 @@ import time
 g_is_win_platform =  False
 if platform.uname()[0] == "Windows":
 	g_is_win_platform =  True
+
+#获取_机器名	
+import getpass
+g_str_name = getpass.getuser()
 	
 #设置工作目录
 g_old_path = ""
@@ -80,7 +84,19 @@ def decode_file(str_src_name , str_dst_name):
 	f_new.write(str_)
 	f_new.close()
 	
-
+#转utf
+def ChangeFile2Utf( file_ ):
+	import codecs
+	f_0 = open(file_ ,"r")
+	str_ = f_0.read(-1)
+	f_0.close()
+	print len(str_)
+	str_ = str_.decode("gbk")
+	f_1 = codecs.open( file_, "w", "utf-8-sig")
+	f_1.write(str_)
+	f_1.close()
+	
+	
 if __name__ == "__main__":
 	pass
 	

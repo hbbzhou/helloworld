@@ -1,0 +1,7 @@
+
+
+##hotkey
+-------
+Macro
+\shift\home\control.c\esc\esc
+=============
