@@ -54,6 +54,9 @@ def ResetPath():
 def test2():
 	time.sleep(2)
 	os.system("pause")
+	
+#判断文件是否存在
+os.path.exists("test_file.txt")
 
 #参数
 def test1():
@@ -96,6 +99,21 @@ def ChangeFile2Utf( file_ ):
 	f_1.write(str_)
 	f_1.close()
 	
+#判断是否为utf文件
+def ExistBOM(file_name):
+	import codecs
+	file_obj = open(file_name,'r')
+	code = file_obj.read(3)
+	file_obj.close()
+	if code == codecs.BOM_UTF8:#判断是否包含EF BB BF
+		return True
+	return False
+	
+#输出年月日
+def ShowTime():
+	import datetime
+	now = datetime.datetime.now()
+	print now.strftime('%y/%m/%d--[%H:%M]')
 	
 if __name__ == "__main__":
 	pass

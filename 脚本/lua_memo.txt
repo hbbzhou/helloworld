@@ -259,7 +259,53 @@ local function decodeBase64(str64)
     return str  
 end  
 
-#end
+
+function ShowBuff(str_buff)
+	local str_out = ""
+	local n_len = string.len(str_buff)
+	for i = 1, n_len do
+		str_out = str_out .. "/" .. string.byte(str_buff, i )
+	end
+	print(str_out)
+	return str_out
+end
+
+
+function split(s, delim)
+    if type(delim) ~= "string" or string.len(delim) <= 0 then
+        return
+    end
+
+    local start = 1
+    local t = {}
+    while true do
+    local pos = string.find (s, delim, start, true) -- plain find
+        if not pos then
+          break
+        end
+
+        table.insert (t, string.sub (s, start, pos - 1))
+        start = pos + string.len (delim)
+    end
+    table.insert (t, string.sub (s, start))
+
+    return t
+end
+
+function DecodeBuff(encode_buff)
+	str_out = ""
+	list_1 = split(encode_buff , "/")
+	for i_ = 1 , #list_1 do
+		if list_1[i_] ~= "" then
+			print(list_1[i_]  )
+			str_out = str_out..string.char(tonumber(list_1[i_]) )
+		end
+	end
+	return str_out
+end
+
+
+#end	//常用函数
 
 //proto//反射
 #if
