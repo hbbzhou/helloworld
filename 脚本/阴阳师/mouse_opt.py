@@ -184,7 +184,7 @@ def getCurPos():
 	
 #获取xx进程的句柄
 def getWinHandle():
-	#wdname1=u"BlueStacks App Player"	#名字
+	wdname1=u"BlueStacks App Player"	#名字
 	w1hd=win32gui.FindWindow(0,wdname1)
 	print w1hd
 	return w1hd
@@ -196,15 +196,40 @@ def getPosList():
 		pos=getCurPos()
 		print pos
 
-if __name__ == "__main__":
+#御魂副本
+def runYuHun(n_step):
+	#左上角坐标#218, 57
+	if n_step == 0:
+		print getCurPos()
+		return
+
 	nID=getWinHandle()
-	if 0:
-		win32gui.SetForegroundWindow(nID)
-		moveCurPos(323, 302)
+	win32gui.SetForegroundWindow(nID)
+	if n_step == 1:
+		moveCurPos(1415, 728) #挑战坐标
 		time.sleep(0.2)
 		clickLeftCur()
-	else:
-		win32gui.SetForegroundWindow(nID)
-		getPosList()
-		os.system("pause")
+	elif n_step == 2:
+		moveCurPos(1572, 551) #结算面板
+		time.sleep(0.2)
+		clickLeftCur()
 		
+if __name__ == "__main__":
+	for i_ in range(10):
+		print "开始挑战".decode("utf").encode("gbk")
+		runYuHun(1)
+		time.sleep(2)
+		
+		print "正在挑战".decode("utf").encode("gbk")
+		time.sleep(30)
+		print "正在挑战".decode("utf").encode("gbk")
+		time.sleep(30)
+		print "正在挑战".decode("utf").encode("gbk")
+		time.sleep(30)
+		print "正在挑战".decode("utf").encode("gbk")
+		time.sleep(15)
+		
+		print "结束挑战".decode("utf").encode("gbk")
+		runYuHun(2)
+		time.sleep(6)
+	
