@@ -155,45 +155,56 @@ VK_CODE = {
  '`':0xC0}
 class POINT(Structure):
 	_fields_ = [("x", c_ulong),("y", c_ulong)]
-def get_mouse_point():
-	po = POINT()
-	windll.user32.GetCursorPos(byref(po))
-	return int(po.x), int(po.y)
-def mouse_click(x=None,y=None):
-	if not x is None and not y is None:
-		mouse_move(x,y)
-		time.sleep(0.05)
-	win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0)
-	win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0, 0, 0)
-def mouse_dclick(x=None,y=None):
-	if not x is None and not y is None:
-		mouse_move(x,y)
-		time.sleep(0.05)
-	win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0)
-	win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0, 0, 0)
-	win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0)
-	win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0, 0, 0)
-def mouse_move(x,y):
-	windll.user32.SetCursorPos(x, y)
+
 def key_input(str=''):
 	for c in str:
 		win32api.keybd_event(VK_CODE[c],0,0,0)
 		win32api.keybd_event(VK_CODE[c],0,win32con.KEYEVENTF_KEYUP,0)
 		time.sleep(0.01)
-		
+
 def key_input_enter():
 	win32api.keybd_event(VK_CODE["enter"],0,0,0)
 	win32api.keybd_event(VK_CODE["enter"],0,win32con.KEYEVENTF_KEYUP,0)
 	
+	
+#参考连接
+#https://www.cnblogs.com/eatPython/p/5958850.html
+
+#鼠标点击
+def clickLeftCur():
+	win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN|win32con.MOUSEEVENTF_LEFTUP, 0, 0)
+
+#鼠标移动
+def moveCurPos(x,y):
+	windll.user32.SetCursorPos(x, y)
+	
+#获取鼠标
+def getCurPos():
+	return win32gui.GetCursorPos()
+	
+#获取xx进程的句柄
+def getWinHandle():
+	#wdname1=u"BlueStacks App Player"	#名字
+	w1hd=win32gui.FindWindow(0,wdname1)
+	print w1hd
+	return w1hd
+	
+#获取鼠标_移动轨迹
+def getPosList():
+	while True:
+		time.sleep(1)
+		pos=getCurPos()
+		print pos
+
 if __name__ == "__main__":
-	print get_mouse_point()
-	if 1:
-		mouse_click(1472, 1185)
+	nID=getWinHandle()
+	if 0:
+		win32gui.SetForegroundWindow(nID)
+		moveCurPos(323, 302)
 		time.sleep(0.2)
-		mouse_click(1890, 956)
-		
-		#str = 'dir'
-		#key_input(str)
-		#key_input_enter()
+		clickLeftCur()
 	else:
+		win32gui.SetForegroundWindow(nID)
+		getPosList()
 		os.system("pause")
+		

@@ -373,8 +373,18 @@ if __name__ == "__main__":
 #endif
 
 
+#protobuff_特殊的地方
+#if
+message change_name_req
+{
+    required string newname = 1;
+}
+
+在python 中  将 unicode 编码的字符赋值
+但c++ 获取出来的 是 utf
 
 
+#end
 
 
 
