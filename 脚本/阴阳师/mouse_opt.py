@@ -204,6 +204,7 @@ def runYuHun(n_step):
 		return
 
 	nID=getWinHandle()
+	win32gui.SetWindowPos(nID, win32con.HWND_TOPMOST, 218, 57,0,0,  win32con.SWP_NOZORDER|win32con.SWP_NOOWNERZORDER|win32con.SWP_NOSIZE)
 	win32gui.SetForegroundWindow(nID)
 	if n_step == 1:
 		moveCurPos(1415, 728) #挑战坐标
@@ -214,8 +215,8 @@ def runYuHun(n_step):
 		time.sleep(0.2)
 		clickLeftCur()
 		
-if __name__ == "__main__":
-	for i_ in range(10):
+def allRunYuHun():
+	for i_ in range(20):
 		print "开始挑战".decode("utf").encode("gbk")
 		runYuHun(1)
 		time.sleep(2)
@@ -232,4 +233,7 @@ if __name__ == "__main__":
 		print "结束挑战".decode("utf").encode("gbk")
 		runYuHun(2)
 		time.sleep(6)
+		
+if __name__ == "__main__":
+	allRunYuHun()
 	
