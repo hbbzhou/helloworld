@@ -216,7 +216,7 @@ def runYuHun(n_step):
 		clickLeftCur()
 		
 def allRunYuHun():
-	for i_ in range(20):
+	for i_ in range(40):
 		print "开始挑战".decode("utf").encode("gbk")
 		runYuHun(1)
 		time.sleep(2)
