@@ -1,4 +1,4 @@
-﻿
+
 
 import win32api
 import win32con
@@ -195,45 +195,124 @@ def getPosList():
 		time.sleep(1)
 		pos=getCurPos()
 		print pos
-
-#御魂副本
-def runYuHun(n_step):
+		
+def InitWindows():
 	#左上角坐标#218, 57
-	if n_step == 0:
-		print getCurPos()
-		return
-
 	nID=getWinHandle()
 	win32gui.SetWindowPos(nID, win32con.HWND_TOPMOST, 218, 57,0,0,  win32con.SWP_NOZORDER|win32con.SWP_NOOWNERZORDER|win32con.SWP_NOSIZE)
 	win32gui.SetForegroundWindow(nID)
-	if n_step == 1:
-		moveCurPos(1415, 728) #挑战坐标
-		time.sleep(0.2)
-		clickLeftCur()
-	elif n_step == 2:
-		moveCurPos(1572, 551) #结算面板
-		time.sleep(0.2)
-		clickLeftCur()
 		
+class mouseOpt:
+	def __init__(self , x , y , nTime , str_des):
+		self.x = x
+		self.y = y
+		self.time = nTime
+		self.des = str_des
+	
+def waitFor(nTime):
+	n_1 = 5
+	
+	while nTime > n_1:
+		nTime -= n_1
+		time.sleep(n_1)
+		print '.',
+	
+	if nTime > 0:
+		time.sleep(nTime)
+		
+	print(".")
+		
+
+def dealEvent(list_opt ):
+	for one_ in list_opt:
+		nID=getWinHandle()
+		win32gui.SetWindowPos(nID, win32con.HWND_TOPMOST, 218, 57,0,0,  win32con.SWP_NOZORDER|win32con.SWP_NOOWNERZORDER|win32con.SWP_NOSIZE)
+		win32gui.SetForegroundWindow(nID)
+		
+		time.sleep(0.2)
+		moveCurPos(one_.x, one_.y )
+		print one_.x, one_.y
+		time.sleep(0.2)
+		clickLeftCur()
+		print one_.des.decode("utf").encode("gbk")
+		waitFor(one_.time)
+		
+#结界突破
+def runJieJ():
+	 
+	list_opt = []
+	#1
+	list_opt.append(mouseOpt(619, 308 , 1 , "选择对手" ) )
+	list_opt.append(mouseOpt(724, 527 , 80 , "开始挑战" ) )
+	list_opt.append(mouseOpt(1260, 760 , 5 , "结束挑战" ) )
+	list_opt.append(mouseOpt(1260, 760 , 2 , "结束挑战" ) )
+	list_opt.append(mouseOpt(1260, 760 , 2 , "结束挑战" ) )
+	#2
+	list_opt.append(mouseOpt(1054, 298 , 1 , "选择对手" ) )
+	list_opt.append(mouseOpt(1137, 528 , 80 , "开始挑战" ) )
+	list_opt.append(mouseOpt(1260, 760 , 5 , "结束挑战" ) )
+	list_opt.append(mouseOpt(1260, 760 , 2 , "结束挑战" ) )
+	list_opt.append(mouseOpt(1260, 760 , 1 , "结束挑战" ) )
+	#3
+	list_opt.append(mouseOpt(1470, 299, 1 , "选择对手" ) )
+	list_opt.append(mouseOpt(1563, 526 , 80 , "开始挑战" ) )
+	list_opt.append(mouseOpt(1260, 760 , 5 , "结束挑战" ) )
+	list_opt.append(mouseOpt(1260, 760 , 2 , "结束挑战" ) )
+	list_opt.append(mouseOpt(1260, 760 , 1 , "结束挑战" ) )
+	#4
+	list_opt.append(mouseOpt(593, 455 , 1 , "选择对手" ) )
+	list_opt.append(mouseOpt(712, 692, 80 , "开始挑战" ) )
+	list_opt.append(mouseOpt(1260, 760 , 5 , "结束挑战" ) )
+	list_opt.append(mouseOpt(1260, 760 , 2 , "结束挑战" ) )
+	list_opt.append(mouseOpt(1260, 760 , 1 , "结束挑战" ) )
+	# 5
+	list_opt.append(mouseOpt(1037, 461 , 1 , "选择对手" ) )
+	list_opt.append(mouseOpt(1120, 686, 80 , "开始挑战" ) )
+	list_opt.append(mouseOpt(1260, 760 , 5 , "结束挑战" ) )
+	list_opt.append(mouseOpt(1260, 760 , 2 , "结束挑战" ) )
+	list_opt.append(mouseOpt(1260, 760 , 1 , "结束挑战" ) )
+	#6
+	list_opt.append(mouseOpt(1470, 461 , 1 , "选择对手" ) )
+	list_opt.append(mouseOpt(1547, 699, 80 , "开始挑战" ) )
+	list_opt.append(mouseOpt(1260, 760 , 5 , "结束挑战" ) )
+	list_opt.append(mouseOpt(1260, 760 , 2 , "结束挑战" ) )
+	list_opt.append(mouseOpt(1260, 760 , 1 , "结束挑战" ) )
+	#7
+	list_opt.append(mouseOpt(595, 634 , 1 , "选择对手" ) )
+	list_opt.append(mouseOpt(718, 867, 80 , "开始挑战" ) )
+	list_opt.append(mouseOpt(1260, 760 , 5 , "结束挑战" ) )
+	list_opt.append(mouseOpt(1260, 760 , 2 , "结束挑战" ) )
+	list_opt.append(mouseOpt(1260, 760 , 1 , "结束挑战" ) )
+	#8
+	list_opt.append(mouseOpt(1027, 632 , 1 , "选择对手" ) )
+	list_opt.append(mouseOpt(1133, 860, 80 , "开始挑战" ) )
+	list_opt.append(mouseOpt(1260, 760 , 5 , "结束挑战" ) )
+	list_opt.append(mouseOpt(1260, 760 , 2 , "结束挑战" ) )
+	list_opt.append(mouseOpt(1260, 760 , 1 , "结束挑战" ) )
+	#9
+	list_opt.append(mouseOpt(1480, 624, 1 , "选择对手" ) )
+	list_opt.append(mouseOpt(1539, 859, 80 , "开始挑战" ) )
+	list_opt.append(mouseOpt(1260, 760 , 5 , "结束挑战" ) )
+	list_opt.append(mouseOpt(1260, 760 , 2 , "结束挑战" ) )
+	list_opt.append(mouseOpt(1260, 760 , 1 , "结束挑战" ) )
+	#
+	#
+	dealEvent(list_opt)
+	
+#御魂副本
+def runYuHun():
+	list_opt = []
+	list_opt.append(mouseOpt(1415,728 , 100 , "开始挑战" ) )
+	list_opt.append(mouseOpt(1415,728 , 3 , "结束挑战" ) )
+	list_opt.append(mouseOpt(1415,728 , 3 , "结束挑战" ) )
+	#
+	dealEvent(list_opt)
+	
 def allRunYuHun():
 	for i_ in range(40):
-		print "开始挑战".decode("utf").encode("gbk")
-		runYuHun(1)
-		time.sleep(2)
-		
-		print "正在挑战".decode("utf").encode("gbk")
-		time.sleep(30)
-		print "正在挑战".decode("utf").encode("gbk")
-		time.sleep(30)
-		print "正在挑战".decode("utf").encode("gbk")
-		time.sleep(30)
-		print "正在挑战".decode("utf").encode("gbk")
-		time.sleep(15)
-		
-		print "结束挑战".decode("utf").encode("gbk")
-		runYuHun(2)
-		time.sleep(6)
+		runYuHun()
 		
 if __name__ == "__main__":
-	allRunYuHun()
+	#print getCurPos()#获取坐标
+	runJieJ()
 	
