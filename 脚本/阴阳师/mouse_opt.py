@@ -196,12 +196,7 @@ def getPosList():
 		pos=getCurPos()
 		print pos
 		
-def InitWindows():
-	#左上角坐标#218, 57
-	nID=getWinHandle()
-	win32gui.SetWindowPos(nID, win32con.HWND_TOPMOST, 218, 57,0,0,  win32con.SWP_NOZORDER|win32con.SWP_NOOWNERZORDER|win32con.SWP_NOSIZE)
-	win32gui.SetForegroundWindow(nID)
-		
+
 class mouseOpt:
 	def __init__(self , x , y , nTime , str_des):
 		self.x = x
@@ -223,20 +218,57 @@ def waitFor(nTime):
 	print(".")
 		
 
+def dealOneEvent(one_):
+	nID=getWinHandle()
+	win32gui.SetWindowPos(nID, win32con.HWND_TOPMOST, 218, 57,0,0,  win32con.SWP_NOZORDER|win32con.SWP_NOOWNERZORDER|win32con.SWP_NOSIZE)
+	win32gui.SetForegroundWindow(nID)
+	
+	old_x_y = getCurPos()
+	
+	#time.sleep(0.2)
+	moveCurPos(one_.x, one_.y )
+	print one_.x, one_.y
+	#time.sleep(0.2)
+	clickLeftCur()
+	
+	#time.sleep(0.2)
+	moveCurPos(old_x_y[0], old_x_y[1] ) #还原坐标
+	
+	print one_.des.decode("utf").encode("gbk")
+		
 def dealEvent(list_opt ):
 	for one_ in list_opt:
-		nID=getWinHandle()
-		win32gui.SetWindowPos(nID, win32con.HWND_TOPMOST, 218, 57,0,0,  win32con.SWP_NOZORDER|win32con.SWP_NOOWNERZORDER|win32con.SWP_NOSIZE)
-		win32gui.SetForegroundWindow(nID)
-		
-		time.sleep(0.2)
-		moveCurPos(one_.x, one_.y )
-		print one_.x, one_.y
-		time.sleep(0.2)
-		clickLeftCur()
-		print one_.des.decode("utf").encode("gbk")
+		dealOneEvent(one_)
 		waitFor(one_.time)
 		
+#公会结界突破
+def runGHJieJ():
+	n_cur_num = 2	#现有次数
+	n_skeep_time = 40 #持续时间_分
+	n_all_num = n_cur_num + int(n_skeep_time / 5)
+	for i_ in range(n_all_num):
+		list_opt = []
+		
+		if i_ % 2 == 1:
+			#1
+			list_opt.append(mouseOpt(1048, 823 , 1 , "选择对手" ) )
+			list_opt.append(mouseOpt(1128, 660 , 50 , "开始挑战" ) )
+			list_opt.append(mouseOpt(743, 593 , 5 , "结束挑战" ) )
+			list_opt.append(mouseOpt(743, 593 , 2 , "结束挑战" ) )
+			list_opt.append(mouseOpt(743, 593 , 2 , "结束挑战" ) )
+		else:
+			#2
+			list_opt.append(mouseOpt(1130, 633 , 1 , "选择对手" ) )
+			list_opt.append(mouseOpt(1147, 878 , 50 , "开始挑战" ) )
+			list_opt.append(mouseOpt(743, 593 , 5 , "结束挑战" ) )
+			list_opt.append(mouseOpt(743, 593 , 2 , "结束挑战" ) )
+			list_opt.append(mouseOpt(743, 593 , 1 , "结束挑战" ) )
+		#
+		dealEvent(list_opt)
+		if i_ > n_cur_num:
+			waitFor(60*5)
+	
+	
 #结界突破
 def runJieJ():
 	 
@@ -308,11 +340,23 @@ def runYuHun():
 	#
 	dealEvent(list_opt)
 	
+#觉醒副本
+def runJueXing():
+	for i_ in range(40):
+		list_opt = []
+		list_opt.append(mouseOpt(1415,728 , 35 , "开始挑战" ) )
+		list_opt.append(mouseOpt(1415,728 , 3 , "结束挑战" ) )
+		list_opt.append(mouseOpt(1415,728 , 3 , "结束挑战" ) )
+		#
+		dealEvent(list_opt)
+	
 def allRunYuHun():
 	for i_ in range(40):
 		runYuHun()
 		
 if __name__ == "__main__":
 	#print getCurPos()#获取坐标
-	runJieJ()
-	
+	#allRunYuHun()
+	#runJieJ()
+	#runGHJieJ() #公会结界突破
+	runJueXing() #觉醒副本
