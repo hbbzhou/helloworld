@@ -204,6 +204,7 @@ class mouseOpt:
 		self.time = nTime
 		self.des = str_des
 	
+
 def waitFor(nTime):
 	n_1 = 5
 	
@@ -218,15 +219,33 @@ def waitFor(nTime):
 	print(".")
 		
 
+is_first_set = True
+
 def dealOneEvent(one_):
+	global is_first_set
+	n_new_x = 2098
+	n_new_y = 68
+	n_init_x = 218
+	n_init_y = 57
+	n_w = 1612
+	n_h = 992
+	
+	n_diff_x = n_new_x - n_init_x
+	n_diff_y = n_new_y - n_init_y
 	nID=getWinHandle()
-	win32gui.SetWindowPos(nID, win32con.HWND_TOPMOST, 218, 57,0,0,  win32con.SWP_NOZORDER|win32con.SWP_NOOWNERZORDER|win32con.SWP_NOSIZE)
+	if is_first_set == True:
+		is_first_set = False
+		#win32gui.SetWindowPos(nID, win32con.HWND_TOPMOST, n_new_x, n_new_y ,0,0,  win32con.SWP_NOZORDER|win32con.SWP_NOOWNERZORDER|win32con.SWP_NOSIZE)
+		win32gui.SetWindowPos(nID, win32con.HWND_TOPMOST, n_new_x, n_new_y ,n_w,n_h,  win32con.SWP_NOZORDER|win32con.SWP_NOOWNERZORDER)
+		time.sleep(1)
+		
 	win32gui.SetForegroundWindow(nID)
+	#print win32gui.GetWindowRect(nID) #获取 左上角坐标 和 右下角坐标
 	
 	old_x_y = getCurPos()
 	
 	#time.sleep(0.2)
-	moveCurPos(one_.x, one_.y )
+	moveCurPos(one_.x + n_diff_x, one_.y + n_diff_y)
 	print one_.x, one_.y
 	#time.sleep(0.2)
 	clickLeftCur()
@@ -247,6 +266,7 @@ def runGHJieJ():
 	n_skeep_time = 40 #持续时间_分
 	n_all_num = n_cur_num + int(n_skeep_time / 5)
 	for i_ in range(n_all_num):
+		print i_
 		list_opt = []
 		
 		if i_ % 2 == 1:
@@ -337,14 +357,17 @@ def runYuHun():
 	list_opt.append(mouseOpt(1415,728 , 100 , "开始挑战" ) )
 	list_opt.append(mouseOpt(1415,728 , 3 , "结束挑战" ) )
 	list_opt.append(mouseOpt(1415,728 , 3 , "结束挑战" ) )
+	list_opt.append(mouseOpt(1415,728 , 3 , "结束挑战" ) )
 	#
 	dealEvent(list_opt)
 	
 #觉醒副本
 def runJueXing():
 	for i_ in range(40):
+		print i_
 		list_opt = []
 		list_opt.append(mouseOpt(1415,728 , 35 , "开始挑战" ) )
+		list_opt.append(mouseOpt(1415,728 , 3 , "结束挑战" ) )
 		list_opt.append(mouseOpt(1415,728 , 3 , "结束挑战" ) )
 		list_opt.append(mouseOpt(1415,728 , 3 , "结束挑战" ) )
 		#
@@ -352,11 +375,13 @@ def runJueXing():
 	
 def allRunYuHun():
 	for i_ in range(40):
+		print i_
 		runYuHun()
 		
 if __name__ == "__main__":
-	#print getCurPos()#获取坐标
-	#allRunYuHun()
-	#runJieJ()
-	#runGHJieJ() #公会结界突破
-	runJueXing() #觉醒副本
+	print getCurPos()#获取坐标
+	if 1:
+		#allRunYuHun()
+		#runJieJ()
+		#runGHJieJ() #公会结界突破
+		runJueXing() #觉醒副本
