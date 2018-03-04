@@ -220,15 +220,18 @@ def waitFor(nTime):
 		
 
 is_first_set = True
+g_time = 0 #如果 机器慢 就等xx秒
+#f_change_ratio 屏幕的缩小系数
 
 def dealOneEvent(one_):
 	global is_first_set
+	f_change_ratio = 1 #缩小系数
 	n_new_x = 2098
 	n_new_y = 68
 	n_init_x = 218
 	n_init_y = 57
-	n_w = 1612
-	n_h = 992
+	n_w = int(1612 * f_change_ratio)
+	n_h = int(992 * f_change_ratio)
 	
 	n_diff_x = n_new_x - n_init_x
 	n_diff_y = n_new_y - n_init_y
@@ -245,20 +248,23 @@ def dealOneEvent(one_):
 	old_x_y = getCurPos()
 	
 	#time.sleep(0.2)
-	moveCurPos(one_.x + n_diff_x, one_.y + n_diff_y)
+	dst_x = int( (one_.x + n_diff_x)*f_change_ratio )
+	dst_y = int( (one_.y + n_diff_y)*f_change_ratio )
+	moveCurPos( dst_x , dst_y )
 	print one_.x, one_.y
 	#time.sleep(0.2)
 	clickLeftCur()
 	
 	#time.sleep(0.2)
-	moveCurPos(old_x_y[0], old_x_y[1] ) #还原坐标
+	#moveCurPos(old_x_y[0], old_x_y[1] ) #还原坐标
 	
 	print one_.des.decode("utf").encode("gbk")
 		
 def dealEvent(list_opt ):
+	global g_time
 	for one_ in list_opt:
 		dealOneEvent(one_)
-		waitFor(one_.time)
+		waitFor(one_.time +g_time)
 		
 #公会结界突破
 def runGHJieJ():
@@ -271,82 +277,90 @@ def runGHJieJ():
 		
 		if i_ % 2 == 1:
 			#1
-			list_opt.append(mouseOpt(1048, 823 , 1 , "选择对手" ) )
-			list_opt.append(mouseOpt(1128, 660 , 50 , "开始挑战" ) )
+			list_opt.append(mouseOpt(1048, 443 , 1 , "选择对手" ) )
+			list_opt.append(mouseOpt(1128, 688 , 50 , "开始挑战" ) )
 			list_opt.append(mouseOpt(743, 593 , 5 , "结束挑战" ) )
 			list_opt.append(mouseOpt(743, 593 , 2 , "结束挑战" ) )
 			list_opt.append(mouseOpt(743, 593 , 2 , "结束挑战" ) )
 		else:
 			#2
-			list_opt.append(mouseOpt(1130, 633 , 1 , "选择对手" ) )
-			list_opt.append(mouseOpt(1147, 878 , 50 , "开始挑战" ) )
+			#list_opt.append(mouseOpt(1130, 633 , 1 , "选择对手" ) )
+			#list_opt.append(mouseOpt(1147, 878 , 50 , "开始挑战" ) )
+			#list_opt.append(mouseOpt(743, 593 , 5 , "结束挑战" ) )
+			#list_opt.append(mouseOpt(743, 593 , 2 , "结束挑战" ) )
+			#list_opt.append(mouseOpt(743, 593 , 1 , "结束挑战" ) )
+			
+
+			list_opt.append(mouseOpt(1048, 823 , 1 , "选择对手" ) )
+			list_opt.append(mouseOpt(1128, 660 , 50 , "开始挑战" ) )
 			list_opt.append(mouseOpt(743, 593 , 5 , "结束挑战" ) )
 			list_opt.append(mouseOpt(743, 593 , 2 , "结束挑战" ) )
-			list_opt.append(mouseOpt(743, 593 , 1 , "结束挑战" ) )
+			list_opt.append(mouseOpt(743, 593 , 2 , "结束挑战" ) )
 		#
 		dealEvent(list_opt)
 		if i_ > n_cur_num:
-			waitFor(60*5)
+			waitFor(60)
 	
 	
 #结界突破
 def runJieJ():
 	 
 	list_opt = []
-	#1
-	list_opt.append(mouseOpt(619, 308 , 1 , "选择对手" ) )
-	list_opt.append(mouseOpt(724, 527 , 80 , "开始挑战" ) )
-	list_opt.append(mouseOpt(1260, 760 , 5 , "结束挑战" ) )
-	list_opt.append(mouseOpt(1260, 760 , 2 , "结束挑战" ) )
-	list_opt.append(mouseOpt(1260, 760 , 2 , "结束挑战" ) )
-	#2
-	list_opt.append(mouseOpt(1054, 298 , 1 , "选择对手" ) )
-	list_opt.append(mouseOpt(1137, 528 , 80 , "开始挑战" ) )
-	list_opt.append(mouseOpt(1260, 760 , 5 , "结束挑战" ) )
-	list_opt.append(mouseOpt(1260, 760 , 2 , "结束挑战" ) )
-	list_opt.append(mouseOpt(1260, 760 , 1 , "结束挑战" ) )
-	#3
-	list_opt.append(mouseOpt(1470, 299, 1 , "选择对手" ) )
-	list_opt.append(mouseOpt(1563, 526 , 80 , "开始挑战" ) )
-	list_opt.append(mouseOpt(1260, 760 , 5 , "结束挑战" ) )
-	list_opt.append(mouseOpt(1260, 760 , 2 , "结束挑战" ) )
-	list_opt.append(mouseOpt(1260, 760 , 1 , "结束挑战" ) )
-	#4
-	list_opt.append(mouseOpt(593, 455 , 1 , "选择对手" ) )
-	list_opt.append(mouseOpt(712, 692, 80 , "开始挑战" ) )
-	list_opt.append(mouseOpt(1260, 760 , 5 , "结束挑战" ) )
-	list_opt.append(mouseOpt(1260, 760 , 2 , "结束挑战" ) )
-	list_opt.append(mouseOpt(1260, 760 , 1 , "结束挑战" ) )
-	# 5
-	list_opt.append(mouseOpt(1037, 461 , 1 , "选择对手" ) )
-	list_opt.append(mouseOpt(1120, 686, 80 , "开始挑战" ) )
-	list_opt.append(mouseOpt(1260, 760 , 5 , "结束挑战" ) )
-	list_opt.append(mouseOpt(1260, 760 , 2 , "结束挑战" ) )
-	list_opt.append(mouseOpt(1260, 760 , 1 , "结束挑战" ) )
-	#6
-	list_opt.append(mouseOpt(1470, 461 , 1 , "选择对手" ) )
-	list_opt.append(mouseOpt(1547, 699, 80 , "开始挑战" ) )
-	list_opt.append(mouseOpt(1260, 760 , 5 , "结束挑战" ) )
-	list_opt.append(mouseOpt(1260, 760 , 2 , "结束挑战" ) )
-	list_opt.append(mouseOpt(1260, 760 , 1 , "结束挑战" ) )
-	#7
-	list_opt.append(mouseOpt(595, 634 , 1 , "选择对手" ) )
-	list_opt.append(mouseOpt(718, 867, 80 , "开始挑战" ) )
-	list_opt.append(mouseOpt(1260, 760 , 5 , "结束挑战" ) )
-	list_opt.append(mouseOpt(1260, 760 , 2 , "结束挑战" ) )
-	list_opt.append(mouseOpt(1260, 760 , 1 , "结束挑战" ) )
-	#8
-	list_opt.append(mouseOpt(1027, 632 , 1 , "选择对手" ) )
-	list_opt.append(mouseOpt(1133, 860, 80 , "开始挑战" ) )
-	list_opt.append(mouseOpt(1260, 760 , 5 , "结束挑战" ) )
-	list_opt.append(mouseOpt(1260, 760 , 2 , "结束挑战" ) )
-	list_opt.append(mouseOpt(1260, 760 , 1 , "结束挑战" ) )
-	#9
-	list_opt.append(mouseOpt(1480, 624, 1 , "选择对手" ) )
-	list_opt.append(mouseOpt(1539, 859, 80 , "开始挑战" ) )
-	list_opt.append(mouseOpt(1260, 760 , 5 , "结束挑战" ) )
-	list_opt.append(mouseOpt(1260, 760 , 2 , "结束挑战" ) )
-	list_opt.append(mouseOpt(1260, 760 , 1 , "结束挑战" ) )
+	
+	if 1: #第1个对手
+		list_opt.append(mouseOpt(619, 308 , 1 , "选择对手" ) )
+		list_opt.append(mouseOpt(724, 527 , 80 , "开始挑战" ) )
+		list_opt.append(mouseOpt(1260, 760 , 5 , "结束挑战" ) )
+		list_opt.append(mouseOpt(1260, 760 , 2 , "结束挑战" ) )
+		list_opt.append(mouseOpt(1260, 760 , 2 , "结束挑战" ) )
+	if 1: #第2个对手
+		list_opt.append(mouseOpt(1054, 298 , 1 , "选择对手" ) )
+		list_opt.append(mouseOpt(1137, 528 , 80 , "开始挑战" ) )
+		list_opt.append(mouseOpt(1260, 760 , 5 , "结束挑战" ) )
+		list_opt.append(mouseOpt(1260, 760 , 2 , "结束挑战" ) )
+		list_opt.append(mouseOpt(1260, 760 , 1 , "结束挑战" ) )
+	if 1: #第3个对手
+		list_opt.append(mouseOpt(1470, 299, 1 , "选择对手" ) )
+		list_opt.append(mouseOpt(1563, 526 , 80 , "开始挑战" ) )
+		list_opt.append(mouseOpt(1260, 760 , 5 , "结束挑战" ) )
+		list_opt.append(mouseOpt(1260, 760 , 2 , "结束挑战" ) )
+		list_opt.append(mouseOpt(1260, 760 , 1 , "结束挑战" ) )
+	if 1: #第4个对手
+		list_opt.append(mouseOpt(593, 455 , 1 , "选择对手" ) )
+		list_opt.append(mouseOpt(712, 692, 80 , "开始挑战" ) )
+		list_opt.append(mouseOpt(1260, 760 , 5 , "结束挑战" ) )
+		list_opt.append(mouseOpt(1260, 760 , 2 , "结束挑战" ) )
+		list_opt.append(mouseOpt(1260, 760 , 1 , "结束挑战" ) )
+	if 1: #第5个对手
+		list_opt.append(mouseOpt(1037, 461 , 1 , "选择对手" ) )
+		list_opt.append(mouseOpt(1120, 686, 80 , "开始挑战" ) )
+		list_opt.append(mouseOpt(1260, 760 , 5 , "结束挑战" ) )
+		list_opt.append(mouseOpt(1260, 760 , 2 , "结束挑战" ) )
+		list_opt.append(mouseOpt(1260, 760 , 1 , "结束挑战" ) )
+	if 1: #第6个对手
+		list_opt.append(mouseOpt(1470, 461 , 1 , "选择对手" ) )
+		list_opt.append(mouseOpt(1547, 699, 80 , "开始挑战" ) )
+		list_opt.append(mouseOpt(1260, 760 , 5 , "结束挑战" ) )
+		list_opt.append(mouseOpt(1260, 760 , 2 , "结束挑战" ) )
+		list_opt.append(mouseOpt(1260, 760 , 1 , "结束挑战" ) )
+	if 1: #第7个对手
+		list_opt.append(mouseOpt(595, 634 , 1 , "选择对手" ) )
+		list_opt.append(mouseOpt(718, 867, 80 , "开始挑战" ) )
+		list_opt.append(mouseOpt(1260, 760 , 5 , "结束挑战" ) )
+		list_opt.append(mouseOpt(1260, 760 , 2 , "结束挑战" ) )
+		list_opt.append(mouseOpt(1260, 760 , 1 , "结束挑战" ) )
+	if 1: #第8个对手
+		list_opt.append(mouseOpt(1027, 632 , 1 , "选择对手" ) )
+		list_opt.append(mouseOpt(1133, 860, 80 , "开始挑战" ) )
+		list_opt.append(mouseOpt(1260, 760 , 5 , "结束挑战" ) )
+		list_opt.append(mouseOpt(1260, 760 , 2 , "结束挑战" ) )
+		list_opt.append(mouseOpt(1260, 760 , 1 , "结束挑战" ) )
+	if 1: #第9个对手
+		list_opt.append(mouseOpt(1480, 624, 1 , "选择对手" ) )
+		list_opt.append(mouseOpt(1539, 859, 80 , "开始挑战" ) )
+		list_opt.append(mouseOpt(1260, 760 , 5 , "结束挑战" ) )
+		list_opt.append(mouseOpt(1260, 760 , 2 , "结束挑战" ) )
+		list_opt.append(mouseOpt(1260, 760 , 1 , "结束挑战" ) )
 	#
 	#
 	dealEvent(list_opt)
@@ -373,6 +387,18 @@ def runJueXing():
 		#
 		dealEvent(list_opt)
 	
+#原业火
+def runYuanYeHuo():
+	for i_ in range(40):
+		print i_
+		list_opt = []
+		list_opt.append(mouseOpt(1415,728 , 60*4 , "开始挑战" ) )
+		list_opt.append(mouseOpt(1415,728 , 3 , "结束挑战" ) )
+		list_opt.append(mouseOpt(1415,728 , 3 , "结束挑战" ) )
+		list_opt.append(mouseOpt(1415,728 , 3 , "结束挑战" ) )
+		#
+		dealEvent(list_opt)
+	
 def allRunYuHun():
 	for i_ in range(40):
 		print i_
@@ -381,7 +407,8 @@ def allRunYuHun():
 if __name__ == "__main__":
 	print getCurPos()#获取坐标
 	if 1:
-		#allRunYuHun()
-		#runJieJ()
-		#runGHJieJ() #公会结界突破
-		runJueXing() #觉醒副本
+		#allRunYuHun() #御魂副本
+		#runJieJ() #
+		runGHJieJ()# ##公会结界突破
+		#runJueXing() ##觉醒副本
+		#runYuanYeHuo() #原业火
