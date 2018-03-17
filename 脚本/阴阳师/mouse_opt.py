@@ -1,5 +1,4 @@
 
-
 import win32api
 import win32con
 import win32gui
@@ -269,9 +268,12 @@ def dealEvent(list_opt ):
 #公会结界突破
 def runGHJieJ():
 	n_cur_num = 2	#现有次数
-	n_skeep_time = 40 #持续时间_分
-	n_all_num = n_cur_num + int(n_skeep_time / 5)
-	for i_ in range(n_all_num):
+	
+	i_ = 0
+	run_min = 60 #xx 分钟
+	n_end_time = int(time.time() + (run_min * 60) )
+	while time.time() < n_end_time:
+		i_ += 1
 		print i_
 		list_opt = []
 		
@@ -377,8 +379,9 @@ def runYuHun():
 	
 #觉醒副本
 def runJueXing():
-	for i_ in range(40):
-		print i_
+	run_min = 60 #xx 分钟
+	n_end_time = int(time.time() + (run_min * 60) )
+	while time.time() < n_end_time:
 		list_opt = []
 		list_opt.append(mouseOpt(1415,728 , 35 , "开始挑战" ) )
 		list_opt.append(mouseOpt(1415,728 , 3 , "结束挑战" ) )
@@ -389,8 +392,10 @@ def runJueXing():
 	
 #原业火
 def runYuanYeHuo():
-	for i_ in range(40):
-		print i_
+	
+	run_min = 60 #xx 分钟
+	n_end_time = int(time.time() + (run_min * 60) )
+	while time.time() < n_end_time:
 		list_opt = []
 		list_opt.append(mouseOpt(1415,728 , 60*4 , "开始挑战" ) )
 		list_opt.append(mouseOpt(1415,728 , 3 , "结束挑战" ) )
@@ -400,10 +405,12 @@ def runYuanYeHuo():
 		dealEvent(list_opt)
 	
 def allRunYuHun():
-	for i_ in range(40):
-		print i_
+	run_min = 60 #xx 分钟
+	n_end_time = int(time.time() + (run_min * 60) )
+	while time.time() < n_end_time:
 		runYuHun()
-		
+
+
 if __name__ == "__main__":
 	print getCurPos()#获取坐标
 	if 1:
