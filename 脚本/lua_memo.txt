@@ -379,6 +379,21 @@ ack.exp = 10
 UpdateRoleInfoNtf(ack:SerializeToString() )
 #end
 
+//base64_解析_字节流操作_proto反序列化
+#if 
+
+local str_proto = decodeBase64("A6QIABISCAQQZBoFCJNOEBQaBQiRThAyGAY=")
+local str_proto_2 = string.sub(str_proto, 3, #str_proto)
+
+local test = ClientProto.task_opt_ack()
+test:ParseFromString(str_proto_2)
+print(test)
+
+print(#test.show_reward.reward_info)
+
+#end
+
+
 
 
 
