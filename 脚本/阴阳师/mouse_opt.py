@@ -370,7 +370,7 @@ def runJieJ():
 #御魂副本
 def runYuHun():
 	list_opt = []
-	list_opt.append(mouseOpt(1415,728 , 100 , "开始挑战" ) )
+	list_opt.append(mouseOpt(1415,728 , 80 , "开始挑战" ) )
 	list_opt.append(mouseOpt(1415,728 , 3 , "结束挑战" ) )
 	list_opt.append(mouseOpt(1415,728 , 3 , "结束挑战" ) )
 	list_opt.append(mouseOpt(1415,728 , 3 , "结束挑战" ) )
