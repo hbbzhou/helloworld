@@ -1,4 +1,4 @@
-
+﻿
 import win32api
 import win32con
 import win32gui
@@ -414,8 +414,8 @@ def allRunYuHun():
 if __name__ == "__main__":
 	print getCurPos()#获取坐标
 	if 1:
-		#allRunYuHun() #御魂副本
+		allRunYuHun()# #御魂副本
 		#runJieJ() #
-		runGHJieJ()# ##公会结界突破
+		#runGHJieJ() ##公会结界突破
 		#runJueXing() ##觉醒副本
 		#runYuanYeHuo() #原业火
