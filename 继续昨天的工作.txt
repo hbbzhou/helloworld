@@ -5,6 +5,9 @@ https://www.shfft.com/
 
 autohotkey官网
 https://www.autohotkey.com/
+
+cpu排行榜
+https://www.cpubenchmark.net/high_end_cpus.html
 #endif
 
 
