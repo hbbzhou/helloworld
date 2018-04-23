@@ -1,6 +1,7 @@
 
-//备忘
+//备忘//网址
 #if
+水电费
 https://www.shfft.com/
 
 autohotkey官网
@@ -8,6 +9,8 @@ https://www.autohotkey.com/
 
 cpu排行榜
 https://www.cpubenchmark.net/high_end_cpus.html
+
+
 #endif
 
 
