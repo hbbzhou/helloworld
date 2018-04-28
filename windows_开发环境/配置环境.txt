@@ -17,11 +17,4 @@ Microsoft Visual C++ 2010 Redistributable Package
 ]
 =========
 
-##后台启动程序的批处理
-@echo off 
-if "%1" == "h" goto begin 
-mshta vbscript:createobject("wscript.shell").run("%~nx0 h",0)(window.close)&&exit 
-:begin 
-::下面是你自己的代码。
-cd /d E:\intermediate\snk_私服\bin\win_redis\
-start /b redis-server.exe redis.windows.conf 
+
