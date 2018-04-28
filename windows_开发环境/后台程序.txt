@@ -14,3 +14,6 @@ start /b redis-server.exe redis.windows.conf
 
 ##在main 之前 加入
 #pragma comment(linker, "/subsystem:\"windows\"   /entry:\"mainCRTStartup\"")
+
+
+
