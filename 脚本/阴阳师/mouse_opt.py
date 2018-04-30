@@ -227,6 +227,7 @@ def dealOneEvent(one_):
 	f_change_ratio = 1 #缩小系数
 	n_new_x = 2098
 	n_new_y = 68
+	
 	n_init_x = 218
 	n_init_y = 57
 	n_w = int(1612 * f_change_ratio)
@@ -410,12 +411,20 @@ def allRunYuHun():
 	while time.time() < n_end_time:
 		runYuHun()
 
+def closeYYS():
+	list_opt = []
+	list_opt.append(mouseOpt(715, 72 , 1 , "关闭阴阳师" ) )
+	list_opt.append(mouseOpt(715, 72 , 2 , "关闭阴阳师" ) )
+	#
+	dealEvent(list_opt)
+	pass
 
 if __name__ == "__main__":
 	print getCurPos()#获取坐标
 	if 1:
-		allRunYuHun()# #御魂副本
+		allRunYuHun()## #御魂副本
 		#runJieJ() #
 		#runGHJieJ() ##公会结界突破
 		#runJueXing() ##觉醒副本
 		#runYuanYeHuo() #原业火
+		closeYYS()
