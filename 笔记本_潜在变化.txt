@@ -1,0 +1,22 @@
+
+
+:电脑信息
+电脑型号	联想 80WW 笔记本电脑  (扫描时间：2018年04月20日)
+操作系统	Windows 10 64位 ( DirectX 12 )
+	
+处理器	英特尔 Core i5-7300HQ @ 2.50GHz 四核
+主板	联想 LNVNB161216 ( 英特尔 Xeon E3 - 1200 v6/7th Gen Intel Core/DRAM Registers - 5910 - 100 Series/C230 SeriDB) )
+内存	8 GB ( 三星 DDR4 2400MHz )
+主硬盘	三星 MZVLW128HEGR-000L2 ( 128 GB / 固态硬盘 )
+显卡	Nvidia GeForce GTX 1050 Ti ( 4 GB )
+显示器	奇美 CMN15D3 ( 15.5 英寸  )
+声卡	瑞昱  @ 英特尔 High Definition Audio 控制器
+网卡	瑞昱 Realtek 8821AE Wireless LAN 802.11ac PCI-E NIC / 联想
+
+
+
+
+:c盘剩余空间
+2018/4/30----15.3G
+
+
