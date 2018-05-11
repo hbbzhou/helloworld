@@ -65,7 +65,7 @@ def test1():
 		return
 	str_argv_1 = sys.argv[1]
 
-
+#文件加密
 def encode_file(str_name):
 	f_ = open(str_name , "rb")
 	buff_ = f_.read()
@@ -76,7 +76,7 @@ def encode_file(str_name):
 	f_new.write(str_)
 	f_new.close()
 	
-	
+#文件解密
 def decode_file(str_src_name , str_dst_name):
 	f_ = open(str_src_name , "r")
 	buff_ = f_.read()
@@ -387,4 +387,43 @@ message change_name_req
 #end
 
 
+#if	 //随机密码
 
+def ReplaceAll(str_  , dict_):
+	for (k , v) in dict_.items():
+		str_ = str_.replace(k , v)
+	return str_
+
+def RandPwd():
+	import random,string
+	
+	
+	n_begin = 529	#
+	n_end = 530		#
+	
+	dict_ = {}
+	dict_["O"] = "a"
+	dict_["o"] = "a"
+	dict_["0"] = "b"
+	dict_["I"] = "t"
+	dict_["L"] = "p"
+	dict_["l"] = "d"
+	dict_["1"] = "8"
+	#
+	src = string.ascii_letters + string.digits
+	list_name = []
+	list_pwd = []
+	for i in range(n_begin , n_end):
+		list_passwd_all = random.sample(src, 5) #从字母和数字中随机取5位
+		list_passwd_all.extend(random.sample(string.digits, 1))  #让密码中一定包含数字
+		list_passwd_all.extend(random.sample(string.ascii_lowercase, 1)) #让密码中一定包含小写字母
+		list_passwd_all.extend(random.sample(string.ascii_uppercase, 1)) #让密码中一定包含大写字母
+		random.shuffle(list_passwd_all) #打乱列表顺序
+		str_passwd = ''.join(list_passwd_all) #将列表转化为字符串
+		
+		str_passwd = ReplaceAll(str_passwd ,dict_ ) 
+		
+		list_name.append("snk" + str(i) )
+		list_pwd.append(str_passwd)
+	
+#endif
