@@ -25,6 +25,7 @@ def DealDiffFile(str_ver_1 , str_ver_2):
 	os.system(str_cmd)
 
 
+	list_igno = [".pb.cc" ,".pb.h"]
 	f_0 = open(str_file , "r")
 	list_ = f_0.readlines()
 	f_0.close()
@@ -34,11 +35,11 @@ def DealDiffFile(str_ver_1 , str_ver_2):
 	for one_ in list_:
 		if one_.find("Index:") == 0:
 			is_file = True
-			if one_.find(".pb.cc") > 0:
-				is_file = False
-			elif one_.find(".pb.h") > 0:
-				is_file = False
-				
+			for one_igno in list_igno:
+				if one_.find(one_igno) > 0:
+					is_file = False
+					break
+
 		if is_file == False:
 			continue
 		

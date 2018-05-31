@@ -7,37 +7,117 @@ g_str_list = '''	for ([type]::const_iterator it_ = [obj].begin();
 }
 '''
 g_str_vec = '''	for (size_t i_ = 0; i_ < [obj].size(); ++i_) {
-	const class_name & one_ = [obj][i_];
+	const [type] & one_ = [obj][i_];
 
 }
 '''
 
-g_str_get_set = '''void Set[name](const [type] & v_) { [obj] = v_; }
-[type] Get[name]() const { return [obj]; }'''
+g_str_get_set = '''void	Set[name](const [type] & v_) { [obj] = v_; }
+[type]	Get[name]() const { return [obj]; }'''
 
-def for_fun( str_code):
-	n_1 = str_code.rfind(" ")
-	if n_1 >= 0:
-		str_name = str_code[n_1+1:]
-		str_type = str_code[0:n_1]
-		str_type = str_type.replace(" " , "")
-		if str_name[0:3] in ["m_n" , "m_f" , "m_b"]:
-			str_ = g_str_get_set.replace("[type]" , str_type).replace("[obj]" ,str_name )
-			str_ = str_.replace("[name]" , str_name[3:] )
-			hbb_tool.SetText(str_)
-		elif str_name[0:5] in ["m_str" ]:
-			str_ = g_str_get_set.replace("[type]" , str_type).replace("[obj]" ,str_name )
-			str_ = str_.replace("[name]" , str_name[5:] )
-			hbb_tool.SetText(str_)
-		else:
-			str_ = g_str_list.replace("[type]" , str_type).replace("[obj]" ,str_name )
-			hbb_tool.SetText(str_)
+
+g_str_if_ptr = '''if([obj] == NULL){
+		USR_INFOEX(true, "##error");
+		return;//to_be_fix
+}'''
+
+#组成get_set_函数
+def deal_code_1(str_type , str_name , n_index):
+	str_ = g_str_get_set.replace("[type]" , str_type).replace("[obj]" ,str_name )
+	str_ = str_.replace("[name]" , str_name[n_index:] )
+	hbb_tool.SetText(str_)
+
+
+def DealMapCode(str_):
+	str_name = ""
+	str_map_type = ""
+	n1 = 0
+	for i_ in range(len(str_) ):
+		if str_[i_] == "<":
+			n1 += 1
+		elif str_[i_] == ">":
+			n1 -= 1
+			if n1 == 0:
+				#提前名字
+				str_name = str_[i_+1 :]
+				str_map_type = str_[0:i_+1]
+				break
+
+	str_new_name = ""
+	for one_ in str_name:
+		if one_ == ";":
+			break
+		elif one_ not in [" " , "\t"]:
+			str_new_name += one_
+		
+	hbb_tool.SetText(g_str_list.replace("[obj]" ,str_new_name).replace("[type]" , str_map_type) )
+	
+def DealVecCode(str_):
+	str_name = ""
+	str_type = ""
+	n1 = 0
+	for i_ in range(len(str_) ):
+		if str_[i_] == "<":
+			n1 += 1
+		elif str_[i_] == ">":
+			n1 -= 1
+			if n1 == 0:
+				#提前名字
+				str_name = str_[i_+1 :]
+				str_type = str_[1:i_]
+				break
+
+	str_new_name = ""
+	for one_ in str_name:
+		if one_ == ";":
+			break
+		elif one_ not in [" " , "\t"]:
+			str_new_name += one_
+		
+					
+	str_new_type = ""
+	for one_ in str_type:
+		if one_ not in [" " , "\t"]:
+			str_new_type += one_
+			
+	hbb_tool.SetText(g_str_vec.replace("[obj]" ,str_new_name).replace("[type]" , str_new_type) )
+
+def DealCode1( str_):
+	str_ = str_.replace("\r" , "").replace("\n" , "")
+	str_dst = ""
+	
+	#去掉_头
+	for i_ in range(len(str_) ):
+		if str_[i_] in [" " , "\t"]:
+			continue
+		
+		str_dst = str_[i_:]
+		break
+		
+	if str_dst[0:11] == "std::vector":
+		DealVecCode(str_dst[11:])
+	elif str_dst[0:8] == "std::map":
+		DealMapCode(str_dst)
+	elif str_dst[0:8] == "std::set":
+		DealMapCode(str_dst)
+
+
+def base_deal_fun( str_code):
+	str_type = ""
+	if str_code[0:1] == "p":
+		if str_code[1:2] == "_":
+			str_type = "ptr"
+		elif str_code[1:2].isupper() :
+			str_type = "ptr"
+	
+	#处理 各个类型
+	if str_type == "ptr":
+		str_ = g_str_if_ptr.replace("[obj]" , str_code)
+		hbb_tool.SetText(str_)
 	else:
-		#处理vector
-		if "vec_" in str_code or "m_vec" in str_code:
-			str_name = str_code
-			str_ = g_str_vec.replace("[obj]" ,str_name )
-			hbb_tool.SetText(str_)
+		DealCode1(str_code)
+	
+
 
 def sub_member(str_code):
 	str_ = ""
@@ -50,13 +130,18 @@ def sub_member(str_code):
 			
 	hbb_tool.SetText(str_[0:-1])
 
-def decode_fun():
-	str_code = hbb_tool.GetText()
-	str_code = str_code.replace(";" , "")
-	str_code = str_code.replace("\r" , "")
-	if "\n" in str_code:
-		sub_member(str_code)
+def decode_fun(str_code):
+	if "std::" in str_code:
+		base_deal_fun( str_code)
 	else:
-		for_fun( str_code)
-		
-decode_fun()
+		str_code = str_code.replace(";" , "")
+		str_code = str_code.replace("\r" , "")
+		sub_member(str_code)
+
+
+
+
+if __name__ == "__main__":
+	decode_fun(hbb_tool.GetText())
+	
+	
