@@ -81,6 +81,11 @@ SET(CMAKE_CXX_COMPILER "g++")
 #设置编译选项---
 SET(CMAKE_CXX_FLAGS "-std=c++11 -g")
  
+#可以指定单个文件
+SET(SRC_LIST 
+	main.cpp
+)
+ 
 aux_source_directory("yi_dong" SRC_LIST)
 aux_source_directory("yi_dong/base" SRC_LIST)
 aux_source_directory("yi_dong/data" SRC_LIST)
