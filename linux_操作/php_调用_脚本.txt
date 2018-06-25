@@ -1,0 +1,6 @@
+﻿
+
+php调用脚本
+输入:visudo
+注释:#Defaults    requiretty
+新增:apache ALL=(ALL)  NOPASSWD: ALL
