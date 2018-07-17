@@ -115,6 +115,12 @@ def ShowTime():
 	now = datetime.datetime.now()
 	print now.strftime('%y/%m/%d--[%H:%M]')
 	
+#获取文件_修改时间
+def get_FileModifyTime(filePath):
+	filePath = unicode(filePath,'utf8')
+	t = os.path.getmtime(filePath)
+	return t
+	
 if __name__ == "__main__":
 	pass
 	
