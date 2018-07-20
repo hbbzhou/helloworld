@@ -121,6 +121,22 @@ def get_FileModifyTime(filePath):
 	t = os.path.getmtime(filePath)
 	return t
 	
+def ShowFileMd5(str_file):
+	import hashlib
+	
+	f_0 = open(str_file , "rb")
+	str_ret = hashlib.md5( f_0.read(-1)).hexdigest()
+	f_0.close()
+	
+	print str_ret
+	return str_ret
+	
+def ShowStrMd5(str_content):
+	import hashlib
+	str_ret = hashlib.md5( str_content).hexdigest()
+	return str_ret
+	
+	
 if __name__ == "__main__":
 	pass
 	
