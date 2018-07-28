@@ -81,6 +81,73 @@ namespace log2file {
 #define _Add2file(x) Add2file(__FUNCTION__ , (x) )
 
 
+	//比sprintf_s 高效
+	template<int SIZE>
+	class StringAppend
+	{
+	public:
+		StringAppend() {
+			memset(m_szBuf, 0,sizeof(m_szBuf));
+			m_nPos = 0;
+		}
+	
+		void Append(const double v_) {
+			const int nRatio = 1000;
+			long long n1 = long long(v_);
+			int n2 = long long(v_ * nRatio) % nRatio;
+			n2 = abs(n2);
+			char buff[56] = { 0 };
+			memset(buff, 0, sizeof(buff));
+			_i64toa(n1, buff, 10);
+			strcat(buff, ".");
+			_ltoa(n2, buff + strlen(buff), 10);
+			//
+			Append(buff);
+		}
+	
+		void Append(const int v) {
+			char buff[32];
+			_ltoa(v, buff, 10);
+			Append(buff);
+		}
+	
+		void Append(const unsigned int v) {
+			char buff[32];
+			_ultoa(v, buff, 10);
+			Append(buff);
+		}
+	
+		void Append(const long long v) {
+			char buff[32];
+			_i64toa(v, buff, 10);
+			Append(buff);
+		}
+	
+		void Append(const unsigned long long v) {
+			char buff[32];
+			_ui64toa(v, buff, 10);
+			Append(buff);
+		}
+	
+		void Append(const char * pStr) {
+			const size_t nLen = strlen(pStr);
+			if (nLen >= SIZE) {
+				assert(false && "out size");
+			}
+			memcpy(m_szBuf + m_nPos, pStr, nLen);
+			m_nPos += nLen;
+		}
+	
+		const char * Get() const {
+			return m_szBuf;
+		}
+	
+	private:
+		char m_szBuf[SIZE];
+		int  m_nPos;
+	};
+
+
 }
 
 
