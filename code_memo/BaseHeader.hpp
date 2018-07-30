@@ -81,73 +81,127 @@ namespace log2file {
 #define _Add2file(x) Add2file(__FUNCTION__ , (x) )
 
 
-	//比sprintf_s 高效
-	template<int SIZE>
-	class StringAppend
-	{
-	public:
-		StringAppend() {
-			memset(m_szBuf, 0,sizeof(m_szBuf));
-			m_nPos = 0;
-		}
-	
-		void Append(const double v_) {
-			const int nRatio = 1000;
-			long long n1 = long long(v_);
-			int n2 = long long(v_ * nRatio) % nRatio;
-			n2 = abs(n2);
-			char buff[56] = { 0 };
-			memset(buff, 0, sizeof(buff));
-			_i64toa(n1, buff, 10);
-			strcat(buff, ".");
-			_ltoa(n2, buff + strlen(buff), 10);
-			//
-			Append(buff);
-		}
-	
-		void Append(const int v) {
-			char buff[32];
-			_ltoa(v, buff, 10);
-			Append(buff);
-		}
-	
-		void Append(const unsigned int v) {
-			char buff[32];
-			_ultoa(v, buff, 10);
-			Append(buff);
-		}
-	
-		void Append(const long long v) {
-			char buff[32];
-			_i64toa(v, buff, 10);
-			Append(buff);
-		}
-	
-		void Append(const unsigned long long v) {
-			char buff[32];
-			_ui64toa(v, buff, 10);
-			Append(buff);
-		}
-	
-		void Append(const char * pStr) {
-			const size_t nLen = strlen(pStr);
-			if (nLen >= SIZE) {
-				assert(false && "out size");
-			}
-			memcpy(m_szBuf + m_nPos, pStr, nLen);
-			m_nPos += nLen;
-		}
-	
-		const char * Get() const {
-			return m_szBuf;
-		}
-	
-	private:
-		char m_szBuf[SIZE];
-		int  m_nPos;
-	};
-
-
+#define Code_StringAppend() \
+void Append(const double v_) {								\
+	const int nRatio = 1000;	/*精度*/					\
+	long long n1 = llabs(long long(v_ * nRatio));			\
+	long long  nInteger = n1 / nRatio;	/*整数部分*/		\
+	int nDecimal = long long(n1) % nRatio;	/*小数部分*/	\
+	char buff[56] = { 0 };									\
+	int nIndex = 0;										\
+	memset(buff, 0, sizeof(buff));							\
+	if (v_ < 0) {											\
+		buff[nIndex++] = '-';								\
+	}														\
+	_i64toa(nInteger, buff + nIndex, 10);					\
+	strcat(buff, ".");										\
+	_ltoa(nDecimal, buff + strlen(buff), 10);				\
+	Append(buff);											\
+}															\
+void Append(const int v) {									\
+	char buff[32];											\
+	_ltoa(v, buff, 10);										\
+	Append(buff);											\
+}															\
+void Append(const unsigned int v) {							\
+	char buff[32];											\
+	_ultoa(v, buff, 10);									\
+	Append(buff);											\
+}															\
+void Append(const long long v) {							\
+	char buff[32];											\
+	_i64toa(v, buff, 10);									\
+	Append(buff);											\
+}															\
+void Append(const unsigned long long v) {					\
+	char buff[32];											\
+	_ui64toa(v, buff, 10);									\
+	Append(buff);											\
 }
 
+template<int SIZE>
+class StringAppend
+{
+public:
+	StringAppend() {
+		memset(m_szBuf, 0,sizeof(m_szBuf));
+		m_nPos = 0;
+	}
+	//
+	Code_StringAppend()
+	//
+	const char * Get() const {
+		return m_szBuf;
+	}
+
+	void Append(const char * pStr) {
+		const size_t nLen = strlen(pStr);
+		if (m_nPos + nLen >= SIZE) {
+			assert(false && "out size");
+		}
+		memcpy(m_szBuf + m_nPos, pStr, nLen);
+		m_nPos += nLen;
+	}
+
+private:
+	char m_szBuf[SIZE];
+	int  m_nPos;
+};
+//
+class StringAppendExt
+{
+public:
+	StringAppendExt(size_t nLen = 128)
+	:pBuff(	NULL),m_nMaxLen(nLen),m_nPos(0){
+		//
+		pBuff = (char *)malloc(nLen);
+		assert(pBuff && "malloc error");
+		memset(pBuff, 0, sizeof(m_nMaxLen));
+		//
+	}
+
+	//
+	Code_StringAppend()
+	//
+	const char * Get() const {
+		return pBuff;
+	}
+
+	void Append(const char * pStr) {
+		const size_t nLen = strlen(pStr);
+		if (m_nPos + nLen >= m_nMaxLen) {
+			Resize( CalSize(m_nPos + nLen) );
+		}
+		memcpy(pBuff + m_nPos, pStr, nLen);
+		m_nPos += nLen;
+	}
+
+	size_t CalSize(size_t nLen) {
+		const int nStep = 1024 * 10;
+		nLen += nStep - (nLen % nStep);
+		return nLen;
+	}
+
+	void Resize(size_t nLen) {
+		if (m_nMaxLen < nLen) {
+			char * ptr_ =(char *)realloc(pBuff, nLen);
+			assert(ptr_ && "realloc size");
+			memset(ptr_ + m_nMaxLen, 0, nLen - m_nMaxLen);
+			//
+			pBuff = ptr_;
+			m_nMaxLen = nLen;
+		}
+	}
+
+	~StringAppendExt() {
+		if (pBuff ) {
+			free(pBuff); pBuff = NULL;
+		}
+	}
+
+private:
+	char * pBuff;
+	size_t m_nMaxLen;
+	size_t m_nPos;
+};
 
