@@ -83,7 +83,7 @@ namespace log2file {
 #if defined(WIN32) || defined(WIN64)
 #else
 
-char * L_ltoa(int value, char * pStr, int radix) {
+static char * _ltoa(int value, char * pStr, int radix) {
 	char tmp[32 + 1];
 	char *tp = tmp;
 	char i;
@@ -122,7 +122,7 @@ char * L_ltoa(int value, char * pStr, int radix) {
 	return pStr;
 }
 
-char * L_i64toa(long long value, char *pStr, int radix) {
+static char * _i64toa(long long value, char *pStr, int radix) {
 	char tmp[64 + 1];
 	char *tp = tmp;
 	char i;
@@ -160,7 +160,7 @@ char * L_i64toa(long long value, char *pStr, int radix) {
 	return pStr;
 }
 
-char * L_ultoa(unsigned int value, char *pStr, int radix) {
+static char * _ultoa(unsigned int value, char *pStr, int radix) {
 	char tmp[32 + 1];
 	char *tp = tmp;
 	char i;
@@ -189,7 +189,7 @@ char * L_ultoa(unsigned int value, char *pStr, int radix) {
 	return pStr;
 }
 
-char * L_ui64toa(unsigned long long value, char *pStr, int radix) {
+static char * _ui64toa(unsigned long long value, char *pStr, int radix) {
 	char tmp[64 + 1];
 	char *tp = tmp;
 	char i;
@@ -226,11 +226,11 @@ char * L_ui64toa(unsigned long long value, char *pStr, int radix) {
 #define Code_StringAppend() \
 void Append(const double v_) {								\
 	const int nRatio = 1000;	/*精度*/					\
-	long long n1 = llabs(long long(v_ * nRatio));			\
+	long long n1 = llabs( (long long)(v_ * nRatio));		\
 	long long  nInteger = n1 / nRatio;	/*整数部分*/		\
-	int nDecimal = long long(n1) % nRatio;	/*小数部分*/	\
+	int nDecimal = (long long)(n1) % nRatio; /*小数部分*/	\
 	char buff[56] = { 0 };									\
-	int nIndex = 0;										\
+	int nIndex = 0;											\
 	memset(buff, 0, sizeof(buff));							\
 	if (v_ < 0) {											\
 		buff[nIndex++] = '-';								\
