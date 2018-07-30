@@ -80,6 +80,148 @@ namespace log2file {
 	//__FUNCTION__
 #define _Add2file(x) Add2file(__FUNCTION__ , (x) )
 
+#if defined(WIN32) || defined(WIN64)
+#else
+
+char * L_ltoa(int value, char * pStr, int radix) {
+	char tmp[32 + 1];
+	char *tp = tmp;
+	char i;
+	unsigned int v;
+	int sign;
+	char *sp;
+
+	if (radix > 36 || radix <= 1) {
+		return NULL;
+	}
+
+	sign = (radix == 10 && value < 0);
+	if (sign)
+		v = -value;
+	else
+		v = (unsigned int)value;
+
+	while (v || tp == tmp) {
+		i = char(v % radix);
+		v = v / radix;
+		if (i < 10)
+			*tp++ = i + '0';
+		else
+			*tp++ = i + 'a' - 10;
+	}
+
+	if (pStr == NULL)
+		pStr = (char *)malloc((tp - tmp) + sign + 1);
+	sp = pStr;
+
+	if (sign)
+		*sp++ = '-';
+	while (tp > tmp)
+		*sp++ = *--tp;
+	*sp = '\0';
+	return pStr;
+}
+
+char * L_i64toa(long long value, char *pStr, int radix) {
+	char tmp[64 + 1];
+	char *tp = tmp;
+	char i;
+	unsigned long long v;
+	int sign;
+	char *sp;
+
+	if (radix > 36 || radix <= 1) {
+		return NULL;
+	}
+
+	sign = (radix == 10 && value < 0);
+	if (sign)
+		v = -value;
+	else
+		v = (unsigned long long)value;
+	while (v || tp == tmp) {
+		i = char(v % radix);
+		v = v / radix;
+		if (i < 10)
+			*tp++ = i + '0';
+		else
+			*tp++ = i + 'a' - 10;
+	}
+
+	if (pStr == NULL)
+		pStr = (char *)malloc((tp - tmp) + sign + 1);
+	sp = pStr;
+
+	if (sign)
+		*sp++ = '-';
+	while (tp > tmp)
+		*sp++ = *--tp;
+	*sp = '\0';
+	return pStr;
+}
+
+char * L_ultoa(unsigned int value, char *pStr, int radix) {
+	char tmp[32 + 1];
+	char *tp = tmp;
+	char i;
+	unsigned int v = value;
+	char *sp;
+
+	if (radix > 36 || radix <= 1) {
+		return NULL;
+	}
+
+	while (v || tp == tmp) {
+		i = char(v % radix);
+		v = v / radix;
+		if (i < 10)
+			*tp++ = i + '0';
+		else
+			*tp++ = i + 'a' - 10;
+	}
+	if (pStr == NULL)
+		pStr = (char *)malloc((tp - tmp) + 1);
+	sp = pStr;
+
+	while (tp > tmp)
+		*sp++ = *--tp;
+	*sp = '\0';
+	return pStr;
+}
+
+char * L_ui64toa(unsigned long long value, char *pStr, int radix) {
+	char tmp[64 + 1];
+	char *tp = tmp;
+	char i;
+	unsigned long long v = value;
+	char *sp;
+
+	if (radix > 36 || radix <= 1) {
+		return NULL;
+	}
+
+	while (v || tp == tmp) {
+		i = char(v % radix);
+		v = v / radix;
+		if (i < 10)
+			*tp++ = i + '0';
+		else
+			*tp++ = i + 'a' - 10;
+	}
+	if (pStr == NULL)
+		pStr = (char *)malloc((tp - tmp) + 1);
+	sp = pStr;
+
+	while (tp > tmp)
+		*sp++ = *--tp;
+	*sp = '\0';
+	return pStr;
+}
+
+#endif
+
+
+
 
 #define Code_StringAppend() \
 void Append(const double v_) {								\
@@ -154,9 +296,9 @@ public:
 	StringAppendExt(size_t nLen = 128)
 	:pBuff(	NULL),m_nMaxLen(nLen),m_nPos(0){
 		//
-		pBuff = (char *)malloc(nLen);
+		pBuff = (char *)malloc(m_nMaxLen);
 		assert(pBuff && "malloc error");
-		memset(pBuff, 0, sizeof(m_nMaxLen));
+		memset(pBuff, 0, m_nMaxLen );
 		//
 	}
 
