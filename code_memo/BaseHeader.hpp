@@ -223,8 +223,8 @@ static char * _ui64toa(unsigned long long value, char *pStr, int radix) {
 
 
 
-#define Code_StringAppend() \
-void Append(const double v_) {								\
+#define Code_StringAppend(T) \
+T &operator << (const double v_) {							\
 	const int nRatio = 1000;	/*精度*/					\
 	long long n1 = llabs( (long long)(v_ * nRatio));		\
 	long long  nInteger = n1 / nRatio;	/*整数部分*/		\
@@ -238,51 +238,71 @@ void Append(const double v_) {								\
 	_i64toa(nInteger, buff + nIndex, 10);					\
 	strcat(buff, ".");										\
 	_ltoa(nDecimal, buff + strlen(buff), 10);				\
-	Append(buff);											\
+	Append(buff,strlen(buff));								\
+	return *this;											\
 }															\
-void Append(const int v) {									\
+T &operator << (const int v) {								\
 	char buff[32];											\
 	_ltoa(v, buff, 10);										\
-	Append(buff);											\
+	Append(buff,strlen(buff));								\
+	return *this;											\
 }															\
-void Append(const unsigned int v) {							\
+T &operator << (const unsigned int v) {						\
 	char buff[32];											\
 	_ultoa(v, buff, 10);									\
-	Append(buff);											\
+	Append(buff,strlen(buff));								\
+	return *this;											\
 }															\
-void Append(const long long v) {							\
+T &operator << (const long long v) {						\
 	char buff[32];											\
 	_i64toa(v, buff, 10);									\
-	Append(buff);											\
+	Append(buff,strlen(buff));								\
+	return *this;											\
 }															\
-void Append(const unsigned long long v) {					\
+T &operator << (const unsigned long long v) {				\
 	char buff[32];											\
 	_ui64toa(v, buff, 10);									\
-	Append(buff);											\
+	Append(buff,strlen(buff));								\
+	return *this;											\
+}															\
+T &operator << (const std::string & str_) {					\
+	Append(str_.c_str() , str_.size() );					\
+	return *this;											\
+}															\
+T &operator << (const long unsigned int v) {				\
+	char buff[32];											\
+	_ui64toa(v, buff, 10);									\
+	Append(buff,strlen(buff));								\
+	return *this;											\
+}															\
+T &operator << (const char * pStr) {						\
+	Append(pStr,strlen(pStr));								\
+	return *this;											\
 }
+
 
 template<int SIZE>
 class StringAppend
 {
 public:
 	StringAppend() {
-		memset(m_szBuf, 0,sizeof(m_szBuf));
+		m_szBuf[0] = '\0';
 		m_nPos = 0;
 	}
 	//
-	Code_StringAppend()
+	Code_StringAppend(StringAppend)
 	//
 	const char * Get() const {
 		return m_szBuf;
 	}
 
-	void Append(const char * pStr) {
-		const size_t nLen = strlen(pStr);
+	void Append(const char * pStr , size_t nLen) {
 		if (m_nPos + nLen >= SIZE) {
 			assert(false && "out size");
 		}
 		memcpy(m_szBuf + m_nPos, pStr, nLen);
 		m_nPos += nLen;
+		m_szBuf[m_nPos] = '\0';
 	}
 
 private:
@@ -294,41 +314,41 @@ class StringAppendExt
 {
 public:
 	StringAppendExt(size_t nLen = 128)
-	:pBuff(	NULL),m_nMaxLen(nLen),m_nPos(0){
+		:pBuff(NULL), m_nMaxLen(nLen), m_nPos(0) {
 		//
 		pBuff = (char *)malloc(m_nMaxLen);
 		assert(pBuff && "malloc error");
-		memset(pBuff, 0, m_nMaxLen );
+		pBuff[0] = '\0';
 		//
 	}
 
 	//
-	Code_StringAppend()
-	//
+	Code_StringAppend(StringAppendExt)
+		//
 	const char * Get() const {
 		return pBuff;
 	}
 
-	void Append(const char * pStr) {
-		const size_t nLen = strlen(pStr);
+	void Append(const char * pStr, size_t nLen) {
 		if (m_nPos + nLen >= m_nMaxLen) {
-			Resize( CalSize(m_nPos + nLen) );
+			Resize(CalSize(m_nPos + nLen));
 		}
 		memcpy(pBuff + m_nPos, pStr, nLen);
 		m_nPos += nLen;
+		pBuff[m_nPos] = '\0';
 	}
 
 	size_t CalSize(size_t nLen) {
 		const int nStep = 1024 * 10;
 		nLen += nStep - (nLen % nStep);
+		nLen *= 2;
 		return nLen;
 	}
 
 	void Resize(size_t nLen) {
 		if (m_nMaxLen < nLen) {
-			char * ptr_ =(char *)realloc(pBuff, nLen);
+			char * ptr_ = (char *)realloc(pBuff, nLen);
 			assert(ptr_ && "realloc size");
-			memset(ptr_ + m_nMaxLen, 0, nLen - m_nMaxLen);
 			//
 			pBuff = ptr_;
 			m_nMaxLen = nLen;
@@ -336,7 +356,7 @@ public:
 	}
 
 	~StringAppendExt() {
-		if (pBuff ) {
+		if (pBuff) {
 			free(pBuff); pBuff = NULL;
 		}
 	}
