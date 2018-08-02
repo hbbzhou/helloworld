@@ -10,6 +10,8 @@ https://www.autohotkey.com/
 cpu排行榜
 https://www.cpubenchmark.net/high_end_cpus.html
 
+C++的常用库
+https://www.cnblogs.com/skyus/articles/8524408.html
 
 #endif
 

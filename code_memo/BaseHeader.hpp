@@ -275,11 +275,27 @@ T &operator << (const long unsigned int v) {				\
 	Append(buff,strlen(buff));								\
 	return *this;											\
 }															\
+T &operator << (const long int v) {							\
+	char buff[32];											\
+	_i64toa(v, buff, 10);									\
+	Append(buff,strlen(buff));								\
+	return *this;											\
+}															\
 T &operator << (const char * pStr) {						\
 	Append(pStr,strlen(pStr));								\
 	return *this;											\
 }
 
+/*
+//执行10kb数据拼接xx次cpu耗时///////////release///////debug//
+///////////stringstream					1017(ms)	2877(ms)
+不可扩容//StreamString					171(ms)		297(ms)
+不可扩容//StringAppend					94(ms)		124(ms)
+//可扩容//StringAppendExt<char*>		156(ms)		423(ms)
+//可扩容//StringAppendExt<std::string>	140(ms)		626(ms)
+///////////sprintf_s					203(ms)		967(ms)
+///////////////////////////////////////////////////
+*/
 
 template<int SIZE>
 class StringAppend
@@ -310,7 +326,13 @@ private:
 	int  m_nPos;
 };
 //
+template <typename T>
 class StringAppendExt
+{
+};
+//
+template <>
+class StringAppendExt <char *>
 {
 public:
 	StringAppendExt(size_t nLen = 128)
@@ -324,7 +346,7 @@ public:
 
 	//
 	Code_StringAppend(StringAppendExt)
-		//
+	//
 	const char * Get() const {
 		return pBuff;
 	}
@@ -366,4 +388,52 @@ private:
 	size_t m_nMaxLen;
 	size_t m_nPos;
 };
+//
+template <>
+class StringAppendExt <std::string>
+{
+public:
+	StringAppendExt(size_t nLen = 128)
+		: m_nMaxLen(nLen), m_nPos(0) {
+		//
+		m_strBuff.reserve(nLen);
+		//
+	}
+	//
+	Code_StringAppend(StringAppendExt)
+	//
+	const std::string & str() const {
+		return m_strBuff;
+	}
+
+	void Append(const char * pStr, size_t nLen) {
+		if (m_nPos + nLen >= m_nMaxLen) {
+			Resize(CalSize(m_nPos + nLen));
+		}
+
+		m_strBuff.append(pStr, nLen);
+		m_nPos += nLen;
+	}
+
+	size_t CalSize(size_t nLen) {
+		const int nStep = 1024 * 10;
+		nLen += nStep - (nLen % nStep);
+		nLen *= 2;
+		return nLen;
+	}
+
+	void Resize(size_t nLen) {
+		if (m_nMaxLen < nLen) {
+			m_strBuff.reserve(nLen);
+			m_nMaxLen = nLen;
+		}
+	}
+
+
+private:
+	std::string m_strBuff;
+	size_t m_nMaxLen;
+	size_t m_nPos;
+};
+
 
