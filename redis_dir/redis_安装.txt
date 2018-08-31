@@ -1,0 +1,57 @@
+﻿
+
+:linux版本安装
+wget http://download.redis.io/releases/redis-3.2.4.tar.gz
+tar -xzvf redis-3.2.4.tar.gz
+cd redis-3.2.4
+make
+src/redis-server
+
+
+备注:
+看到 Hint: It's a good idea to run 'make test' ;) .就算编译通过了
+
+
+
+
+
+:window版本安装
+解压 redis-win-3.2.100.zip
+用vs 编译 即可
+
+启动
+start redis-server.exe redis.windows.conf
+
+##在main 之前 加入
+#pragma comment(linker, "/subsystem:\"windows\"   /entry:\"mainCRTStartup\"")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
