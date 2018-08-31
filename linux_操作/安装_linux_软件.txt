@@ -53,6 +53,18 @@ svn co svn://ip/hbb_python
 
 #endif
 
+//安装python redis
+#if
+yum install python-redis
+
+#endif
+
+//安装 python mysql
+#if 
+yum install MySQL-python
+#endif
+
+
 //安装 go
 #if
 
