@@ -1,0 +1,6 @@
+气泡id,价格,是否能购买(0-不能，1-可以）,关联英雄表
+ID,Price,IsBuy,HeroID
+range(0:n),select(1:2:3:4:5)|range(0:n)|range(1:10000),select(0:1),cfg(Hero.csv:ID)
+int,class:SItem[int:type;int:id;int:count],int,int
+1,1:10003:104;,1,1002
+2,1:10003:104;,1,1002

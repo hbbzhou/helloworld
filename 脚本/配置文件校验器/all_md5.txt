@@ -1,0 +1,8 @@
+config/Hero.csv
+668003a6b1a659b9f25678160e14877b
+C:/Users/binbin.huang/Desktop/config_test_dir/ConfigXlsx/Hero.xlsx
+ee610f5c5a3e2ab3b5338bccb1e86ca2
+C:/Users/binbin.huang/Desktop/config_test_dir/ConfigXlsx/ChatShop.xlsx
+1245f45e8defa1a5131cfedf400c4c20
+config/ChatShop.csv
+548c4d94195693970b13bfccdd96368b
