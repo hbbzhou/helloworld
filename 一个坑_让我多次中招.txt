@@ -90,10 +90,38 @@ int32 m_nDrugPrice2;
 总结:还是构造的时候初始化了_安全
 [2018/6/8]入坑
 
+:bug0001
+指针没有判空
+[2018/9/21]入坑
+
+:bug0002
+协议中,清空了数据,接着发消息给前端.
+应该,先发消息,在清空数据
+总结:数据处理流程混乱,或者说发消息总是多样化的
+[2018/9/21]入坑
+
+:bug0003
+if (m_oSkillPoint.m_nCurPoint >= nMaxPoint)  
+结果 m_oSkillPoint.m_nCurPoint 是负数的
+[2018/9/21]入坑
+
+:bug0004
+if (pCfgSkill->m_nDisplay == 1)
+其实我想要做的是if (pCfgSkill->m_nDisplay == 0)
+[2018/9/21]入坑
 
 
+:bug0005
+		for (int i = 0; i < pProto->base_attr_size(); ++i) {
+			[省略]
 
+			pValue->set_val(m_oSurvival.m_vecAttr[i] + pValue->val());
+		}
+=====================
+		for (int i = 0; i < pProto->base_attr_size(); ++i) {
+			[省略]
+			int v_ = m_oSurvival.GetOneAttr(pValue->type());
+			pValue->set_val(v_ + pValue->val());
+		}
 
-
-
-
+[2018/9/26]入坑
