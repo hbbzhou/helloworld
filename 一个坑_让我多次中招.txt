@@ -123,5 +123,17 @@ if (pCfgSkill->m_nDisplay == 1)
 			int v_ = m_oSurvival.GetOneAttr(pValue->type());
 			pValue->set_val(v_ + pValue->val());
 		}
-
 [2018/9/26]入坑
+
+
+:bug0006
+保存某场战斗的血量,用千分比. (1/2000 的血量, 保存后 就成 0/2000)
+[2018/9/27]入坑
+
+:bug0007
+我遗留了地下生存赛中的某个需求
+看文档的时候 遗留了.
+[2018/9/28]入坑
+
+
+
