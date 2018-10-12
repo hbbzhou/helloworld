@@ -136,4 +136,21 @@ if (pCfgSkill->m_nDisplay == 1)
 [2018/9/28]入坑
 
 
+:bug0008
+int32 nCanAddNum = nCurT - m_oSkillPoint.m_nRecoveryTimeOfPonit / nStep;
+int32 nCanAddNum = (nCurT - m_oSkillPoint.m_nRecoveryTimeOfPonit) / nStep;
+真怀疑写代码时候是不是 傻了
+[2018/9/29]入坑
+
+
+
+
+:bug0009
+修改技能解锁的功能, 结果技能解锁了没有通知前端
+总结:后端逻辑ok,同时还要告知前端
+[2018/10/12]入坑
+
+
+
+
 
