@@ -1,46 +1,64 @@
+ï»¿
 
+:å®‰è£…winç¯å¢ƒçš„AES
 
-:°²×°win»·¾³µÄAES
-
-°²×°perl
-¹ÙÍø
+å®‰è£…perl
+å®˜ç½‘
 https://www.activestate.com/ActivePerl
 
 
-°²×°NASM
-¹ÙÍø
+å®‰è£…NASM
+å®˜ç½‘
 http://www.nasm.us
 
-Éæ¼°µ½µÄÃüÁî
+æ¶‰åŠåˆ°çš„å‘½ä»¤
 set path=%PATH%;C:\"Programes (x86)"\NASM
 
 
-°²×°openssl
-¹ÙÍø
+å®‰è£…openssl
+å®˜ç½‘
 http://www.openssl.org/source/ 
 
-²Î¿¼ INSTALLÎÄ¼ş
+å‚è€ƒ INSTALLæ–‡ä»¶
 
 
 
 
 
 
-:°²×°python»·¾³µÄAES
+:å®‰è£…pythonç¯å¢ƒçš„AES
 
-ÏÂÔØÁ¬½Ó
+å¦‚æœæ²¡æœ‰æŒ‰ç…§vs2008
+é‚£ä¹ˆå…ˆå®‰è£…
+..\vc_redist.x64.exe
+..\vc_redist.x86.exe
+..\..\intermediate\tools\pycrypto-2.6.1.tar.gz
+..\..\tools\VCForPython27.msi
+############
+
+æ¥ç€ä¿®æ”¹pythonè„šæœ¬
+msvc9compiler.py
+ä¸­çš„ find_vcvarsall å‡½æ•°
+def find_vcvarsall(version):
+	productdir='C:\\Users\\xxx\\AppData\\Local\\Programs\\Common\\Microsoft\\Visual C++ for Python\\9.0\\vcvarsall.bat'
+	vcvarsall = os.path.join(productdir)
+	if os.path.isfile(vcvarsall):
+		return vcvarsall
+	else:
+		return None
+#################
+
+ä¸‹è½½è¿æ¥
 https://www.dlitz.net/software/pycrypto/
+æˆ–è€…
+..\..\tools\pycrypto-2.6.1.tar.gz
 
-Ö´ĞĞ²Ù×÷
+æ‰§è¡Œæ“ä½œ
+è§£å‹pycrypto-2.6.1.tar.gz,å¹¶è¿›å…¥æŒ‡å®šç›®å½• æ‰§è¡Œä»¥ä¸‹å‘½ä»¤
 
-(¿ÉÑ¡)
 SET VS90COMNTOOLS=%VS100COMNTOOLS%
-
 python setup.py build
-
 python setup.py install
-
-===========
 ===========
 
 
