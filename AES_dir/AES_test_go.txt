@@ -1,0 +1,70 @@
+﻿
+//AES ECB模式的加密解密
+type AesTool struct {
+	//128 192  256位的其中一个 长度 对应分别是 16 24  32字节长度
+	Key       []byte
+	BlockSize int
+}
+
+func NewAesTool(key []byte, blockSize int) *AesTool {
+	return &AesTool{Key: key, BlockSize: blockSize}
+}
+
+//zan wu
+func (this *AesTool) Encrypt(src []byte) ([]byte, error) {
+	//key只能是 16 24 32长度
+	block, err := aes.NewCipher([]byte(this.Key))
+	if err != nil {
+		return nil, err
+	}
+	nLen := 16
+
+	//仅加密前16个字节
+	if len(src) < nLen {
+		return nil, nil
+	}
+
+	//返回加密结果
+	encryptData := make([]byte, nLen)
+	block.Encrypt(encryptData, src[0:nLen])
+
+	return encryptData, nil
+}
+
+//zan wu
+func (pObj *AesTool) Decrypt(src []byte) ([]byte, error) {
+	//key只能是 16 24 32长度
+	block, err := aes.NewCipher([]byte(pObj.Key))
+	if err != nil {
+		return nil, err
+	}
+
+	nLen := 16
+
+	//仅解密前16个字节
+	if len(src) < nLen {
+		return nil, nil
+	}
+
+	//返回解密结果
+	decryptData := make([]byte, nLen)
+	//存储解密的数据
+	block.Decrypt(decryptData, src[0:nLen])
+	return decryptData, nil
+}
+
+//测试AES ECB 加密解密
+func TestEncryptDecrypt() {
+	key := []byte("hbbhehedadatttts")
+	blickSize := 16
+	tool := NewAesTool(key, blickSize)
+	encryptData, _ := tool.Encrypt([]byte("1234567890123456"))
+	fmt.Println(encryptData)
+	decryptData, _ := tool.Decrypt(encryptData)
+	fmt.Println(string(decryptData))
+}
+
+func main_test() {
+	fmt.Println("AES ECB加密解密测试........")
+	TestEncryptDecrypt()
+}
