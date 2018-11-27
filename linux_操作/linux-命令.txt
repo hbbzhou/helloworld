@@ -38,6 +38,11 @@ rm -rf ~/.subversion/auth
 /usr/local/apache2/bin/apachectl stop
 ------------------------------------ 
 
+####查看php等页面 访问记录--
+tail -f /var/log/httpd/access_log
+------------------------------------ 
+
+
 ####linux 列出所有服务----
 chkconfig
 --------------------------- 

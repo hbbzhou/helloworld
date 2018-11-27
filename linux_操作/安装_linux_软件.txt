@@ -96,8 +96,39 @@ chkconfig httpd on
 
 #endif
 
+//安装protobuff
+#if 
+1.下载安装包
+https://github.com/google/protobuf/releases?after=v3.0.0-alpha-4.1 找到相应的版本下载
 
+2.解压安装包
+#tar -zxf protobuf-2.5.0.tar.gz
 
+3.创建安装路径
+#mkdir /usr/local/protobuf-2.5.0
+#cd /usr/local/protobuf-2.5.0
+
+4.配置安装
+
+#/opt/protobuf-2.5.0/configure -prefix=/usr/local/protobuf-2.5.0
+
+5.编译
+#make -j8
+
+如出现错误，缺少GLIBCXX_3.4.21，或更高版本；说明装了新版本gcc（gcc5.3.0）。
+找到安装路径，执行下面语句，再次编译
+#ln -s /usr/local/gcc-5.3.0/lib64/libstdc++.so.6.0.21 /usr/lib64/libstdc++.so.6
+
+6.安装检查
+#make check
+
+7.安装
+#make install
+
+8、链接库
+如需要链接库/usr/local/protobuf-2.5.0/lib/libprotobuf.a
+
+#endif 
 
 
 
