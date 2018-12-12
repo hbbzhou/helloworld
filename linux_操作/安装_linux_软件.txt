@@ -131,6 +131,70 @@ https://github.com/google/protobuf/releases?after=v3.0.0-alpha-4.1 找到相应�
 #endif 
 
 
+//编译升级gcc
+#if
+endif
+
+百度 [编译安装 gcc8.1]
+
+//拷贝gcc升级
+#if
+
+:gcc安装
+将 gcc-8.1.zip 拷贝到 /usr/local/
+unzip gcc-8.1.zip
+--
+sudo vim /etc/profile
+export PATH="/usr/local/gcc-8.1/bin:$PATH"
+export LD_LIBRARY_PATH="/usr/local/gcc-8.1/lib:/usr/local/gcc-8.1/lib64:$LD_LIBRARY_PATH:"
+--
+@--测试
+gcc -v
+g++ -v
+@---结果///////////////////////
+Using built-in specs.
+COLLECT_GCC=gcc
+Target: x86_64-pc-linux-gnu
+Configured with: ../gcc-8.1.0/configure --prefix=/usr/local/gcc-8.1 --enable-threads=posix --disable-checking --disable-multilib
+Thread model: posix
+gcc version 8.1.0 (GCC) 
+////////////////////////
+
+
+
+:gdb安装
+将 gdb-8.1.zip 拷贝到 /usr/local/
+unzip gdb-8.1.zip
+--
+sudo vim /etc/profile
+export PATH="/usr/local/gdb-8.1/bin:$PATH"
+export LD_LIBRARY_PATH="/usr/local/gdb-8.1/lib:$LD_LIBRARY_PATH:"
+
+@--测试
+gdb -v
+@---结果///////////////////////
+GNU gdb (GDB) 8.1
+Copyright (C) 2018 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "x86_64-pc-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+<http://www.gnu.org/software/gdb/documentation/>.
+For help, type "help".
+Type "apropos word" to search for commands related to "word".
+///////////////////////////////////////////////
+
+
+#endif
+
+
+
+
 
 
 
