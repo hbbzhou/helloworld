@@ -1,8 +1,12 @@
-﻿:不能反查浏览器的参数
+﻿
+:不能反查浏览器的参数
 [2017/11/3]我设置了新参数_无效_卡住进度2天
 
 
 :没有死机堆栈
+有人在做control-c信号,结果弄错了,将死机信号给捕获了
+signal(SIGSEGV, OnCrashHandler);
+[2017/11/3]入坑
 
 
 :数值1和小写的L 傻傻分不清楚
@@ -154,6 +158,39 @@ int32 nCanAddNum = (nCurT - m_oSkillPoint.m_nRecoveryTimeOfPonit) / nStep;
 后来有人百度了,它是可以实现的.
 总结:以后只说_百度不到解决方案
 [2018/11/27]发现
+
+:bug0011
+写出了,很傻的代码. 怎么回事
+SPlotPeripheral & refData = pRole->FixPlotPeripheral();
+for (int32 i = 0; i < oReq.badge_id_size(); ++i) {
+	if ((size_t)i >= refData.m_aBadgeID.size()) {
+		refData.m_aBadgeID[i] = oReq.badge_id(i);
+	}
+}
+总结:没救了
+[2019/1/9]发现
+
+
+:bug0012
+移动多行代码,将它放到前面几行.结果其中有1行代码不能放前面的.
+解决方案:代码不能一把抓,要一行一行操作,左值右值看清楚
+总结:没救了
+[2019/1/14]发现
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
