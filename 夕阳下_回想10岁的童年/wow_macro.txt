@@ -1,0 +1,8 @@
+﻿/script C,m=CastSpellByName,UnitMana("Player");
+/script if UnitHealth("target")<3 then if m<60 then C("影袭") elseif m<40 then C("剔骨") end end
+/cast 背刺
+
+
+/script C,m=CastSpellByName,UnitMana("Player");
+/script if m>59 then C("背刺") elseif m>39 then C("影袭") elseif m>34 then C("剔骨") end
+/cast 背刺
