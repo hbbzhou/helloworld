@@ -1,8 +1,26 @@
 ﻿/script C,m=CastSpellByName,UnitMana("Player");
-/script if UnitHealth("target")<3 then if m<60 then C("影袭") elseif m<40 then C("剔骨") end end
+/script if UnitHealth("target")<3 then if m<60 then C("邪恶攻击") elseif m<40 then C("剔骨") end end
 /cast 背刺
 
 
-/script C,m=CastSpellByName,UnitMana("Player");
-/script if m>59 then C("背刺") elseif m>39 then C("影袭") elseif m>34 then C("剔骨") end
+/script C,m,p=CastSpellByName,UnitMana("Player"),GetComboPoints();
+/script if m>59 then C("背刺") elseif m>39 then if p>2 then C("剔骨") else C("邪恶攻击") end elseif m>34 then C("剔骨") end
 /cast 背刺
+
+
+/4 爱与家庭 后续 在梦中 我花了2天 总11个小时. 其中被部落杀n次. 被LM插队n次. 佛丁被 LM猎人bug一次. (在10月2号,22点我完成了)
+
+
+
+
+
+yy  36196400
+cn.60wdb.com
+
+
+Nuxli------腾龙的战士号
+Whgang---一起打过神庙的牧师
+Baiseove---一起刷正义的战士
+Letterlate---带他去过一次监狱
+Seakiller----组了他,又没有带他去死矿
+
