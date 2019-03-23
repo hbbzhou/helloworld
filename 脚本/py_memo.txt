@@ -113,7 +113,7 @@ def ExistBOM(file_name):
 def ShowTime():
 	import datetime
 	now = datetime.datetime.now()
-	print now.strftime('%y/%m/%d--[%H:%M]')
+	print now.strftime('%y-%m-%d %H:%M')
 	
 #获取文件_修改时间
 def get_FileModifyTime(filePath):

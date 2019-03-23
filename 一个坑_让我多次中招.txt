@@ -1,20 +1,131 @@
 ﻿
-:不能反查浏览器的参数
-[2017/11/3]我设置了新参数_无效_卡住进度2天
+
+:忘记如何制作excel图表
+花1个小时才,回忆起来.(X,Y 散列点+折线)
+备注:忘记了
+[15:02 2019/3/23]
 
 
-:没有死机堆栈
-有人在做control-c信号,结果弄错了,将死机信号给捕获了
-signal(SIGSEGV, OnCrashHandler);
-[2017/11/3]入坑
+
+:bug0013
+又写出死机bug.指针判空了,居然没有return; 
+//==
+CHero* pHero = pFindRole->GetHeroMgr().FindHero( atoi(strArvg1.c_str()) );
+if (pHero == NULL) {
+	o_ack.set_ret(1);
+	pRole->Send(nSendID, o_ack);
+}
+uint32 n1 = pHero->GetCombatValue();
+o_ack.set_ret(0);
+//==
+[17:43 2019/3/22] 入坑
 
 
-:数值1和小写的L 傻傻分不清楚
-[2017/11/3]入坑
+:bug0012
+移动多行代码,将它放到前面几行.结果其中有1行代码不能放前面的.
+解决方案:代码不能一把抓,要一行一行操作,左值右值看清楚
+总结:没救了
+[2019/1/14]发现
 
-:lua中一个参数永远为nill
-因为,写错变量名字了
-[2017/12/20]入坑
+:bug0011
+写出了,很傻的代码. 怎么回事
+SPlotPeripheral & refData = pRole->FixPlotPeripheral();
+for (int32 i = 0; i < oReq.badge_id_size(); ++i) {
+	if ((size_t)i >= refData.m_aBadgeID.size()) {
+		refData.m_aBadgeID[i] = oReq.badge_id(i);
+	}
+}
+总结:没救了
+[2019/1/9]发现
+
+:bug0010
+说xx事情是无法实现的.
+后来有人百度了,它是可以实现的.
+总结:以后只说_百度不到解决方案
+[2018/11/27]发现
+
+:bug0009
+修改技能解锁的功能, 结果技能解锁了没有通知前端
+总结:后端逻辑ok,同时还要告知前端
+[2018/10/12]入坑
+
+:bug0008
+int32 nCanAddNum = nCurT - m_oSkillPoint.m_nRecoveryTimeOfPonit / nStep;
+int32 nCanAddNum = (nCurT - m_oSkillPoint.m_nRecoveryTimeOfPonit) / nStep;
+真怀疑写代码时候是不是 傻了
+[2018/9/29]入坑
+
+:bug0007
+我遗留了地下生存赛中的某个需求
+看文档的时候 遗留了.
+[2018/9/28]入坑
+
+:bug0006
+保存某场战斗的血量,用千分比. (1/2000 的血量, 保存后 就成 0/2000)
+[2018/9/27]入坑
+
+:bug0005
+		for (int i = 0; i < pProto->base_attr_size(); ++i) {
+			[省略]
+
+			pValue->set_val(m_oSurvival.m_vecAttr[i] + pValue->val());
+		}
+=====================
+		for (int i = 0; i < pProto->base_attr_size(); ++i) {
+			[省略]
+			int v_ = m_oSurvival.GetOneAttr(pValue->type());
+			pValue->set_val(v_ + pValue->val());
+		}
+[2018/9/26]入坑
+
+:bug0004
+if (pCfgSkill->m_nDisplay == 1)
+其实我想要做的是if (pCfgSkill->m_nDisplay == 0)
+[2018/9/21]入坑
+
+:bug0003
+if (m_oSkillPoint.m_nCurPoint >= nMaxPoint)  
+结果 m_oSkillPoint.m_nCurPoint 是负数的
+[2018/9/21]入坑
+
+:bug0002
+协议中,清空了数据,接着发消息给前端.
+应该,先发消息,在清空数据
+总结:数据处理流程混乱,或者说发消息总是多样化的
+[2018/9/21]入坑
+
+:bug0001
+指针没有判空
+[2018/9/21]入坑
+
+:变量构造_没有_初始化
+本来是计划:进入_功能入口在_初始化的.
+接着代码_改个_几版_就乱了.
+总结:还是构造的时候初始化了_安全
+[2018/6/8]入坑
+
+:代码_少写一个类,导致代码好扩展
+int32 m_nDrugID1;
+int32 m_nDrugID2;
+int32 m_nDrugPrice1;
+int32 m_nDrugPrice2;
+[2018/6/5]入坑
+
+:代码_变量多了,名字就快重复了
+在开发新功能时,在变量定义在xx对象.接着_因为名字太长,而整理到一个 子对象中.
+总结:变量名字很关键
+[2018/6/2]入坑
+
+:做用户调查时,或和陌生人说话时
+最好让答案_变成是或不是.
+否则_对方不是误会了_就是答非所问.
+避免_调查对象是异性_对方很容易误会
+[2018/5/5]入坑
+
+:盲目的自信
+仅仅凭_推理就_相信自己一定是对的.
+结果却不一定.(list 迭代器的 数据模型的理解)
+[2018/5/10]入坑
 
 :lua中一个参数永远为nill
 因为,参数个数不一致
@@ -35,6 +146,39 @@ signal(SIGSEGV, OnCrashHandler);
 [2017/12/29]入坑
 
 
+:lua中一个参数永远为nill
+因为,写错变量名字了
+[2017/12/20]入坑
+
+:不能反查浏览器的参数
+[2017/11/3]我设置了新参数_无效_卡住进度2天
+
+:没有死机堆栈
+有人在做control-c信号,结果弄错了,将死机信号给捕获了
+signal(SIGSEGV, OnCrashHandler);
+[2017/11/3]入坑
+
+
+:数值1和小写的L 傻傻分不清楚
+[2017/11/3]入坑
+
+
+:要有主见_做真正的自己
+唱歌难听_还上台唱(不是重在参与,而是犯傻了)
+如果不能将事情做的完美_就不要上台展示
+[在扬讯时]入坑
+
+
+:宏的使用技巧_经常忘记
+#define Conn(x,y) x##y
+#define ToChar(x) #@x
+#define ToString(x) #x
+
+:外网操作流程
+每次_启动服务后_要确保_监控正常_监控正常_监控正常
+每次_更新配置_一定要知道差异
+每周_人工检测一次_服务和监控
+
 :缓存_优化_思考_浪费时间
 案例:参赛队列_保存id;每次查询是否参赛时_要查找容器.
 方案:暂无
@@ -44,138 +188,10 @@ signal(SIGSEGV, OnCrashHandler);
 2.如果_流程_仅1个;那么缓存就 适合缓存.
 
 
-:外网操作流程
-每次_启动服务后_要确保_监控正常_监控正常_监控正常
-每次_更新配置_一定要知道差异
-每周_人工检测一次_服务和监控
 
 
-:宏的使用技巧_经常忘记
-#define Conn(x,y) x##y
-#define ToChar(x) #@x
-#define ToString(x) #x
 
 
-:盲目的自信
-仅仅凭_推理就_相信自己一定是对的.
-结果却不一定.(list 迭代器的 数据模型的理解)
-[2018/5/10]入坑
-
-
-:要有主见_做真正的自己
-唱歌难听_还上台唱(不是重在参与,而是犯傻了)
-如果不能将事情做的完美_就不要上台展示
-[在扬讯时]入坑
-
-
-:做用户调查时,或和陌生人说话时
-最好让答案_变成是或不是.
-否则_对方不是误会了_就是答非所问.
-避免_调查对象是异性_对方很容易误会
-[2018/5/5]入坑
-
-
-:代码_变量多了,名字就快重复了
-在开发新功能时,在变量定义在xx对象.接着_因为名字太长,而整理到一个 子对象中.
-总结:变量名字很关键
-[2018/6/2]入坑
-
-:代码_少写一个类,导致代码好扩展
-int32 m_nDrugID1;
-int32 m_nDrugID2;
-int32 m_nDrugPrice1;
-int32 m_nDrugPrice2;
-[2018/6/5]入坑
-
-
-:变量构造_没有_初始化
-本来是计划:进入_功能入口在_初始化的.
-接着代码_改个_几版_就乱了.
-总结:还是构造的时候初始化了_安全
-[2018/6/8]入坑
-
-:bug0001
-指针没有判空
-[2018/9/21]入坑
-
-:bug0002
-协议中,清空了数据,接着发消息给前端.
-应该,先发消息,在清空数据
-总结:数据处理流程混乱,或者说发消息总是多样化的
-[2018/9/21]入坑
-
-:bug0003
-if (m_oSkillPoint.m_nCurPoint >= nMaxPoint)  
-结果 m_oSkillPoint.m_nCurPoint 是负数的
-[2018/9/21]入坑
-
-:bug0004
-if (pCfgSkill->m_nDisplay == 1)
-其实我想要做的是if (pCfgSkill->m_nDisplay == 0)
-[2018/9/21]入坑
-
-
-:bug0005
-		for (int i = 0; i < pProto->base_attr_size(); ++i) {
-			[省略]
-
-			pValue->set_val(m_oSurvival.m_vecAttr[i] + pValue->val());
-		}
-=====================
-		for (int i = 0; i < pProto->base_attr_size(); ++i) {
-			[省略]
-			int v_ = m_oSurvival.GetOneAttr(pValue->type());
-			pValue->set_val(v_ + pValue->val());
-		}
-[2018/9/26]入坑
-
-
-:bug0006
-保存某场战斗的血量,用千分比. (1/2000 的血量, 保存后 就成 0/2000)
-[2018/9/27]入坑
-
-:bug0007
-我遗留了地下生存赛中的某个需求
-看文档的时候 遗留了.
-[2018/9/28]入坑
-
-
-:bug0008
-int32 nCanAddNum = nCurT - m_oSkillPoint.m_nRecoveryTimeOfPonit / nStep;
-int32 nCanAddNum = (nCurT - m_oSkillPoint.m_nRecoveryTimeOfPonit) / nStep;
-真怀疑写代码时候是不是 傻了
-[2018/9/29]入坑
-
-
-:bug0009
-修改技能解锁的功能, 结果技能解锁了没有通知前端
-总结:后端逻辑ok,同时还要告知前端
-[2018/10/12]入坑
-
-
-:bug0010
-说xx事情是无法实现的.
-后来有人百度了,它是可以实现的.
-总结:以后只说_百度不到解决方案
-[2018/11/27]发现
-
-:bug0011
-写出了,很傻的代码. 怎么回事
-SPlotPeripheral & refData = pRole->FixPlotPeripheral();
-for (int32 i = 0; i < oReq.badge_id_size(); ++i) {
-	if ((size_t)i >= refData.m_aBadgeID.size()) {
-		refData.m_aBadgeID[i] = oReq.badge_id(i);
-	}
-}
-总结:没救了
-[2019/1/9]发现
-
-
-:bug0012
-移动多行代码,将它放到前面几行.结果其中有1行代码不能放前面的.
-解决方案:代码不能一把抓,要一行一行操作,左值右值看清楚
-总结:没救了
-[2019/1/14]发现
 
 
 
