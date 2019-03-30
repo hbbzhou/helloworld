@@ -1,4 +1,54 @@
 ﻿
+:bug0014
+:逻辑混乱,头脑不清楚
+代码一:
+	//重新计算长度
+	if (nLen == 0 ) {
+		//修改变量//错误枚举
+	}
+	else if ( nLen >= (uint32) _SNK_CAllConfig()->GetSeting().m_nMaxNameLength) {
+		//修改变量//错误枚举
+	}
+
+	if (_SNK_CAllConfig()->FindSensitiveWord(oChangeNameReq.newname()) == false){
+		//正确的情况//返回正确值
+		return;
+	}
+	else {
+		//修改变量//错误枚举
+	}
+
+	//异常的消息处理//返回错误值
+	return;
+
+	
+代码二:
+	//重新计算长度
+	if (nLen == 0 ) {
+		//修改变量//错误枚举
+	}
+	else if ( nLen >= (uint32) _SNK_CAllConfig()->GetSeting().m_nMaxNameLength) {
+		//修改变量//错误枚举
+	}
+	else if (_SNK_CAllConfig()->FindSensitiveWord(oChangeNameReq.newname()) == true){
+		//修改变量//错误枚举
+	}
+	else {
+		//修改变量//错误枚举
+	}
+
+	if(标识判断){
+		//异常的消息处理//返回错误值
+		return;
+	}
+	
+	//正确的情况//返回正确值
+	return;
+	
+总结: 代码一有 逻辑bug:
+解决方案:错误的情况都return了. 正确的情况永远最后处理.
+[16:29 2019/3/30]入坑
+
 
 :忘记如何制作excel图表
 花1个小时才 回忆起来.(X,Y 散列点+折线)
