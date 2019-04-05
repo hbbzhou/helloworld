@@ -113,7 +113,7 @@ def ExistBOM(file_name):
 def ShowTime():
 	import datetime
 	now = datetime.datetime.now()
-	print now.strftime('%y/%m/%d--[%H:%M]')
+	print now.strftime('%y-%m-%d %H:%M')
 	
 #获取文件_修改时间
 def get_FileModifyTime(filePath):
@@ -137,8 +137,24 @@ def ShowStrMd5(str_content):
 	return str_ret
 	
 	
+def SelectFile():
+	strDir = "C://hbb_snk_work//server//bin_new//config"
+	for strParent, listDir, listFile in os.walk(strDir):
+		for oneFile in listFile:
+			if oneFile.find(".zip") < 0:
+				continue
+			print oneFile
+			return oneFile
+		
+		#break #仅仅 遍历 第一层目录
+	#
+	
+	
 if __name__ == "__main__":
 	pass
+	
+	
+	
 	
 #endif
 
@@ -394,7 +410,6 @@ if __name__ == "__main__":
 
 #endif
 
-
 #protobuff_特殊的地方
 #if
 message change_name_req
@@ -407,7 +422,6 @@ message change_name_req
 
 
 #end
-
 
 #if	 //随机密码
 

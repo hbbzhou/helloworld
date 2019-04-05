@@ -156,6 +156,11 @@ chmod 600 authorized_keys
 vi /etc/profile
 ulimit -c unlimited
 /etc/security/limits.conf
+
+* soft nofile 102400
+* hard nofile 104800
+* soft core unlimited
+* hard core unlimited
 --------------------------------- 
 
 
