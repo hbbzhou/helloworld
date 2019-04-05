@@ -13,7 +13,6 @@
 
 
 
-
 yy  36196400
 cn.60wdb.com
 
@@ -23,4 +22,16 @@ Whgang---一起打过神庙的牧师
 Baiseove---一起刷正义的战士
 Letterlate---带他去过一次监狱
 Seakiller----组了他,又没有带他去死矿
+
+
+
+/script C,m,p=CastSpellByName,UnitMana("Player"),GetComboPoints();
+/script 
+if p>4 then C("剔骨") 
+elseif m>59 then C("背刺") 
+elseif m>39 then if p>2 then C("剔骨") else C("邪恶攻击") end 
+elseif m>34 then C("剔骨") end;
+/cast 剔骨
+
+
 
