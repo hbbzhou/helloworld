@@ -155,13 +155,15 @@ type I interface {
 	Set(int)
 }
 
-type R struct{ i int }
+type R struct{
+ exp int 
+}
 
 func (p *R) Get() int {
-	return p.i
+	return p.exp
 }
 func (p *R) Set(v int) {
-	p.i = v
+	p.exp = v
 }
 
 func f(p I) {
