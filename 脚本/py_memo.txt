@@ -1,7 +1,6 @@
 ﻿
 //前言
 #if
-
 :python基础教程
 http://www.runoob.com/python/python-strings.html
 
@@ -21,25 +20,8 @@ http://www.kuqin.com/qtdocument/qtextedit.html#setCursorPosition
 
 #endif
 
-//常用函数
+//基本函数__设置工作目录
 #if
-
-
-import os
-import platform
-import time
-
-
-#获取操作系统类型
-g_is_win_platform =  False
-if platform.uname()[0] == "Windows":
-	g_is_win_platform =  True
-
-#获取_机器名	
-import getpass
-g_str_name = getpass.getuser()
-	
-#设置工作目录
 g_old_path = ""
 def SetPath():
 	global g_old_path
@@ -47,23 +29,25 @@ def SetPath():
 	os.chdir(os.path.split(os.path.realpath(__file__))[0] )
 	
 def ResetPath():
-	os.chdir(g_old_path )	
-	
+	os.chdir(g_old_path )
+#endif
 
-#定时	
-def test2():
-	time.sleep(2)
-	os.system("pause")
-	
+//基本函数__获取系统信息
+#if
+#获取操作系统类型
+g_is_win_platform =  False
+if platform.uname()[0] == "Windows":
+	g_is_win_platform =  True
+
+#获取_机器名
+import getpass
+g_str_name = getpass.getuser()
+#endif
+
+//基本函数__文件操作//加密//解密
+#if
 #判断文件是否存在
 os.path.exists("test_file.txt")
-
-#参数
-def test1():
-	if len(sys.argv) == 1:
-		os.system("pause")
-		return
-	str_argv_1 = sys.argv[1]
 
 #文件加密
 def encode_file(str_name):
@@ -108,19 +92,7 @@ def ExistBOM(file_name):
 	if code == codecs.BOM_UTF8:#判断是否包含EF BB BF
 		return True
 	return False
-	
-#输出年月日
-def ShowTime():
-	import datetime
-	now = datetime.datetime.now()
-	print now.strftime('%y-%m-%d %H:%M')
-	
-#获取文件_修改时间
-def get_FileModifyTime(filePath):
-	filePath = unicode(filePath,'utf8')
-	t = os.path.getmtime(filePath)
-	return t
-	
+
 def ShowFileMd5(str_file):
 	import hashlib
 	
@@ -136,7 +108,7 @@ def ShowStrMd5(str_content):
 	str_ret = hashlib.md5( str_content).hexdigest()
 	return str_ret
 	
-	
+#选择文件
 def SelectFile():
 	strDir = "C://hbb_snk_work//server//bin_new//config"
 	for strParent, listDir, listFile in os.walk(strDir):
@@ -149,23 +121,25 @@ def SelectFile():
 		#break #仅仅 遍历 第一层目录
 	#
 	
-	
-if __name__ == "__main__":
-	pass
-	
-	
-	
-	
 #endif
 
-//下划线 和 驼峰 互转
+//基本函数__时间相关处理函数
 #if
+#输出年月日
+def ShowTime():
+	import datetime
+	now = datetime.datetime.now()
+	print now.strftime('%y-%m-%d %H:%M')
+	
+#获取文件_修改时间
+def get_FileModifyTime(filePath):
+	filePath = unicode(filePath,'utf8')
+	t = os.path.getmtime(filePath)
+	return t
+#endif
 
-import hbb_tool
-
-g_str_ = "huang_binbin"
-
-
+//基本函数__字符串相关
+#if
 #下划线转驼峰
 def Change1():
 	is_find = True
@@ -205,13 +179,19 @@ def AutoChange():
 	else:
 		return Change1()
 		
-g_str_ = hbb_tool.GetText()		
-g_str_ = AutoChange()
-hbb_tool.SetText(g_str_)
-
+#字符串提取
+def SubString(str , strBegin ,strEnd ):
+	nBeginIndex = str.find(strBegin)
+	nBeginIndex += len(strBegin)
+	nEndIndex = str.find(strEnd)
+	if nBeginIndex >= nEndIndex:
+		return ""
+		
+	return str[nBeginIndex : nEndIndex]
+		
 #endif
 
-//反射
+//demo__反射
 #if
 class ManagerServer:
 	#定义基本属性
@@ -249,7 +229,7 @@ if __name__ == "__main__":
 
 #end
 
-//arp相关操作
+//demo__arp相关操作
 #if
 
 import os
@@ -410,20 +390,8 @@ if __name__ == "__main__":
 
 #endif
 
-#protobuff_特殊的地方
+//demo__随机密码
 #if
-message change_name_req
-{
-    required string newname = 1;
-}
-
-在python 中  将 unicode 编码的字符赋值
-但c++ 获取出来的 是 utf
-
-
-#end
-
-#if	 //随机密码
 
 def ReplaceAll(str_  , dict_):
 	for (k , v) in dict_.items():
@@ -463,3 +431,50 @@ def RandPwd():
 		list_pwd.append(str_passwd)
 	
 #endif
+
+//demo__httppost
+#if
+def TestPost():
+	import requests
+	new_url="http://127.0.0.1:8081/v1"
+	params = {"access_token": "807ad226-cbcc-4620-9544-8f53e1d51405"}
+	payload = {
+	"organId":1,
+	"pageNumber":1,
+	"pageSize":10,
+	"sortBy":"lastUpdateTime",
+	"sort":"DESC"
+	}
+	
+	ret = requests.post(new_url, params=params, json=payload)
+	print dir(ret)
+	print ret.status_code
+	print ret.text
+	#
+	
+#endif
+
+//学习心得__protobuff_特殊的地方
+#if
+message change_name_req
+{
+    required string newname = 1;
+}
+
+在python 中  将 unicode 编码的字符赋值
+但c++ 获取出来的 是 utf
+
+
+#end
+
+
+
+
+
+
+
+
+
+
+
+

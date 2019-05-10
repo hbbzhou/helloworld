@@ -129,8 +129,8 @@ ssh-keygen -t rsa
 scp ~/.ssh/id_rsa.pub root@121.40.138.192:/root/.ssh/id_rsa_temp.pub
 
 进入121.40.138.192 下的/root/.ssh 目录
-cat id_rsa_temp.pub >> authorized_keys
-chmod 600 authorized_keys
+cat /root/.ssh/id_rsa_temp.pub >> /root/.ssh/authorized_keys
+chmod 600 /root/.ssh/authorized_keys
 
 --------------------------------- 
 
@@ -158,7 +158,7 @@ ulimit -c unlimited
 /etc/security/limits.conf
 
 * soft nofile 102400
-* hard nofile 104800
+* hard nofile 204800
 * soft core unlimited
 * hard core unlimited
 --------------------------------- 
@@ -167,7 +167,9 @@ ulimit -c unlimited
 ####linux redis 操作
 百度: linux下redis安装、启动与停止，redis做成服务
 
-
+####linux 创建用户
+useradd -m -s /bin/bash tester1
+passwd tester1
 
 --------------------------------- 
 
