@@ -111,6 +111,9 @@ set fileencodings=utf-8
 netstat -tnpl
 --------------------------------- 
 
+####网络流量
+sar -n DEV 1 10
+--------------------------------- 
 
 ####linux 设置库文件的环境变量
 
@@ -131,7 +134,11 @@ scp ~/.ssh/id_rsa.pub root@121.40.138.192:/root/.ssh/id_rsa_temp.pub
 进入121.40.138.192 下的/root/.ssh 目录
 cat /root/.ssh/id_rsa_temp.pub >> /root/.ssh/authorized_keys
 chmod 600 /root/.ssh/authorized_keys
+--------------------------------- 
 
+
+####linux 设置 公钥2
+ssh-copy-id root@10.93.60.3
 --------------------------------- 
 
 

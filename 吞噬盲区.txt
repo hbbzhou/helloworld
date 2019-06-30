@@ -1,6 +1,7 @@
 ﻿引言:一旦不会一些简单的知识,就会被嘲笑,鄙视.例如不会复制粘帖
 我将开启吞噬模式
 
+[11:10 2019/5/17] 知道有个thrift; 一个通信协议;类似 proto
 [17:01 2019/4/19] 熟悉linux strings 指令 .反查 可执行程序 例如:strings gameserver |grep "_StartChampionBattle"
 [17:48 2019/4/17] linux bash 和 sh的区别
 [18:11 2019/4/16] 了解下perl

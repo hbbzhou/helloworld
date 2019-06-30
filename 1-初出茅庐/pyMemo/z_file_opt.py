@@ -41,4 +41,19 @@ def InitFile(path , file_ ,str_):
 	f.write(str_)
 	f.close()
 
+#清空某个文件夹
+def ClearFolder(path_):
+	ls = os.listdir(path_)
+	for i in ls:
+		one_path = os.path.join(path_, i)
+		print one_path
+		if os.path.isdir(one_path):
+			ClearFolder(one_path)
+		else:
+			os.remove(one_path)
+
+#删除文件夹
+def DelFolder(path_):
+	ClearFolder(path_)
+	os.rmdir(path_)
 
