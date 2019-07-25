@@ -181,6 +181,11 @@ passwd tester1
 --------------------------------- 
 
 
+####linux 环境变量
+vim /etc/bash.bashrc
+vim /etc/profile
+
+
 
 
 
