@@ -93,6 +93,11 @@ mysql增加权限：mysql库中的user表新增一条记录host为“%”，user
 		5.强制刷新权限 ：
 		flush privileges;
 
+4.1 远程访问
+确保这个端口对外开发了 指令: netstat -tnpl | grep 3306
+确保配置是否正确 指令: vim /etc/mysql/my.cnf
+
+		
 
 5、Linux MySQL的几个重要目录
 
