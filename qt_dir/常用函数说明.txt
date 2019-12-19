@@ -1,0 +1,112 @@
+﻿
+:pyQT API
+@软件的安装
+http://www.cnblogs.com/zouzf/p/4308912.html
+
+安装包
+https://sourceforge.net/projects/pyqt/files/PyQt4/PyQt-4.11.3/
+
+
+@知识储备
+QListWidget的一些常用函数
+QTextBrowser 常用函数
+QTextEdit
+http://www.kuqin.com/qtdocument/qtextedit.html#setCursorPosition
+
+
+
+作者：JCY
+ 
+此文是在学习QT的时候所用到的一些函数，因为函数在一段时间后会遗忘，所以将他们记录下来。
+
+QPushButton  
+setText("OK"); 设置按键显示的姓名，例如设置为“OK”
+setShortcut( QKeySequence(tr("Ctrl+k")) ) //设置按钮的快捷键，例如：设置为“Ctrl + k” 。
+setEnabled(true)//设置按钮是否可操作，true: 可操作；flase : 不可操作
+clicked() //按钮按下发射的信号
+
+QString
+toLocal8Bit()  //将QSring类的对象转换为QByteArray的对象     可用于发送中文
+fromLocal8Bit() //可将QByteArray的对象转换为QString，并返回 //可用于发送中文
+size() //返回对象字符串的大小（‘\0’除外）
+setnum(int n, int base = 10)  //将n转换为QString返回
+isEmpty() //字符串是否为空，空则返回TRUE， 否则返回false
+mid(int start, int end)    //将该字符串的以start出开始，以end结尾的一段字符，作为一个字符串返回，后面一个参数可以没有
+toAssci() //字符串调用该函数后返回QByteArray的常对象
+
+QByteArray
+data(); //调用data()后返回一个指向“char *”指针
+mid(int start, int end) //与字符串中的函数功能相同
+QTcpSocket
+connectToHost("127.0.0.1",6000)  //连接“127.0.0.1”端口号为“6000”的服务器
+read(int maxsize)  // 从网络中读最大为maxsize字节数据，返回为QByteArray类型
+write(const QByteArray & )  //向网络端口中写入QByteArray的对像
+readyRead () //有数据读的信号
+error (QAbstractSocket::SocketError   )   //网络错误信号，QAbstractSocket::SocketError（枚举类型）类型的变量即为错误码
+//
+QLabel
+setText(const QString &)  //设置本对象的显示
+   /* 
+    第一种方法在QLabel上显示图片
+    QPixmap pixmap(QString("1.jpg"));
+    ui->label->setPixmap(pixmap);
+    ui->label->show();*/
+   /*
+    第二种方法
+    ui->label->setBackgroundRole(QPalette::Background);
+    ui->label->setStyleSheet("background : url(1.jpg)");*/
+TextBuffBox
+setText (const QString & text) //本对象中要显示的内容
+setTextColor(QColor)      //设置文本颜色
+
+QLineEdit
+text()  //从对象中取出输入内容，返回QString
+
+QListWidget
+doubleClicked(QModelIndex  ) //双击列表里的元素就会将产生此信号，在对应的槽函数中通过 类QModelIndex的对象
+//接收，QModelIndex对象中有一个函数为row()函数 可以返回所双击处在第几行，
+item(int ) //参数为第几行，返回QListWidgetItem的对象指针，可以通过该对象对所在的行进行某些操作
+//例如设置颜色pListWigerTtem->setTextColor(QColor::fromRgb(0,255,255));//改变标签颜色
+//隐藏该选项pListWigerTtem->setHidden(true);//隐藏标签
+//隐藏该选项pListWigerTtem->text()  //返回对应的内容
+// delete ui->listWidget->item(int hang); 即为将所在的行删 掉 
+addItem(“jcy1”); //就会将"jcy1"加入到列表当中
+itemDoubleClicked ( QListWidgetItem * item )   //为信号当双击选项时发送给选项的指针
+
+QLineEdit
+   setEchoMode(QLineEdit::Password);//输入的内容用“*”显示
+   text() //取出里面的内容，返回一个QString的指针
+   
+   
+QTextBrowser
+ setText("jiang"); //将“jiang”这个内容在QTextBrowser的框中显示
+ append("jiang"); //将“jiang”在下面一行显示
+ 
+ 
+QPalette 
+setColor(QPalette::Background, QColor(192,253,123));//以颜色的形式显示
+setBrush(QPalette::Background, QBrush(QImage("1.jpg")));//背景以图片显示
+this->setPalette(palette); //将图片显示
+
+QColorDialog 
+exec() //等待知道关闭QColorDialog 
+currentColor() //返回当前选中的颜色，以QColor的类型返回（可以根据此返回值来设置某一对象的 颜色）
+ 
+QColor
+fromRgb(255,255,255) //为静态成员函数，由四个参数（第四个可使用某人参数）可以这样调用QColor::fromRgb(255,255,255)
+  //返回QColor
+ 
+QSlider   //滑块类
+    ui->horizontalSlider->setRange(10,1000);  //设置slider滑块的范围
+    ui->horizontalSlider->setValue(10);    // 设置滑块的当前值（即当前所在的位置）   
+  valueChanged(int)   //此函数为信号，只要滑块移动就会发出信号 ，供相应的槽函数使用
+QTime //获得当前本地时间的类
+currentTime()      //返回QTime 的类对象。当前时间就隐藏在类对象中
+toString("hh:mm:ss") //将时间以字符串的形式返回，这个格式为“hh:mm:ss”，当然也可有其他的格式供你使用
+QLCDNumber
+setDigitCount( int ) //设置LCD可显示的位数（即函数的参数）。
+display(int/double/QString)  //在LCD上显示数字或者字符串。当为数字时要设置显示模式（十进制/八进制 /十六进制等）
+setDecMode()  //设置为十进制显示
+在调试端口显示下信息
+qWarning()<<"Info 1";
+qDebug()<<"Info 2";
