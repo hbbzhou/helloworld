@@ -1,0 +1,52 @@
+
+
+@代码相关
+#
+#include <gperftools/heap-profiler.h>
+
+int main(int argc, const char* argv[])
+{
+	HeapProfilerStart("test");
+	.....
+	HeapProfilerStop();
+}
+
+
+
+1.安装软件
+apt-get install -y linux_tools
+
+
+2.设置环境
+在~/.bashrc添加上
+export HEAP_PROFILE_INUSE_INTERVAL=10737418240
+export HEAP_PROFILE_TIME_INTERVAL=12000
+export HEAP_PROFILE_ALLOCATION_INTERVAL=500000000
+3.启动进程
+HEAPPROFILE=/home/hbb/log/heap ./gameserver
+
+4.内存_常用分析命令
+pprof --pdf --base=heap.006.heap app_name heap.0044.heap > diff_gs44.pdf
+这个2个heap文件的差异对比，生成的文件diff.gs44.pdf以pdf格式保存
+
+pprof --pdf heap.0021.heap > gs21.pdf
+生成这个heap对应的pdf文件
+
+4.cup_常用分析命令
+//perf record -F [每秒采集次数] -p [进程id] -g -- sleep [持续xx秒]
+perf record -F 99 -p 8093 -g -- sleep 300
+//可以筛选出 热点函数
+perf report -n --stdio > hbb.txt
+
+
+@网络流量
+sar -n DEV 1 10
+
+
+
+备注:
+内存分析工具
+https://cloud.tencent.com/developer/news/237228
+
+
+
