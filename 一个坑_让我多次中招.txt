@@ -1,4 +1,19 @@
 ﻿
+:bug0022
+2层for 循环都用了 变量 i 
+[14:31 2020/4/23] 各种花样作死
+
+:bug0021
+再次死机
+int32_t iRandNum = sfw::UtilRandom::random32(0, vecTemp.size() - 1);
+return vecCur[iRandNum];
+[14:24 2020/4/23] 拷贝代码导致
+
+
+:bug0020
+redis 保存时的key 与 删除的key  不一致 导致数据未能删除! 从而引发海量的内存增长!
+[14:20 2020/4/23]
+
 
 :bug0019
 :又死机了
@@ -162,19 +177,6 @@ int32 nCanAddNum = (nCurT - m_oSkillPoint.m_nRecoveryTimeOfPonit) / nStep;
 保存某场战斗的血量,用千分比. (1/2000 的血量, 保存后 就成 0/2000)
 [2018/9/27]入坑
 
-:bug0005
-		for (int i = 0; i < pProto->base_attr_size(); ++i) {
-			[省略]
-
-			pValue->set_val(m_oSurvival.m_vecAttr[i] + pValue->val());
-		}
-=====================
-		for (int i = 0; i < pProto->base_attr_size(); ++i) {
-			[省略]
-			int v_ = m_oSurvival.GetOneAttr(pValue->type());
-			pValue->set_val(v_ + pValue->val());
-		}
-[2018/9/26]入坑
 
 :bug0004
 if (pCfgSkill->m_nDisplay == 1)
@@ -202,12 +204,6 @@ if (m_oSkillPoint.m_nCurPoint >= nMaxPoint)
 总结:还是构造的时候初始化了_安全
 [2018/6/8]入坑
 
-:代码_少写一个类,导致代码好扩展
-int32 m_nDrugID1;
-int32 m_nDrugID2;
-int32 m_nDrugPrice1;
-int32 m_nDrugPrice2;
-[2018/6/5]入坑
 
 :代码_变量多了,名字就快重复了
 在开发新功能时,在变量定义在xx对象.接着_因为名字太长,而整理到一个 子对象中.
@@ -276,14 +272,6 @@ signal(SIGSEGV, OnCrashHandler);
 每次_启动服务后_要确保_监控正常_监控正常_监控正常
 每次_更新配置_一定要知道差异
 每周_人工检测一次_服务和监控
-
-:缓存_优化_思考_浪费时间
-案例:参赛队列_保存id;每次查询是否参赛时_要查找容器.
-方案:暂无
-明确:
-1.修改一个容器中对象的流程(先找->玩家->加入->参赛队列->对象的修改 或  参赛队列->遍历->对象的修改)
-2.如果_流程_有多个;那么缓存就 比较 烦一些(每次操作,要修改2处代码).
-2.如果_流程_仅1个;那么缓存就 适合缓存.
 
 
 
