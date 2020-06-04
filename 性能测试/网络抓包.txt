@@ -1,0 +1,9 @@
+﻿
+:安装
+apt-get install wireshark
+apt-get install tcpdump
+
+
+:过滤
+tcpdump tcp port 3001  -w ./target_redis.cap
+tcpdump src net 10.94.28.29 and dst port 3001  -w ./target_redis_29.cap
