@@ -13,3 +13,13 @@ INSERT INTO my_table(type, highid) VALUES(1, 0) ON DUPLICATE KEY UPDATE type = V
 #sql返回值的使用
 UPDATE role SET `exp` = @ret_num := `exp` + 1 WHERE id = 11;
 SELECT @ret_num;
+
+
+#获取最近1条满足条件的数据,并修改标识位
+update pay_t1 set idd=03 where id in (select id from (select id from 表名 where id>2 limit 1) as id)
+
+
+获取一个新的订单
+SET @ret_data='';
+UPDATE pay_t1 SET `lock_order` = @ret_data := `pay_info` , `flag`=1, opt_time=202006201755 WHERE flag=0 LIMIT 1;
+SELECT @ret_data;
