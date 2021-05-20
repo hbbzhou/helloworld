@@ -39,6 +39,20 @@ perf record -F 99 -p 8093 -g -- sleep 300
 perf report -n --stdio > hbb.txt
 
 
+5.(root权限)获取火焰图绘制脚本：git clone https://github.com/brendangregg/FlameGraph
+然后进入FlameGraph目录： cd FlameGraph
+//perf record -F [每秒采集次数] -p [进程id] -g [表示记录调用栈] -- sleep [持续xx秒]
+perf record -F 99 --call-graph dwarf -p pid  -- sleep 60
+//用perf script工具对perf.data进行分析
+perf script -i perf.data &> perf.unfold
+//将perf.unfold中的符号进行处理
+./stackcollapse-perf.pl perf.unfold &> perf.folded
+//生成svg图
+./flamegraph.pl perf.folded > perf.svg
+
+
+
+
 @网络流量
 sar -n DEV 1 10
 
