@@ -134,6 +134,11 @@ scp ~/.ssh/id_rsa.pub root@121.40.138.192:/root/.ssh/id_rsa_temp.pub
 进入121.40.138.192 下的/root/.ssh 目录
 cat /root/.ssh/id_rsa_temp.pub >> /root/.ssh/authorized_keys
 chmod 600 /root/.ssh/authorized_keys
+---
+方案二:
+ssh-keygen -t rsa
+
+ssh-copy-id root@121.40.138.192
 --------------------------------- 
 
 
