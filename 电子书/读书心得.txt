@@ -1,0 +1,49 @@
+
+
+:程序员的自我修养_链接_装载与库---已看1遍
+	可以再看3遍,好书
+--
+:UNIX网络编程卷1：套接字联网API（第3版）---已看1遍
+	AF_INET->国际;;;SOCK_STREAM->套接字;;;bzero==memset
+	inet_pton优于inet_addr;;;SA==struct sockaddr;;;分节
+	SCTP;;;SO_LINGER参数的意义;;;IPv4首部20字节;;;IPv6首部40字节
+	阻塞模式;;;非阻塞模式;;;I/O复用;;;信号驱动;;;异步I/O模型
+	::预防风险之accept
+		设置accept非阻塞,且忽略若干错误
+	::预防风险之read
+		消息头中的包长度为10字节,但是前端发出5字节,导致read阻塞
+		可以使用readsame,或者使用非阻塞模式
+	::int listen(int socket, int backlog); 
+		backlog为已连接成功的队列长度,
+		未连接成功的队列长度,参考 /proc/sys/net/ipv4/tcp_max_syn_backlog
+		参考:https://blog.csdn.net/yangbodong22011/article/details/60399728
+	::关闭TCP 4次握手
+		1.其中FIN信号 需要退出进程或调用close函数
+		2.FIN对应的ACK 是由TCP底层自动返回
+   :待二次阅读
+    	(参考109页中)fork后 子进程执行exec,内存映射被替换.???
+    	waitpid 与wait的用法
+    	章节题目需要突击下
+    	第10章 SCTP客户/服务器程序例子
+    	getaddrinfo, gethostbyname, getserbyname等一系列函数
+    	第11章 名字与地址转换
+    	第13章 守护进程和inetd超级服务器
+    	第24章 外带数据
+--
+:Lua程序设计（第2版）中文---已看2遍
+	第一类值(第一类构建完成的数据);;;词法域(A2能访问A1的局部变量的特征)
+	备注:支持 词法域的因==第一类值
+	closure 与函数的差别==是否访问了非局部变量或upvalue
+	元表中的元方法==C++的类成员函数,包括操作符重载
+	环境==_G
+    --
+    Lua 中不常用的知识 后期再看
+	    第9章 协同程序
+	    第10章 完整的示例
+	    第12章 数据文件与持久性
+	    第20章 字符串库
+	    第21章 I/O库
+	    第27章 27.3.2 C函数的环境---(难,看了2遍了)
+	    第28章 用户自定义类型---(其中C实现元表 根本看不懂)
+	    第30章 线程和状态
+--
