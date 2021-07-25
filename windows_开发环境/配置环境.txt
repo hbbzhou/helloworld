@@ -8,13 +8,5 @@ https://github.com/racaljk/hosts/blob/master/hosts
 Microsoft Visual C++ 2010 Redistributable Package
 =========
 
-##vscode使用
-@快捷键
-[
-    { "key": "ctrl+w",	"command": "editor.action.addSelectionToNextFindMatch" },
-    { "key": "alt+1",	"command": "editor.foldLevel1" },
-    { "key": "alt+`",	"command": "editor.unfoldAll" }
-]
-=========
 
 
