@@ -5,3 +5,7 @@
     { "key": "alt+1",	"command": "editor.foldLevel1" },
     { "key": "alt+`",	"command": "editor.unfoldAll" }
 ]
+
+@Lua sumneko.lua 插件
+解决警告
+首选项->设置->搜global->定义全局变量
