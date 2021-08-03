@@ -103,4 +103,16 @@
 	管道
 	IPC通信
 	关键点太多,太难 需要重新阅读
+	
+	通过UNIX域套接字传递描述符的应用
+	集群网络架构->https://zhuanlan.zhihu.com/p/40248172
+	
+	Linux 的伪终端的基本原理 及其在远程登录（SSH，telnet等）中的应用
+	伪终端->https://www.cnblogs.com/zzdyyy/p/7538077.html
+	
+	Linux共享内存使用常见陷阱与分析
+	共享内存->https://zhuanlan.zhihu.com/p/386812755
+	
+	原子操作->Linux 互斥锁、原子操作实现原理  kmcfly
+	原子操作->https://blog.csdn.net/u011244446/article/details/52574369
 --
