@@ -122,20 +122,40 @@ CThreadBase
 
 ConnectionManager
 	::名字
-		
+		客户端连接管理器
 	::能力
-		启动父类的run函数
+		添加连接
+		删除连接
+		删除过期的连接
 	::包含其他模块
 		Connection		--N个
 --
 
 Connection
 	::名字
+		客户端连接
+	::能力
+		接收消息_传递到应用层
+		发送消息
+		设置关闭标识
+	::包含其他模块
+		CSocket		--1个
+--
+
+BindAdapter
+	::名字
 		
 	::能力
 		
 	::包含其他模块
-		CSocket		--1个
+--
+
+tagSendData
+	::名字
+		
+	::能力
+		
+	::包含其他模块
 --
 
 Connector
@@ -324,7 +344,14 @@ TcpTransport
 		Transport	--1个
 --
 
-
+CSocket
+	::名字
+		socket
+	::能力
+		对socket封装 
+	::包含其他模块
+		无
+--
 
 
 
