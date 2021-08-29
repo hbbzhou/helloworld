@@ -1,106 +1,329 @@
 
-//备忘//网址
-#if
-水电费
-https://www.shfft.com/
-
-autohotkey官网
-https://www.autohotkey.com/
-
-cpu排行榜
-https://www.cpubenchmark.net/high_end_cpus.html
-
-C++的常用库
-https://www.cnblogs.com/skyus/articles/8524408.html
-
-#endif
-
-
-:c盘记录
-
-
+:备忘_网址
+    水电费->https://www.shfft.com/
+    autohotkey官网->https://www.autohotkey.com/
+    cpu排行榜->https://www.cpubenchmark.net/high_end_cpus.html
+    C++的常用库->https://www.cnblogs.com/skyus/articles/8524408.html
+--
 
 :电脑信息
-电脑型号	联想 80WW 笔记本电脑  (扫描时间：2018年04月20日)
-操作系统	Windows 10 64位 ( DirectX 12 )
-	
-处理器	英特尔 Core i5-7300HQ @ 2.50GHz 四核
-主板	联想 LNVNB161216 ( 英特尔 Xeon E3 - 1200 v6/7th Gen Intel Core/DRAM Registers - 5910 - 100 Series/C230 SeriDB) )
-内存	8 GB ( 三星 DDR4 2400MHz )
-主硬盘	三星 MZVLW128HEGR-000L2 ( 128 GB / 固态硬盘 )
-显卡	Nvidia GeForce GTX 1050 Ti ( 4 GB )
-显示器	奇美 CMN15D3 ( 15.5 英寸  )
-声卡	瑞昱  @ 英特尔 High Definition Audio 控制器
-网卡	瑞昱 Realtek 8821AE Wireless LAN 802.11ac PCI-E NIC / 联想
+    电脑型号	联想 80WW 笔记本电脑  (扫描时间：2018年04月20日)
+    操作系统	Windows 10 64位 ( DirectX 12 )
+    
+    处理器	英特尔 Core i5-7300HQ @ 2.50GHz 四核
+    主板	联想 LNVNB161216 ( 英特尔 Xeon E3 - 1200 v6/7th Gen Intel Core/DRAM Registers - 5910 - 100 Series/C230 SeriDB) )
+    内存	8 GB ( 三星 DDR4 2400MHz )
+    主硬盘	三星 MZVLW128HEGR-000L2 ( 128 GB / 固态硬盘 )
+    显卡	Nvidia GeForce GTX 1050 Ti ( 4 GB )
+    显示器	奇美 CMN15D3 ( 15.5 英寸  )
+    声卡	瑞昱  @ 英特尔 High Definition Audio 控制器
+    网卡	瑞昱 Realtek 8821AE Wireless LAN 802.11ac PCI-E NIC / 联想
+--
+
+
+:娱乐
+    一世之尊->http://www.biquge.tw/3_3310/4494711.html
+--
 
 
 
-//娱乐
-#if
-艺泰安邦
+:工作备忘
+    lua bind->http://www.rasterbar.com/products/luabind/docs.html
+    githug教程->http://www.runoob.com/w3cnote/git-guide.html
+--
 
-:一世之尊
-http://www.biquge.tw/3_3310/4494711.html
-
-:阴阳师_悬赏
-http://www.paopaoche.net/sj/109106.html
-
-:盗贼天赋
-http://www.eryuhaian.com/203.html
-
-:wow私服测试
-http://games.qq.com/a/20161129/001702.htm
-
-#endif
-
-
-//工作备忘
-#if 
-:lua bind 的
-http://www.rasterbar.com/products/luabind/docs.html
-
-:githug 教程
-http://www.runoob.com/w3cnote/git-guide.html
 
 
 :剪切板
-$ ssh-keygen -t rsa -C "huang_binbin1@163.com"
-$ ssh -T git@github.com
-$ git config --global user.name "hbb"
-$ git config --global user.email "huang_binbin1@163"
+    $ ssh-keygen -t rsa -C "huang_binbin1@163.com"
+    $ ssh -T git@github.com
+    $ git config --global user.name "hbb"
+    $ git config --global user.email "huang_binbin1@163"
 
-git clone https://github.com/hbbzhou/luabind_project
-git add *
-git commit -m "modify"
-git push origin master
-git pull
-
+    git clone https://github.com/hbbzhou/luabind_project
+    git add *
+    git commit -m "modify"
+    git push origin master
+    git pull
+--
 
 :收获 记录
-@目标:vs2012 用vs2010的 编译器
-操作:属性->配置属性->常规->平台工具集
+    @目标:vs2012 用vs2010的 编译器
+    操作:属性->配置属性->常规->平台工具集
 
-@解决拷贝代码导致的bug
-代码的作用域要恰到好处.(类成员函数, 尽量用局部变量 或 引用)
+    @解决拷贝代码导致的bug
+    代码的作用域要恰到好处.(类成员函数, 尽量用局部变量 或 引用)
 
-@伪代码的总结
-[变量类型]==数据结构
-[变量的初始化]==协议或加载代码
-[变量的赋值]==一般是协议
-[变量的传递]==一般是协议
-[变量的保存]==保存数据库
+    @伪代码的总结
+    [变量类型]==数据结构
+    [变量的初始化]==协议或加载代码
+    [变量的赋值]==一般是协议
+    [变量的传递]==一般是协议
+    [变量的保存]==保存数据库
 
-@linux 多线程编译
-vi /etc/profile
-1、最后面加入：export OMP_NUM_THREADS=8
-2、执行命令使其马上生效: # source /etc/profile
+    @linux 多线程编译
+    vi /etc/profile
+    1、最后面加入：export OMP_NUM_THREADS=8
+    2、执行命令使其马上生效: # source /etc/profile
 
-@windows 多线程编译
-修改 属性->c/c++ ->常规-> 多处理器编译 = 是(/MP) ; 
-修改 属性->c/c++ ->代码生成->启用最小重新生成 = 否(/Gm-)
+    @windows 多线程编译
+    修改 属性->c/c++ ->常规-> 多处理器编译 = 是(/MP) ; 
+    修改 属性->c/c++ ->代码生成->启用最小重新生成 = 否(/Gm-)
+--
 
+--------------临时存储--------------
 
-#endif
+:模块枚举
+Application
+	::名字
+		应用
+	::能力
+		main
+		加载配置
+		初始化网络参数(服务名称,连接数,线程数,超时时间)
+		信号捕获
+		添加服务
+	::包含其他模块
+		NetServer --1个
+		Connector --1个
+--
+
+NetServer
+	::名字
+		
+	::能力
+		
+	::包含其他模块
+		NetThread	--1个
+		CNotifier	--1个
+--
+
+NetThread
+	::名字
+		
+	::能力
+		
+	::包含其他模块
+		CThreadBase			--1个
+		CEpoller			--1个
+		ConnectionManager	--1个
+		BindAdapter			--N个
+		tagSendData			--N个
+--
+
+CThreadBase
+	::名字
+		线程
+	::能力
+		启动父类的run函数
+	::包含其他模块
+		CThread		--1个
+--
+
+ConnectionManager
+	::名字
+		
+	::能力
+		启动父类的run函数
+	::包含其他模块
+		Connection		--N个
+--
+
+Connection
+	::名字
+		
+	::能力
+		
+	::包含其他模块
+		CSocket		--1个
+--
+
+Connector
+	::名字
+		连接器
+	::能力
+		通过 服务名字 获取一个可用的 ServiceProxy
+	::包含其他模块
+		ConnectorImp	--1个
+		ServiceProxy	--N个
+--
+
+ConnectorImp
+	::名字
+		连接器 接口信息处理器
+	::能力
+		通过 服务名字 获取一个ObjectProxy
+		封装Epoll接口
+		封装超时接口
+
+		新增消息到req队列
+		新增消息到asyncRsp队列
+
+		接收并处理Rsp消息
+		发送Req消息
+
+		while轮询 Epoll信号 (其他线程驱动)
+		while轮询 asyncRsp (其他线程驱动)
+	::包含其他模块
+		CEpoller		--1个
+		CThread			--1个
+		CThreadPool		--1个
+		ObjectProxy		--N个
+--
+
+ServiceProxy
+	::名字
+		
+	::能力
+		
+	::包含其他模块
+		
+--
+
+CEpoller
+	::名字
+		Epoll
+	::能力
+		Epoll接口封装
+	::包含其他模块
+		CSocket		--1个
+--
+
+CThread
+	::名字
+		Epoll
+	::能力
+		线程接口封装
+
+		线程wait和wakeup
+	::包含其他模块
+		pthread_t		--1个
+		CNotifier		--1个
+--
+
+CThreadPool
+	::名字
+		线程池
+	::能力
+		批量管理 线程
+	::包含其他模块
+		CThread		--N个
+--
+
+ObjectProxy
+	::名字
+		对象代理
+	::能力
+		//根据参数,动态选择合适的对象来处理
+		invoke		//处理消息
+		doInvoke	//处理历史消息,直到队列为空
+
+		doInvokeException	//处理异常//如果是同步阻塞调用,就解除阻塞; 反之就通过虚函数,调用应用层的回调函数
+		//m_pConnectorImp->addAsyncRspMsg(msg);	//有疑问//hbb
+
+		doTimeout	//将超时的消息重队列中移除
+		
+	::包含其他模块
+		ClientSideProtocol	--1个
+		EndpointManager		--1个
+--
+
+CNotifier
+	::名字
+		通知器
+	::能力
+		线程wait和wakeup
+	::包含其他模块
+		pthread_cond_t	--1个
+		CMutex			--1个
+--
+
+ClientSideProtocol
+	::名字
+		协议格式解析
+	::能力
+		通过消息头的长度,提取完整包的正文
+
+		远程调用的函数参数序列化
+		远程调用的函数参数反序列化
+	::包含其他模块
+		无
+--
+
+EndpointManager
+	::名字
+		端点管理器
+	::能力
+		选择一个可能的代理
+	::包含其他模块
+		AdapterProxy	--N个
+--
+
+CEndpoint
+	::名字
+		端点(ip,端口,超时时间,协议类型)
+	::能力
+		字符串转IP,端口,超时时间,协议类型
+	::包含其他模块
+		无
+--
+
+AdapterProxy
+	::名字
+		适配器和代理
+	::能力
+		代理_头封装_执行trySendRequest_还涉及3个容器对该消息进行管理_新增延迟发送逻辑
+		invoke
+
+		while轮询处理需要发送的消息_代理_执行trySendRequest_还涉及2个容器对该消息进行管理
+		doInvoke
+
+		处理成功_释放资源
+		代理执行->onDispatch 或 addAsyncRspMsg
+		finishInvoke
+
+		while轮询处理_超时的消息
+		doTimeout
+
+		代理_连接状态管理
+
+	::包含其他模块
+		CEndpoint	--1个
+		TcpTransport/UdpTransport 	1个
+--
+
+Transport
+	::名字
+		消息传输
+	::能力
+		连接状态管理
+		连接网络
+		关闭网络
+		接收数据
+		发送数据
+
+		处理Req数据_发送缓冲区
+			缓冲区有数据--直接发送
+			缓冲区无数据--调用代理函数_获取一个待发送的消息并调用trySendRequest
+
+	::包含其他模块
+		CEndpoint	--1个
+		CSocket		--1个
+--
+
+TcpTransport
+	::名字
+		TCP消息传输
+	::能力
+		
+		接收消息
+		发送消息
+		处理接收缓存区_接收消息_返回到应用层_释放资源
+
+	::包含其他模块
+		Transport	--1个
+--
+
 
 
 
