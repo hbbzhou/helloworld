@@ -115,4 +115,7 @@
 	
 	原子操作->Linux 互斥锁、原子操作实现原理  kmcfly
 	原子操作->https://blog.csdn.net/u011244446/article/details/52574369
+
+	内存锁->Linux内存子系统——Locking Pages(内存锁定)
+	内存锁->https://zhuanlan.zhihu.com/p/252304390?utm_source=wechat_timeline
 --
