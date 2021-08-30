@@ -148,14 +148,42 @@ BindAdapter
 	::能力
 		
 	::包含其他模块
+		Handle				--N个
+		CSocket				--1个
+		CEndpoint			--1个
+		tagRecvData			--N个
+		protocol_functor	--1个
 --
 
 tagSendData
 	::名字
-		
+		Res消息类
 	::能力
-		
+		存储一条Res消息
 	::包含其他模块
+		无
+--
+
+//避免用含义不清的动词如process、handle等为函数命名，因为这些动词并没有说明要具体做什么。
+
+Handle
+	::名字
+		处理Req消息并发送Res消息
+	::能力
+		调用父类函数
+		调用 BindAdapter 类的成员函数sendResponse,closeConnection
+		while轮询 处理接收队列的消息
+	::包含其他模块
+		CThreadBase		--1个
+--
+
+protocol_functor
+	::名字
+		函数指针
+	::能力
+		调用应用层_协议处理函数
+	::包含其他模块
+		无
 --
 
 Connector
