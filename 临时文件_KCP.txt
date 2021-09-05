@@ -6,11 +6,6 @@
     后续[ikcp_flush]
 --
 
-:ikcp_flush
-    需要 updated== 1 //ikcp_update函数设置它为1,同时修改ts_flush标识
-    间隔超过10ms, 就将
---
-
 :ikcp_update
     updated, ts_flush 初始化
     每隔10ms, 执行 
@@ -18,19 +13,82 @@
         执行 ikcp_flush
 --
 
-:ikcp_input
+//网络层接收到的消息, 要传入本函数
+:ikcp_input   
     解析 kcp头数据
     处理ACK消息
 --
 
+:ikcp_flush
+    需要 updated== 1 //ikcp_update函数设置它为1,同时修改ts_flush标识
+    将所有待发送的消息, 放入buffer, 并有选择的执行 output函数
+--
+:iqueue_entry
+    //newseg = iqueue_entry(kcp->snd_queue.next, IKCPSEG, node);
+    在kcp->snd_queue.next - (IKCPSEG 首地址 距离 node变量的偏移量 )
+    这里使用了一个技巧 ((size_t) &((IKCPSEG *)0)->node) 达到了 (IKCPSEG 首地址 距离 node变量的偏移量 )
+--
+:ikcp_shrink_buf
+--
+:ikcp_parse_ack
+--
+:ikcp_parse_una
+--
+:ikcp_segment_delete
+--
+:ikcp_parse_fastack
+--
+:ikcp_check
+--
 //相关变量
+
+//待思考它的能力
+:snd_una
+    :名称-> 下一个将要发送的sn
+    :能力-> 
+    :关联->  snd_una = Sn; 或者  snd_una = snd_nxt;
+--
+
+:fastack
+--
+:snd_queue
+--
+:snd_buf
+    :名称-> 发送队列
+    :能力-> 选择符合条件的 snd_queue成员, 并移入 snd_buf队列
+    :能力-> 之后将转到 buffer
+--
+:nsnd_buf
+    :名称-> snd_buf队列的长度
+--
+:sn //m_dwSn
+    :名称-> serial number (序列号)
+    :能力-> 消息的唯一标识
+    :关联-> sn = snd_nxt++
+--
+:current
+    :名称-> 当前时间
+    :关联-> ikcp_update函数的参数
+--
+:ts
+    :名称-> 消息的时间戳
+    :关联-> 数据来之 current
+--
+:snd_nxt
+    :名称-> sn的自增标识
+    :能力-> 自增
+--
+
+:buffer
+    ::名称-> 发送缓冲区, 长度为 (mtu + kcp头部长度)*3
+    ::能力-> 整合 IKCP_CMD_ACK, IKCP_CMD_WASK, IKCP_CMD_WINS, snd_buf 等数据. 
+    ::能力-> 当达到1个mtu时,立即被发送,反之在整合完毕后被发送一次 
+    ::能力-> 作为output函数的参数
+--
 :ts_flush
     ::名称-> 刷新时间
+    ::能力-> 决定 ikcp_flush函数 何时被调用 
 --
 :ackcount
     ::名称-> ack消息的数量
---
-:buffer
-    ::名称-> 发送缓冲区, 长度为 (mtu + kcp头部长度)*3
-    ::能力-> 存储Ntf消息的字节流, 作为output函数的参数
 --
