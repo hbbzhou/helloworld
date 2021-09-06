@@ -1,0 +1,308 @@
+
+:模块枚举
+Application
+	::名字
+		应用
+	::能力
+		main
+		加载配置
+		初始化网络参数(服务名称,连接数,线程数,超时时间)
+		信号捕获
+		添加服务
+	::包含其他模块
+		NetServer --1个
+		Connector --1个
+--
+
+NetServer
+	::名字
+		
+	::能力
+		
+	::包含其他模块
+		NetThread	--1个
+		CNotifier	--1个
+--
+
+NetThread
+	::名字
+		
+	::能力
+		
+	::包含其他模块
+		CThreadBase			--1个
+		CEpoller			--1个
+		ConnectionManager	--1个
+		BindAdapter			--N个
+		tagSendData			--N个
+--
+
+CThreadBase
+	::名字
+		线程
+	::能力
+		启动父类的run函数
+	::包含其他模块
+		CThread		--1个
+--
+
+ConnectionManager
+	::名字
+		客户端连接管理器
+	::能力
+		添加连接
+		删除连接
+		删除过期的连接
+	::包含其他模块
+		Connection		--N个
+--
+
+Connection
+	::名字
+		客户端连接
+	::能力
+		接收消息_传递到应用层
+		发送消息
+		设置关闭标识
+	::包含其他模块
+		CSocket		--1个
+--
+
+BindAdapter
+	::名字
+		
+	::能力
+		
+	::包含其他模块
+		Handle				--N个
+		CSocket				--1个
+		CEndpoint			--1个
+		tagRecvData			--N个
+		protocol_functor	--1个
+--
+
+tagSendData
+	::名字
+		Res消息类
+	::能力
+		存储一条Res消息
+	::包含其他模块
+		无
+--
+
+//避免用含义不清的动词如process、handle等为函数命名，因为这些动词并没有说明要具体做什么。
+
+Handle
+	::名字
+		处理Req消息并发送Res消息
+	::能力
+		调用父类函数
+		调用 BindAdapter 类的成员函数sendResponse,closeConnection
+		while轮询 处理接收队列的消息
+	::包含其他模块
+		CThreadBase		--1个
+--
+
+protocol_functor
+	::名字
+		函数指针
+	::能力
+		调用应用层_协议处理函数
+	::包含其他模块
+		无
+--
+
+Connector
+	::名字
+		连接器
+	::能力
+		通过 服务名字 获取一个可用的 ServiceProxy
+	::包含其他模块
+		ConnectorImp	--1个
+		ServiceProxy	--N个
+--
+
+ConnectorImp
+	::名字
+		连接器 接口信息处理器
+	::能力
+		通过 服务名字 获取一个ObjectProxy
+		封装Epoll接口
+		封装超时接口
+
+		新增消息到req队列
+		新增消息到asyncRsp队列
+
+		接收并处理Rsp消息
+		发送Req消息
+
+		while轮询 Epoll信号 (其他线程驱动)
+		while轮询 asyncRsp (其他线程驱动)
+	::包含其他模块
+		CEpoller		--1个
+		CThread			--1个
+		CThreadPool		--1个
+		ObjectProxy		--N个
+--
+
+ServiceProxy
+	::名字
+		
+	::能力
+		
+	::包含其他模块
+		
+--
+
+CEpoller
+	::名字
+		Epoll
+	::能力
+		Epoll接口封装
+	::包含其他模块
+		CSocket		--1个
+--
+
+CThread
+	::名字
+		Epoll
+	::能力
+		线程接口封装
+
+		线程wait和wakeup
+	::包含其他模块
+		pthread_t		--1个
+		CNotifier		--1个
+--
+
+CThreadPool
+	::名字
+		线程池
+	::能力
+		批量管理 线程
+	::包含其他模块
+		CThread		--N个
+--
+
+ObjectProxy
+	::名字
+		对象代理
+	::能力
+		//根据参数,动态选择合适的对象来处理
+		invoke		//处理消息
+		doInvoke	//处理历史消息,直到队列为空
+
+		doInvokeException	//处理异常//如果是同步阻塞调用,就解除阻塞; 反之就通过虚函数,调用应用层的回调函数
+		//m_pConnectorImp->addAsyncRspMsg(msg);	//有疑问//hbb
+
+		doTimeout	//将超时的消息重队列中移除
+		
+	::包含其他模块
+		ClientSideProtocol	--1个
+		EndpointManager		--1个
+--
+
+CNotifier
+	::名字
+		通知器
+	::能力
+		线程wait和wakeup
+	::包含其他模块
+		pthread_cond_t	--1个
+		CMutex			--1个
+--
+
+ClientSideProtocol
+	::名字
+		协议格式解析
+	::能力
+		通过消息头的长度,提取完整包的正文
+
+		远程调用的函数参数序列化
+		远程调用的函数参数反序列化
+	::包含其他模块
+		无
+--
+
+EndpointManager
+	::名字
+		端点管理器
+	::能力
+		选择一个可能的代理
+	::包含其他模块
+		AdapterProxy	--N个
+--
+
+CEndpoint
+	::名字
+		端点(ip,端口,超时时间,协议类型)
+	::能力
+		字符串转IP,端口,超时时间,协议类型
+	::包含其他模块
+		无
+--
+
+AdapterProxy
+	::名字
+		适配器和代理
+	::能力
+		代理_头封装_执行trySendRequest_还涉及3个容器对该消息进行管理_新增延迟发送逻辑
+		invoke
+
+		while轮询处理需要发送的消息_代理_执行trySendRequest_还涉及2个容器对该消息进行管理
+		doInvoke
+
+		处理成功_释放资源
+		代理执行->onDispatch 或 addAsyncRspMsg
+		finishInvoke
+
+		while轮询处理_超时的消息
+		doTimeout
+
+		代理_连接状态管理
+
+	::包含其他模块
+		CEndpoint	--1个
+		TcpTransport/UdpTransport 	1个
+--
+
+Transport
+	::名字
+		消息传输
+	::能力
+		连接状态管理
+		连接网络
+		关闭网络
+		接收数据
+		发送数据
+
+		处理Req数据_发送缓冲区
+			缓冲区有数据--直接发送
+			缓冲区无数据--调用代理函数_获取一个待发送的消息并调用trySendRequest
+
+	::包含其他模块
+		CEndpoint	--1个
+		CSocket		--1个
+--
+
+TcpTransport
+	::名字
+		TCP消息传输
+	::能力
+		
+		接收消息
+		发送消息
+		处理接收缓存区_接收消息_返回到应用层_释放资源
+
+	::包含其他模块
+		Transport	--1个
+--
+
+CSocket
+	::名字
+		socket
+	::能力
+		对socket封装 
+	::包含其他模块
+		无
+--
